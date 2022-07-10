@@ -30,13 +30,13 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 <style type="text/css">
-   @media (max-width: 768px){
-   .media-sidebar {
-   padding: 10px;
-   border-bottom: solid 1px #ebebeb;
-   }
-   }
+	@media (max-width: 768px){
+	.media-sidebar {
+	padding: 10px;
+	border-bottom: solid 1px #ebebeb;
+	}
+	}
 </style>
 <script type="text/javascript">
-   var contextPath = '<c:out value="${contextPath}"/>';
+	var contextPath = '<c:out value="${contextPath}"/>';
 </script>

@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.HospitalManagementSystem.entity.Role;
 import com.HospitalManagementSystem.entity.User;
+import com.HospitalManagementSystem.entity.master.Role;
 import com.HospitalManagementSystem.repository.UserRepository;
 
 @Service

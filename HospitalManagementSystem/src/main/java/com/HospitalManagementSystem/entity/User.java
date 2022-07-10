@@ -13,6 +13,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.HospitalManagementSystem.entity.master.Department;
+import com.HospitalManagementSystem.entity.master.Floor;
+import com.HospitalManagementSystem.entity.master.Role;
+
 import lombok.Data;
 
 @Entity

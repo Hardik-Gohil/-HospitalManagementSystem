@@ -1,5 +1,4 @@
-package com.HospitalManagementSystem.entity;
-
+package com.HospitalManagementSystem.entity.history;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;

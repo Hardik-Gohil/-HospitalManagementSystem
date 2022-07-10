@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.HospitalManagementSystem.entity.Floor;
+import com.HospitalManagementSystem.entity.master.Floor;
 
 public interface FloorRepository extends JpaRepository<Floor, Long> {
 

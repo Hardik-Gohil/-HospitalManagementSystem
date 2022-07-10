@@ -1,7 +1,6 @@
-package com.HospitalManagementSystem.entity;
+package com.HospitalManagementSystem.entity.master;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,19 +11,23 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "department")
+@Table(name = "bed")
 @Data
-public class Department {
+public class Bed {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long departmentId;
+	private Long bedId;
 
-	private String departmentName;
+	private String bedCode;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "role_id")
-	private Role role;
+	private String roomNo;
 
+	private String wardName;
+
+	@OneToOne
+	@JoinColumn(name = "floor_id")
+	private Floor floor;
+	
 	private Boolean isActive = Boolean.FALSE;
 }

@@ -1,4 +1,4 @@
-package com.HospitalManagementSystem.entity;
+package com.HospitalManagementSystem.entity.master;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,15 +9,17 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "floor")
+@Table(name = "role")
 @Data
-public class Floor {
+public class Role {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long floorId;
+	private Long roleId;
 
-	private String floorName;
+	private String name;
 
-	private Boolean isActive = Boolean.FALSE;
+//	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
+//	private Set<User> users;
+
 }
