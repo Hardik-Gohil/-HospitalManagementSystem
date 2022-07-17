@@ -6,7 +6,7 @@
 		<title>Patient Details</title>
 		<%@include file="../includes/HeadScript.jsp"%>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 	</head>
 	<body class="skin-blue sidebar-mini">
@@ -113,7 +113,7 @@
 									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="extraLiquid">Extra Liquid</label>
-											<form:select cssClass="form-control selectpicker" id="extraLiquid" path="extraLiquid">
+											<form:select cssClass="form-control selectpicker" id="extraLiquid" path="extraLiquid" onchange="extraLiquidChange();">
 												<form:option value="false">No</form:option>
 												<form:option value="true">Yes</form:option>
 											</form:select>
@@ -134,7 +134,7 @@
 								<div class="row" id="dietTypeOralLiquidTF_row">
 									<div class="col-lg-4">
 										<fieldset class="form-group">
-											<label for="dietSubType">Diet Sub Type</label>
+											<label for="dietSubType">Diet Sub Type</label><span class="text-danger">*</span>
 											<form:select cssClass="form-control selectpicker" id="dietSubType" path="dietSubType.dietSubTypeId" data-size="10">
 												<form:option value="" disabled="disabled" selected="selected">Please select</form:option>
 												<c:forEach items="${dietSubTypeList}" var="dietSubType">
@@ -229,7 +229,7 @@
 										</fieldset>
 									</div>
 								</div>
-								<button type="submit" class="btn btn-success">Submit</button>
+								<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
 								<a href="${contextPath}/diet/patients">
 									<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
 								</a>
@@ -282,26 +282,46 @@
 		function nbmChange() {
 		    if ($("#nbm").val() == "true") {
 		        $("#dietTypeOralSolid").attr("disabled", true);
+		        $("#extraLiquid").attr("disabled", true);
 		        $("#dietTypeOralLiquidTF").attr("disabled", true);
 		        $("#dietSubType").attr("disabled", true);
 		        $("#quantity").attr("disabled", true);
 		        $("#frequency").attr("disabled", true);
 		    } else {
 		        $("#dietTypeOralSolid").attr("disabled", false);
+		        $("#extraLiquid").attr("disabled", false);
 		        $("#dietTypeOralLiquidTF").attr("disabled", false);
 		        $("#dietSubType").attr("disabled", false);
 		        $("#quantity").attr("disabled", false);
 		        $("#frequency").attr("disabled", false);
 		    }
+		    $('.selectpicker').selectpicker('refresh');
 		}
 
+		function extraLiquidChange() {
+		    if ($("#extraLiquid").val() == "true") {
+		        $("#dietTypeOralLiquidTF").attr("disabled", true);
+		        $("#dietSubType").attr("disabled", true);
+		        $("#quantity").attr("disabled", true);
+		        $("#frequency").attr("disabled", true);
+		    } else {
+		        $("#dietTypeOralLiquidTF").attr("disabled", false);
+		        $("#dietSubType").attr("disabled", false);
+		        $("#quantity").attr("disabled", false);
+		        $("#frequency").attr("disabled", false);
+		    }
+		    $('.selectpicker').selectpicker('refresh');
+		}
+		
 		function dietTypeOralLiquidTFChange() {
 		    if ($("#dietTypeOralLiquidTF").val() == "") {
+		    	$("#extraLiquid").attr("disabled", false);
 		        $("#dietTypeOralLiquidTF_row").hide();
 		        $("#dietSubType").attr("disabled", true);
 		        $("#quantity").attr("disabled", true);
 		        $("#frequency").attr("disabled", true);
 		    } else {
+		    	$("#extraLiquid").attr("disabled", true);
 		        $("#dietTypeOralLiquidTF_row").show();
 		        $("#dietSubType").attr("disabled", false);
 		        $("#quantity").attr("disabled", false);
@@ -315,6 +335,7 @@
 		            }
 		        });
 		    }
+		    $('.selectpicker').selectpicker('refresh');
 		}
 
 		function specialNotesByNursingChange() {
@@ -332,7 +353,9 @@
 		    $('#wardName').val($('#bed').find(":selected").attr("data-wardName"));
 		}
 
-		function Validation() {}
+		function Validation() {
+			 $("#extraLiquid").attr("disabled", false);
+		}
 
 		$(document).ready(function() {
 		    $("#Patients").addClass("active");
@@ -359,8 +382,7 @@
 		            format: 'MM/DD/YYYY h:mm:ss a'
 		        }
 		    });
-		    if ($('#admittedDateStr').val() = "") {
-		        console.log('${patientDto.admittedDate}');
+		    if ($('#admittedDateStr').val() != "") {
 		        $('#admittedDate').data('daterangepicker').setStartDate($('#admittedDateStr').val());
 		    }
 		    bedChange();
@@ -422,6 +444,13 @@
 		                    }
 		                }
 		            },
+		            "dietSubType.dietSubTypeId": {
+		                required: {
+		                    depends: function(element) {
+		                        return ($("#nbm").val() == "false" && $("#dietTypeOralLiquidTF").val() != "");
+		                    }
+		                }
+		            },		            
 		            "quantity.quantityId": {
 		                required: {
 		                    depends: function(element) {
@@ -508,6 +537,9 @@
 		            "dietTypeOralLiquidTF.dietTypeOralLiquidTFId": {
 		                required: "Please Select Diet Type- Oral Solid or Diet Type- Oral Liquid/TF"
 		            },
+		            "dietSubType.dietSubTypeId": {
+		                required: "Please Select Diet Sub Type"
+		            },		            
 		            "quantity.quantityId": {
 		                required: "Please Select Quantity"
 		            },

@@ -15,8 +15,8 @@
 		<link href="${contextPath}/resources/dist/css/tabs.css" rel="stylesheet">
 		<style type="text/css">
 			.showUpdated {
-			color: #0c5460 !important;
-			background-color: #bee5eb !important;
+				color: #0c5460 !important;
+				background-color: #bee5eb !important;
 			}	
 		</style>
 	</head>
@@ -127,6 +127,7 @@
 														<th>Quantity</th>
 														<th>Co-morbities</th>
 														<th>Special Notes by Nurising</th>
+														<th>Action</th>
 													</tr>
 												</thead>
 											</table>
@@ -185,6 +186,7 @@
 		        }, {
 		            "data": "bedString",
 		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "doctor",
@@ -246,7 +248,7 @@
 		            "defaultContent": "-"
 		        }, {
 		            "data": "bedString",
-		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "doctor",
@@ -270,10 +272,12 @@
 		        }, {
 		            "data": "medicalComorbiditiesString",
 		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "specialNotesByNursingString",
 		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false,
 		            "render": function(data, type, row) {
 		                if (type === "sort" || type === "filter" || type === 'type') {
@@ -287,7 +291,7 @@
 		            "orderable": false,
 		            "searchable": false,
 		            "data": "",
-		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;</div>'
+		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>'
 
 		        }],
 		        "createdRow": function(row, data, dataIndex) {
@@ -307,7 +311,7 @@
 		    var filters = '<div class="pull-left">';
 		    filters += '<input id="nbm" type="checkbox" class="refreshTable"><label for="nbm">&nbsp;NBM</label>';
 		    filters += '<input id="extraLiquid" type="checkbox" class="refreshTable"><label for="extraLiquid">&nbsp;Extra Liquid</label>';
-		    filters += '<input id="startServiceImmediately" type="checkbox" class="refreshTable"><label for="startServiceImmediately">&nbsp;Start Service Immediately</label>'
+// 		    filters += '<input id="startServiceImmediately" type="checkbox" class="refreshTable"><label for="startServiceImmediately">&nbsp;Start Service Immediately</label>'
 		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
 		    filters += '</div>';
 		    $('#active-patients-table_filter').html(filters + $('#active-patients-table_filter').html());
@@ -352,6 +356,7 @@
 		        }, {
 		            "data": "bedString",
 		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "doctor",
@@ -375,10 +380,12 @@
 		        }, {
 		            "data": "medicalComorbiditiesString",
 		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "specialNotesByNursingString",
 		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false,
 		            "render": function(data, type, row) {
 		                if (type === "sort" || type === "filter" || type === 'type') {
@@ -388,6 +395,12 @@
 		                    return div;
 		                }
 		            }
+		        }, {
+		            "orderable": false,
+		            "searchable": false,
+		            "data": "",
+		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;</i>'
+
 		        }],
 		        'paging': true,
 		        'ordering': true,
@@ -410,6 +423,11 @@
 		        window.location = contextPath + "/diet/patient-details?patientId=" + data_row["patientId"];
 		    })
 
+		    $('#active-patients-table').on('click', 'tbody .fa-list-alt', function() {
+		        var data_row = activePatientsTable.row($(this).closest('tr')).data();
+		        window.location = contextPath + "/diet/diet-instruction?patientId=" + data_row["patientId"];
+		    })
+		    
 		    $("#Export-PDF").bind("click", function() {
 		        var activeTab = $(".customtab").find(".active").attr("href");
 		        var patientStatus = 0;

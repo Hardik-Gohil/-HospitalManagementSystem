@@ -5,7 +5,7 @@
 <!-- template --> 
 <script src="${contextPath}/resources/dist/js/adminkit.js"></script> 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
 <!-- Morris JavaScript --> 
 <%-- <script src="${contextPath}/resources/dist/plugins/raphael/raphael-min.js"></script>  --%>
 <%-- <script src="${contextPath}/resources/dist/plugins/morris/morris.js"></script>  --%>

@@ -39,6 +39,7 @@ public class CommonUtility {
 	private BedRepository bedRepository;
 	
 	public static String localDateTimeFormat= "MM/dd/yyyy hh:mm:ss a";
+	public static DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	public static DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormat);
 	
 	public User getCurrentUser() {

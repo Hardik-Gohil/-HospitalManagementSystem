@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -112,13 +113,13 @@ public class Patient {
 	@JoinColumn(name = "frequency_id")
 	private Frequency frequency;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<MedicalComorbidities> medicalComorbidities;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<Diagonosis> diagonosis;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY)
 	private List<SpecialNotesByNursing> specialNotesByNursing;
 	
 	private String othersSpecialNotesByNursing;
@@ -139,6 +140,10 @@ public class Patient {
 	@Getter(lombok.AccessLevel.NONE)
 	@Transient
 	private String medicalComorbiditiesString;
+	
+	@Getter(lombok.AccessLevel.NONE)
+	@Transient
+	private String diagonosisString;
 	
 	@Getter(lombok.AccessLevel.NONE)
 	@Transient
@@ -175,8 +180,16 @@ public class Patient {
 		this.setMedicalComorbiditiesString(
 				StringUtils.isEmpty(medicalComorbiditiesString) && CollectionUtils.isNotEmpty(medicalComorbidities)
 						? medicalComorbidities.stream().map(x -> String.valueOf(x.getValue())).collect(Collectors.joining(", "))
-						: medicalComorbiditiesIds);
+						: medicalComorbiditiesString);
 		return medicalComorbiditiesString;
+	}
+	
+	public String getDiagonosisString() {
+		this.setDiagonosisString(
+				StringUtils.isEmpty(diagonosisString) && CollectionUtils.isNotEmpty(diagonosis)
+						? diagonosis.stream().map(x -> String.valueOf(x.getValue())).collect(Collectors.joining(", "))
+						: diagonosisString);
+		return diagonosisString;
 	}
 
 	public String getSpecialNotesByNursingString() {

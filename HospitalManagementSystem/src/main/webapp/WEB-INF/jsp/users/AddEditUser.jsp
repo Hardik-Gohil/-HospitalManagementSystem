@@ -91,7 +91,7 @@
 										</fieldset>
 									</div>
 								</div>
-								<button type="submit" class="btn btn-success">Submit</button>
+								<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
 								<a href="${contextPath}/users">
 									<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
 								</a>                        

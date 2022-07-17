@@ -97,10 +97,11 @@ public class ExportServiceImpl implements ExportService {
 				String reportName = patientStatus == 0 ? "New Patient Details" : patientStatus == 1 ? "Active Patient Details" : "Discharged Patient Details";
 				Map<String, Object> parameters = new HashMap<String, Object>();
 				parameters.put("reportName", reportName);
+				parameters.put("localDateTimeFormatter", CommonUtility.localDateTimeFormatter);
 				parameters.put("printedOn", LocalDateTime.now().format(CommonUtility.localDateTimeFormatter));
 				parameters.put("tableData", new JRBeanCollectionDataSource(data));
 				
-				InputStream jasperInput = ExportServiceImpl.class.getResourceAsStream("/" + "jasper/"+ (patientStatus == 0 ? "NewPatientDetails" : patientStatus == 1 ? "ActivePatientDetails" : "DischargedPatientDetails") + ".jrxml");
+				InputStream jasperInput = ExportServiceImpl.class.getResourceAsStream("/" + "jasper/"+ (patientStatus == 0 ? "NewPatientDetails" : patientStatus == 1 ? "PatientDetails" : "PatientDetails") + ".jrxml");
 				JasperDesign jasperDesign = JRXmlLoader.load(jasperInput);
 				JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 				List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
@@ -121,7 +122,7 @@ public class ExportServiceImpl implements ExportService {
 					parameters.put(JRParameter.IS_IGNORE_PAGINATION, true);
 					SimpleXlsReportConfiguration xlsReportConfiguration = new SimpleXlsReportConfiguration();
                     xlsReportConfiguration.setOnePagePerSheet(true);
-                    xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(false);
+                    xlsReportConfiguration.setRemoveEmptySpaceBetweenRows(true);
 					
 					JRXlsExporter exporter = new JRXlsExporter();
 					exporter.setExporterInput(SimpleExporterInput.getInstance(jasperPrints));

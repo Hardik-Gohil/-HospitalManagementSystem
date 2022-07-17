@@ -99,6 +99,9 @@ public class PatientDto {
 	private String medicalComorbiditiesString;
 	
 	@Getter(lombok.AccessLevel.NONE)
+	private String diagonosisString;
+	
+	@Getter(lombok.AccessLevel.NONE)
 	private String specialNotesByNursingString;
 	
 	/**
