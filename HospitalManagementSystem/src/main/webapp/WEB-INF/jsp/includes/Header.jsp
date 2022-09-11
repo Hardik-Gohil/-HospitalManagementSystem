@@ -21,50 +21,51 @@
 			<ul class="nav navbar-nav">
 				<!-- Notifications  -->
 				<li class="dropdown messages-menu">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+<%-- 					<a href="${contextPath}/notifications" class="dropdown-toggle" data-toggle="dropdown"> --%>
+					<a href="${contextPath}/notifications">
 						<i class="fa fa-bell-o"></i>
-						<div class="notify"> <span class="heartbit"></span> <span class="point"></span> </div>
+						<div id="notifications-heartbit" class="notify" style="display: none;"> <span class="heartbit"></span> <span class="point"></span> </div>
 					</a>
-					<ul class="dropdown-menu">
-						<li class="header">Notifications</li>
-						<li>
-							<ul class="menu">
-								<li>
-									<a href="#">
-										<div class="pull-left icon-circle red"><i class="icon-lightbulb"></i></div>
-										<h4>Alex C. Patton</h4>
-										<p>I've finished it! See you so...</p>
-										<p><span class="time">9:30 AM</span></p>
-									</a>
-								</li>
-								<li>
-									<a href="#">
-										<div class="pull-left icon-circle blue"><i class="fa fa-coffee"></i></div>
-										<h4>Nikolaj S. Henriksen</h4>
-										<p>I've finished it! See you so...</p>
-										<p><span class="time">1:30 AM</span></p>
-									</a>
-								</li>
-								<li>
-									<a href="#">
-										<div class="pull-left icon-circle green"><i class="fa fa-paperclip"></i></div>
-										<h4>Kasper S. Jessen</h4>
-										<p>I've finished it! See you so...</p>
-										<p><span class="time">9:30 AM</span></p>
-									</a>
-								</li>
-								<li>
-									<a href="#">
-										<div class="pull-left icon-circle yellow"><i class="fa  fa-plane"></i></div>
-										<h4>Florence S. Kasper</h4>
-										<p>I've finished it! See you so...</p>
-										<p><span class="time">11:10 AM</span></p>
-									</a>
-								</li>
-							</ul>
-						</li>
-						<li class="footer"><a href="#">Check all Notifications</a></li>
-					</ul>
+<!-- 					<ul class="dropdown-menu"> -->
+<!-- 						<li class="header">Notifications</li> -->
+<!-- 						<li> -->
+<!-- 							<ul class="menu"> -->
+<!-- 								<li> -->
+<!-- 									<a href="#"> -->
+<!-- 										<div class="pull-left icon-circle red"><i class="icon-lightbulb"></i></div> -->
+<!-- 										<h4>Alex C. Patton</h4> -->
+<!-- 										<p>I've finished it! See you so...</p> -->
+<!-- 										<p><span class="time">9:30 AM</span></p> -->
+<!-- 									</a> -->
+<!-- 								</li> -->
+<!-- 								<li> -->
+<!-- 									<a href="#"> -->
+<!-- 										<div class="pull-left icon-circle blue"><i class="fa fa-coffee"></i></div> -->
+<!-- 										<h4>Nikolaj S. Henriksen</h4> -->
+<!-- 										<p>I've finished it! See you so...</p> -->
+<!-- 										<p><span class="time">1:30 AM</span></p> -->
+<!-- 									</a> -->
+<!-- 								</li> -->
+<!-- 								<li> -->
+<!-- 									<a href="#"> -->
+<!-- 										<div class="pull-left icon-circle green"><i class="fa fa-paperclip"></i></div> -->
+<!-- 										<h4>Kasper S. Jessen</h4> -->
+<!-- 										<p>I've finished it! See you so...</p> -->
+<!-- 										<p><span class="time">9:30 AM</span></p> -->
+<!-- 									</a> -->
+<!-- 								</li> -->
+<!-- 								<li> -->
+<!-- 									<a href="#"> -->
+<!-- 										<div class="pull-left icon-circle yellow"><i class="fa  fa-plane"></i></div> -->
+<!-- 										<h4>Florence S. Kasper</h4> -->
+<!-- 										<p>I've finished it! See you so...</p> -->
+<!-- 										<p><span class="time">11:10 AM</span></p> -->
+<!-- 									</a> -->
+<!-- 								</li> -->
+<!-- 							</ul> -->
+<!-- 						</li> -->
+<%-- 						<li class="footer"><a href="${contextPath}/notifications">Check all Notifications</a></li> --%>
+<!-- 					</ul> -->
 				</li>
 				<!-- User Account  -->
 				<li class="dropdown user user-menu p-ph-res">

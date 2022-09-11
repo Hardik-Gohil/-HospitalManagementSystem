@@ -1,5 +1,7 @@
 package com.HospitalManagementSystem.entity.master;
 
+import java.time.LocalTime;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,6 +25,8 @@ public class DietSubType {
 	private String value;
 
 	private Boolean isActive = Boolean.FALSE;
+	
+	private LocalTime fromTime;
 	
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "diet_type_oral_liquid_tf_id")

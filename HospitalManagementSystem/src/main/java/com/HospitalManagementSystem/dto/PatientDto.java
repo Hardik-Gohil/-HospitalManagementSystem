@@ -122,6 +122,8 @@ public class PatientDto {
 	private Long createdUserHistoryId;
 
 	private Long modifiedUserHistoryId;
+	
+	private Boolean immediateService = Boolean.FALSE;
 
 	public String getMedicalComorbiditiesIds() {
 		this.setMedicalComorbiditiesIds(StringUtils.isEmpty(medicalComorbiditiesIds) && CollectionUtils.isNotEmpty(medicalComorbidities)

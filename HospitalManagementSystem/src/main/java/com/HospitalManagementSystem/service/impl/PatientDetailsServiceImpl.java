@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.persistence.criteria.Predicate;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -18,7 +19,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.HospitalManagementSystem.HttpReqRespUtils;
 import com.HospitalManagementSystem.dto.DiagonosisDto;
 import com.HospitalManagementSystem.dto.MedicalComorbiditiesDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
@@ -27,6 +30,7 @@ import com.HospitalManagementSystem.dto.SpecialNotesByNursingDto;
 import com.HospitalManagementSystem.entity.Patient;
 import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.entity.history.PatientHistory;
+import com.HospitalManagementSystem.entity.master.Diagonosis;
 import com.HospitalManagementSystem.repository.BedRepository;
 import com.HospitalManagementSystem.repository.DiagonosisRepository;
 import com.HospitalManagementSystem.repository.DietSubTypeRepository;
@@ -39,8 +43,11 @@ import com.HospitalManagementSystem.repository.PatientHistoryRepository;
 import com.HospitalManagementSystem.repository.PatientRepository;
 import com.HospitalManagementSystem.repository.QuantityRepository;
 import com.HospitalManagementSystem.repository.SpecialNotesByNursingRepository;
+import com.HospitalManagementSystem.service.DietPlanService;
+import com.HospitalManagementSystem.service.NotificationsService;
 import com.HospitalManagementSystem.service.PatientDetailsService;
 import com.HospitalManagementSystem.utility.CommonUtility;
+import com.HospitalManagementSystem.utility.NotificationsUtility;
 
 @Service
 public class PatientDetailsServiceImpl implements PatientDetailsService {
@@ -74,33 +81,71 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	private ModelMapper modelMapper;
 	@Autowired
 	private CommonUtility commonUtility;
+	@Autowired
+	private NotificationsUtility notificationsUtility;
+	
+	@Autowired
+	private DietPlanService dietPlanService;
+	@Autowired
+	private NotificationsService notificationsService;
 	
 	@Override
-	public void save(Patient patient) {
-		if(ObjectUtils.isNotEmpty(patient.getBed()) && ObjectUtils.isEmpty(patient.getBed().getBedId())) {
-			patient.setBed(null);
-		}
-		if(ObjectUtils.isNotEmpty(patient.getDietTypeOralSolid()) && ObjectUtils.isEmpty(patient.getDietTypeOralSolid().getDietTypeOralSolidId())) {
-			patient.setDietTypeOralSolid(null);
-		}
-		if(ObjectUtils.isNotEmpty(patient.getDietTypeOralLiquidTF()) && ObjectUtils.isEmpty(patient.getDietTypeOralLiquidTF().getDietTypeOralLiquidTFId())) {
-			patient.setDietTypeOralLiquidTF(null);
-		}
-		if(ObjectUtils.isNotEmpty(patient.getDietSubType()) && ObjectUtils.isEmpty(patient.getDietSubType().getDietSubTypeId())) {
-			patient.setDietSubType(null);
-		}
-		if(ObjectUtils.isNotEmpty(patient.getQuantity()) && ObjectUtils.isEmpty(patient.getQuantity().getQuantityId())) {
-			patient.setQuantity(null);
-		}
-		if(ObjectUtils.isNotEmpty(patient.getFrequency()) && ObjectUtils.isEmpty(patient.getFrequency().getFrequencyId())) {
-			patient.setFrequency(null);
-		}
+	public Patient save(Patient patient) {
+		fillPatientData(patient);
+		patient.setIpAddress(HttpReqRespUtils.getClientIpAddressIfServletRequestExist());
 		patient = patientRepository.save(patient);
 		PatientHistory patientHistory = modelMapper.map(patient, PatientHistory.class);
 		patientHistory.setHistoryCreatedOn(patient.getModifiedOn());
 		patientHistory.setHistoryCreatedBy(patient.getModifiedBy());
 		patientHistory = patientHistoryRepository.save(patientHistory);
+		return patient;
 	}
+	
+	private Patient fillPatientData(Patient patient) {
+		if(ObjectUtils.isEmpty(patient.getBed()) || (ObjectUtils.isNotEmpty(patient.getBed()) && ObjectUtils.isEmpty(patient.getBed().getBedId()))) {
+			patient.setBed(null);
+		} else {
+			patient.setBed(bedRepository.findById(patient.getBed().getBedId()).get());
+		}
+		
+		if(ObjectUtils.isEmpty(patient.getDietTypeOralSolid()) || (ObjectUtils.isNotEmpty(patient.getDietTypeOralSolid()) && ObjectUtils.isEmpty(patient.getDietTypeOralSolid().getDietTypeOralSolidId()))) {
+			patient.setDietTypeOralSolid(null);
+		} else {
+			patient.setDietTypeOralSolid(dietTypeOralSolidRepository.findById(patient.getDietTypeOralSolid().getDietTypeOralSolidId()).get());
+		}
+		
+		if(ObjectUtils.isEmpty(patient.getDietTypeOralLiquidTF()) || (ObjectUtils.isNotEmpty(patient.getDietTypeOralLiquidTF()) && ObjectUtils.isEmpty(patient.getDietTypeOralLiquidTF().getDietTypeOralLiquidTFId()))) {
+			patient.setDietTypeOralLiquidTF(null);
+		} else {
+			patient.setDietTypeOralLiquidTF(dietTypeOralLiquidTFRepository.findById(patient.getDietTypeOralLiquidTF().getDietTypeOralLiquidTFId()).get());
+		}
+		
+		if(ObjectUtils.isEmpty(patient.getDietSubType()) || (ObjectUtils.isNotEmpty(patient.getDietSubType()) && ObjectUtils.isEmpty(patient.getDietSubType().getDietSubTypeId()))) {
+			patient.setDietSubType(null);
+		} else {
+			patient.setDietSubType(dietSubTypeRepository.findById(patient.getDietSubType().getDietSubTypeId()).get());
+		}
+		
+		if(ObjectUtils.isEmpty(patient.getQuantity()) || (ObjectUtils.isNotEmpty(patient.getQuantity()) && ObjectUtils.isEmpty(patient.getQuantity().getQuantityId()))) {
+			patient.setQuantity(null);
+		} else {
+			patient.setQuantity(quantityRepository.findById(patient.getQuantity().getQuantityId()).get());
+		}
+		
+		if (ObjectUtils.isEmpty(patient.getFrequency()) || (ObjectUtils.isNotEmpty(patient.getFrequency()) && ObjectUtils.isEmpty(patient.getFrequency().getFrequencyId()))) {
+			patient.setFrequency(null);
+		} else {
+			patient.setFrequency(frequencyRepository.findById(patient.getFrequency().getFrequencyId()).get());
+		}
+
+		if (CollectionUtils.isEmpty(patient.getMedicalComorbidities())) {
+			patient.setMedicalComorbidities(null);
+		} else {
+			patient.setMedicalComorbidities(medicalComorbiditiesRepository.findAllById(patient.getMedicalComorbidities().stream().map(medicalComorbidities -> medicalComorbidities.getMedicalComorbiditiesId()).toList()));
+		}
+		return patient;
+	}
+	
 	
 	@Override
 	public String getPatientDetails(Long patientId, Model model) {
@@ -115,6 +160,10 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 		} else {
 			model.addAttribute("patientDto", new PatientDto());
 		}
+		List<Diagonosis> diagonosisList = diagonosisRepository.findAllByIsActive(Boolean.TRUE);
+		Diagonosis otherDiagonosis = diagonosisList.get(0);
+		diagonosisList.remove(0);	
+		diagonosisList.add(otherDiagonosis);	
 		model.addAttribute("localDateTimeFormatter", CommonUtility.localDateTimeFormatter);
 		model.addAttribute("bedList", bedRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("dietTypeOralSolidList", dietTypeOralSolidRepository.findAllByIsActive(Boolean.TRUE));
@@ -123,20 +172,38 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 		model.addAttribute("quantityList", quantityRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("frequencyList", frequencyRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("medicalComorbiditiesList", medicalComorbiditiesRepository.findAllByIsActive(Boolean.TRUE));
-		model.addAttribute("diagonosisList", diagonosisRepository.findAllByIsActive(Boolean.TRUE));
+		model.addAttribute("diagonosisList", diagonosisList);
 		model.addAttribute("specialNotesByNursingList", specialNotesByNursingRepository.findAllByIsActive(Boolean.TRUE));
 		return "diet/PatientDetails";
 	}
 
 	@Override
-	public String savePatientDetails(PatientDto patientDto) {
-		LocalDateTime now = LocalDateTime.now();
-		User currentUser = commonUtility.getCurrentUser();
+	public String savePatientDetails(RedirectAttributes redir, PatientDto patientDto) {
+		boolean isValid = true;
 		Optional<Patient> patient = Optional.empty();
 		if (ObjectUtils.isNotEmpty(patientDto.getPatientId()) && patientDto.getPatientId() > 0) {
 			patient = patientRepository.findById(patientDto.getPatientId());
 		}		
+		if (patient.isPresent() && patient.get().getPatientStatus() == 2) {
+			isValid = false;
+			redir.addFlashAttribute("errorMsg", "Patien has been discharged");
+		}
+		if (isValid && !"true".equalsIgnoreCase(checkUniqueIpNumber(patientDto.getIpNumber(), patientDto.getPatientId()))) {
+			isValid = false;
+			redir.addFlashAttribute("errorMsg", "IP number already in use");
+		}
 		
+		if (!isValid) {
+			return "redirect:/diet/patients";
+		}
+		boolean sendAddPatient = false;
+		String updatedFields = "";
+		boolean extraLiquidChange = false;
+		boolean dietTypeOralSolidChange = false;
+		boolean dietSubTypeChange = false;
+		boolean frequencyChange = false;
+		LocalDateTime now = LocalDateTime.now();
+		User currentUser = commonUtility.getCurrentUser();
 		if(StringUtils.isNotEmpty(patientDto.getMedicalComorbiditiesIds())) {
 			List<MedicalComorbiditiesDto> medicalComorbidities = new ArrayList<>();
 			String[] ids = patientDto.getMedicalComorbiditiesIds().split(",");
@@ -169,7 +236,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 			}
 			patientDto.setSpecialNotesByNursing(specialNotesByNursing);
 		}
-		
+		boolean updateDiet = false;
 		Patient savePatient = modelMapper.map(patientDto, Patient.class);
 		savePatient.setPatientStatus(1);
 		if (patient.isPresent()) {
@@ -198,13 +265,39 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 			savePatient.setCreatedUserHistoryId(patientEntity.getCreatedUserHistoryId());
 			savePatient.setModifiedUserHistoryId(currentUser.getCurrenUserHistoryId());
 			
+			extraLiquidChange = patientEntity.getExtraLiquid() != patientDto.getExtraLiquid();
+			dietTypeOralSolidChange = !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getDietTypeOralSolid()) && ObjectUtils.isNotEmpty(patientEntity.getDietTypeOralSolid().getDietTypeOralSolidId()) ? patientEntity.getDietTypeOralSolid().getDietTypeOralSolidId() : 0l,
+					ObjectUtils.isNotEmpty(patientDto.getDietTypeOralSolid()) && ObjectUtils.isNotEmpty(patientDto.getDietTypeOralSolid().getDietTypeOralSolidId()) ? patientDto.getDietTypeOralSolid().getDietTypeOralSolidId() : 0l);
+			dietSubTypeChange = !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getDietSubType()) && ObjectUtils.isNotEmpty(patientEntity.getDietSubType().getDietSubTypeId()) ? patientEntity.getDietSubType().getDietSubTypeId() : 0l,
+					ObjectUtils.isNotEmpty(patientDto.getDietSubType()) && ObjectUtils.isNotEmpty(patientDto.getDietSubType().getDietSubTypeId()) ? patientDto.getDietSubType().getDietSubTypeId() : 0l);
+			frequencyChange = !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getFrequency()) && ObjectUtils.isNotEmpty(patientEntity.getFrequency().getFrequencyId()) ? patientEntity.getFrequency().getFrequencyId() : 0l,
+					ObjectUtils.isNotEmpty(patientDto.getFrequency()) && ObjectUtils.isNotEmpty(patientDto.getFrequency().getFrequencyId()) ? patientDto.getFrequency().getFrequencyId() : 0l);
+			
+			if (extraLiquidChange || dietTypeOralSolidChange || dietSubTypeChange || frequencyChange) {
+				updateDiet = true;
+			}
+			
+			updatedFields = notificationsUtility.getUpdatedFields(fillPatientData(patientEntity), fillPatientData(savePatient), extraLiquidChange, dietTypeOralSolidChange, dietSubTypeChange, frequencyChange);
+			
 			if (!StringUtils.equals(patientEntity.getMedicalComorbiditiesIds(), patientDto.getMedicalComorbiditiesIds())
 					|| !StringUtils.equals(patientEntity.getDiagonosisIds(), patientDto.getDiagonosisIds())
-					|| !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getDietTypeOralSolid()) ? patientEntity.getDietTypeOralSolid().getDietTypeOralSolidId() : 0l, patientDto.getDietTypeOralSolid().getDietTypeOralSolidId())
-					|| !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getDietTypeOralLiquidTF()) ? patientEntity.getDietTypeOralLiquidTF().getDietTypeOralLiquidTFId() : 0l, patientDto.getDietTypeOralLiquidTF().getDietTypeOralLiquidTFId())) {
+					|| !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getDietTypeOralSolid()) && ObjectUtils.isNotEmpty(patientEntity.getDietTypeOralSolid().getDietTypeOralSolidId()) ? patientEntity.getDietTypeOralSolid().getDietTypeOralSolidId() : 0l,
+							ObjectUtils.isNotEmpty(patientDto.getDietTypeOralSolid()) && ObjectUtils.isNotEmpty(patientDto.getDietTypeOralSolid().getDietTypeOralSolidId()) ? patientDto.getDietTypeOralSolid().getDietTypeOralSolidId() : 0l)
+					|| !Objects.equals(ObjectUtils.isNotEmpty(patientEntity.getDietSubType()) && ObjectUtils.isNotEmpty(patientEntity.getDietSubType().getDietSubTypeId()) ? patientEntity.getDietSubType().getDietSubTypeId() : 0l,
+							ObjectUtils.isNotEmpty(patientDto.getDietSubType()) && ObjectUtils.isNotEmpty(patientDto.getDietSubType().getDietSubTypeId()) ? patientDto.getDietSubType().getDietSubTypeId() : 0l)) {
 				savePatient.setShowUpdated(true);
 			}
+			
+			if (patientEntity.getPatientStatus() == 0) {
+				sendAddPatient = true;
+			}
+			
 		} else {
+			sendAddPatient = true;
+			updateDiet = true;
+			
+			savePatient.setAdmittedDate(patientDto.getAdmittedDate());
+			
 			savePatient.setCreatedOn(now);
 			savePatient.setCreatedBy(currentUser.getUserId());
 			savePatient.setModifiedOn(now);
@@ -212,8 +305,20 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 			savePatient.setCreatedUserHistoryId(currentUser.getCurrenUserHistoryId());
 			savePatient.setModifiedUserHistoryId(currentUser.getCurrenUserHistoryId());
 		}
-		save(savePatient);
-		return "redirect:/diet/patients";
+		savePatient = save(savePatient);
+		if (updateDiet) {
+			dietPlanService.prepareDietPlan(List.of(savePatient), currentUser, false);
+		}
+		
+		if (sendAddPatient) {
+			notificationsService.sendAddPatient(savePatient.getPatientId());
+		} else if (StringUtils.isNoneEmpty(updatedFields)) {
+			notificationsService.sendUpdatePatient(savePatient.getPatientId(), updatedFields);
+		}
+		String redirectUrl = patientDto.getImmediateService()
+				? "adhoc-order?immediateService=TRUE&patientId=" + savePatient.getPatientId()
+				: "patients";
+		return "redirect:/diet/" + redirectUrl;
 	}
 	
 	@Override
@@ -287,7 +392,8 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 				savePatient.setModifiedOn(now);
 				savePatient.setModifiedBy(0l);
 				savePatient.setModifiedUserHistoryId(0l);
-				save(savePatient);
+				savePatient = save(savePatient);
+				notificationsService.sendPatientTransferred(savePatient.getPatientId(), patientDto.getBed().getBedId());
 				return ResponseEntity.ok().body("{\"status\":\"sucess\"}");
 			} 
 		} catch (Exception e) {
@@ -315,7 +421,9 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 				savePatient.setModifiedOn(now);
 				savePatient.setModifiedBy(0l);
 				savePatient.setModifiedUserHistoryId(0l);
-				save(savePatient);
+				savePatient = save(savePatient);
+				dietPlanService.prepareDietPlan(List.of(savePatient), null, false);
+				notificationsService.sendPatientDischarge(savePatient.getPatientId());
 				return ResponseEntity.ok().body("{\"status\":\"sucess\"}");
 			} 
 		} catch (Exception e) {
@@ -357,9 +465,13 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 
 	@Override
 	public String checkUniqueIpNumber(String ipNumber, Long patientId) {
-		Patient patient = patientRepository.findByIpNumber(ipNumber);
-		if (ObjectUtils.isEmpty(patient) || patient.getPatientId() == patientId) {
-			return "true";
+		try {
+			Patient patient = patientRepository.findByIpNumber(ipNumber);
+			if (ObjectUtils.isEmpty(patient) || patient.getPatientId() == patientId) {
+				return "true";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return "false";
 	}

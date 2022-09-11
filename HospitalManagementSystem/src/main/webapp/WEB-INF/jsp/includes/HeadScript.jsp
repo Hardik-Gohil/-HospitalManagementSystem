@@ -20,6 +20,7 @@
 <!-- Theme style -->
 <link rel="stylesheet" href="${contextPath}/resources/dist/css/style.css">
 <link rel="stylesheet" href="${contextPath}/resources/dist/css/font-awesome/css/font-awesome.min.css">
+<link rel="stylesheet" href="${contextPath}/resources/dist/plugins/fontawesome-free-6.1.1-web/css/all.min.css">
 <link rel="stylesheet" href="${contextPath}/resources/dist/css/et-line-font/et-line-font.css">
 <link rel="stylesheet" href="${contextPath}/resources/dist/css/themify-icons/themify-icons.css">
 <link rel="stylesheet" href="${contextPath}/resources/dist/css/simple-lineicon/simple-line-icons.css">
@@ -39,4 +40,10 @@
 </style>
 <script type="text/javascript">
 	var contextPath = '<c:out value="${contextPath}"/>';
+	var	dietTypeSolid = ['1', '2', '3', '4', '5', '6', '7', '8'];
+	var	dietTypeLiquidOralTF = ['9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27'] ;
+	var alphanumericWithSpeChar = new RegExp('^[a-zA-Z0-9.,\-\/"& ]*$');
+	var allowsChars = '.,-/"&'
+	var setIntervalTime = 1000 * 60 * 3;
+	
 </script>

@@ -37,173 +37,8 @@
 				<div class="content">
 					<div class="card">
 						<div class="card-body">
-							<div class="row">
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Patient Name</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.patientName}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">UMR No</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.umrNumber}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">IP number</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.ipNumber}</td>
-										</tr>	
-									</table>
-								</div>																
-							</div>
-							<div class="row">
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Admission Date</td>
-											<td width="2%">:</td>
-											<td width="70%">${not empty patient.admittedDate ? patient.admittedDate.format(localDateTimeFormatter) : ''}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Doctor Name</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.doctor}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-								</div>								
-							</div>	
-							<div class="row">
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Bed Cd</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.bed.bedCode}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Floor / Ward Name</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.bed.floor.floorName} / ${patient.bed.wardName}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">NBM</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.nbm ? 'Yes' : 'No'}</td>
-										</tr>	
-									</table>
-								</div>																
-							</div>	
-							<div class="row" ${patient.nbm ? 'style="display: none;"' : ''}>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Diet Type- Oral Solid</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.dietTypeOralSolid.value}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Extra Liquid</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.extraLiquid ? 'Yes' : 'No'}</td>
-										</tr>	
-									</table>
-								</div>								
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Diet Type- Oral Liquid/TF</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.dietTypeOralLiquidTF.value}</td>
-										</tr>	
-									</table>
-								</div>															
-							</div>		
-							<div class="row" ${patient.nbm or empty patient.dietTypeOralLiquidTF? 'style="display: none;"' : ''}>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Diet Sub Type</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.dietSubType.value}</td>
-										</tr>	
-									</table>
-								</div>	
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Quantity</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.quantity.valueStr}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Frequency</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.frequency.valueStr}</td>
-										</tr>	
-									</table>
-								</div>																
-							</div>							
-							<div class="row">
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Medical Co-morbidities</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.medicalComorbiditiesString}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Diagonosis</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.diagonosisString}</td>
-										</tr>	
-									</table>
-								</div>
-								<div class="col-sm-4">
-									<table class="table-sm">
-										<tr>
-											<td width="28%">Special Notes By Nursing</td>
-											<td width="2%">:</td>
-											<td width="70%">${patient.specialNotesByNursingString}</td>
-										</tr>	
-									</table>
-								</div>																
-							</div>
+							<%@include file="IncludePatientDetails.jsp"%>
+							<Br>
 							<form:form method="POST" action="${contextPath}/diet/diet-instruction" modelAttribute="dietInstructionDto" onsubmit="return Validation();" id="dietInstructionForm">
 								<form:hidden path="dietInstructionId" id="dietInstructionId"/>
 								<form:hidden path="patient.patientId" id="patientId"/>
@@ -219,7 +54,7 @@
 									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="medicalComorbidities">Service Type</label><span class="text-danger">*</span>
-											<select class="form-control selectpicker" id="serviceMasters" name="serviceMasterIds" multiple data-live-search="true" data-size="10" onchange="serviceMastersChange();">
+											<select class="form-control selectpicker" id="serviceMasters" name="serviceMasterIds" multiple data-live-search="true" data-size="10" onchange="serviceMastersChange();" title="Please select" data-actions-box="true">
 												<c:forEach items="${serviceMasterList}" var="serviceMasters">
 													<option value="${serviceMasters.serviceMasterId}">${serviceMasters.service}</option>
 												</c:forEach>
@@ -242,10 +77,12 @@
 										</fieldset>
 									</div>
 								</div>
-								<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
-								<a href="${contextPath}/diet/diet-instruction?patientId=${dietInstructionDto.patient.patientId}">
-									<button type="button" class="btn btn-inverse waves-effect waves-light">Clear</button>
-								</a>
+								<c:if test="${patient.patientStatus ne 2}">
+									<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+									<a href="${contextPath}/diet/diet-instruction?patientId=${dietInstructionDto.patient.patientId}">
+										<button type="button" class="btn btn-inverse waves-effect waves-light">Clear</button>
+									</a>
+								</c:if>
 								<a href="${contextPath}/diet/patients">
 									<button type="button" class="btn btn-primary waves-effect waves-light">Go To Patients</button>
 								</a>								
@@ -291,10 +128,10 @@
         <!-- SweetAlert2 -->
         <script src="${contextPath}/resources/dist/plugins/sweetalert2/sweetalert2.min.js"></script>			
 		<script type="text/javascript">
-		jQuery.validator.addMethod("alphanumericWithSpace", function(value, element) {
+		jQuery.validator.addMethod("alphanumericWithSpeCharValidator", function(value, element) {
 		    $(element).val((this.elementValue(element).replace(/\s+/g, ' ')));
 		    this.value = $(element).val();
-		    if (/^[a-zA-Z0-9 ]*$/.test(value)) {
+		    if (alphanumericWithSpeChar.test(value)) {
 		        return true;
 		    } else {
 		        return false;
@@ -389,7 +226,7 @@
 		                required: true,
 		                minlength: 2,
 		                maxlength: 150,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            serviceMasterIds: {
 		                required: true
@@ -419,7 +256,7 @@
 		                required: "Please enter Diet Instruction",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            serviceMasterIds: {
 		                required: "Please Select Service Type"
@@ -468,7 +305,7 @@
         			"orderable": false,
         			"searchable": false,
         			"data": "",
-        			"defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i></div>'
+        			"defaultContent": ${patient.patientStatus ne 2} ? '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i>' : ''
 
         		}],
 		        "createdRow": function(row, data, dataIndex) {

@@ -7,8 +7,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.Data;
+import lombok.Getter;
 
 @Entity
 @Table(name = "bed")
@@ -30,4 +35,15 @@ public class Bed {
 	private Floor floor;
 	
 	private Boolean isActive = Boolean.FALSE;
+	
+	@Getter(lombok.AccessLevel.NONE)
+	@Transient
+	private String bedString;
+	
+	public String getBedString() {
+		this.setBedString(StringUtils.stripToEmpty(getWardName()) + "/"
+				+ StringUtils.stripToEmpty(ObjectUtils.isNotEmpty(getFloor()) ? (getFloor().getFloorName() + "/") : "")
+				+ StringUtils.stripToEmpty(getBedCode()));
+		return bedString;
+	}
 }

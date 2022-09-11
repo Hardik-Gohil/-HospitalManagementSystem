@@ -169,6 +169,7 @@ public class PatientHistory {
 
 	private Long historyCreatedBy;
 	
+	private String ipAddress;
 	
 	public String getBedString() {
 		this.setBedString(StringUtils.stripToEmpty(bed.getWardName()) + "/"

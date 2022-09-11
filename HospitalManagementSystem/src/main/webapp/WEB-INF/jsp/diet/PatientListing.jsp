@@ -36,6 +36,14 @@
 				<!-- Main content -->
 				<div class="content">
 					<div class="card">
+						<c:if test="${not empty errorMsg}">					
+							<div class="alert alert-danger alert-dismissible fade show" role="alert">
+								${errorMsg}
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+									<span aria-hidden="true">×</span>
+								</button>
+							</div>
+						</c:if>					
 						<div class="card-body">
 							<!-- Nav tabs -->
 							<ul class="nav nav-tabs customtab" role="tablist">
@@ -95,10 +103,7 @@
 														<th>Admission Date</th>
 														<th>Ward/Floor/Bed Cd</th>
 														<th>Doctor Name</th>
-														<th>Diet Type Solid</th>
-														<th>Diet Type Liquid</th>
-														<th>Frequency</th>
-														<th>Quantity</th>
+														<th>Diet Type Solid/Liquid orally/TF/Quantity/Frequency</th>
 														<th>Co-morbities</th>
 														<th>Special Notes by Nurising</th>
 														<th>Action</th>
@@ -121,10 +126,7 @@
 														<th>Discharge Date</th>
 														<th>Ward/Floor/Bed Cd</th>
 														<th>Doctor Name</th>
-														<th>Diet Type Solid</th>
-														<th>Diet Type Liquid</th>
-														<th>Frequency</th>
-														<th>Quantity</th>
+														<th>Diet Type Solid/Liquid orally/TF/Quantity/Frequency</th>
 														<th>Co-morbities</th>
 														<th>Special Notes by Nurising</th>
 														<th>Action</th>
@@ -195,7 +197,7 @@
 		            "orderable": false,
 		            "searchable": false,
 		            "data": "",
-		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;</div>'
+		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>'
 
 		        }],
 		        'paging': true,
@@ -254,20 +256,9 @@
 		            "data": "doctor",
 		            "defaultContent": "-"
 		        }, {
-		            "data": "dietTypeOralSolid.value",
+		            "data": "dietTypeSolidLiquidQuantityFrequencyString",
 		            "defaultContent": "-",
-		            "searchable": false
-		        }, {
-		            "data": "dietTypeOralLiquidTF.value",
-		            "defaultContent": "-",
-		            "searchable": false
-		        }, {
-		            "data": "frequency.valueStr",
-		            "defaultContent": "-",
-		            "searchable": false
-		        }, {
-		            "data": "quantity.valueStr",
-		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "medicalComorbiditiesString",
@@ -283,7 +274,14 @@
 		                if (type === "sort" || type === "filter" || type === 'type') {
 		                    return (data);
 		                } else {
-		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data + '</a>';
+		                    if (data) {
+		                    	if (data.length > 50) {
+		                    		aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    	}
+		                    } else {
+		                    	aTag = "-";
+		                    }
 		                    return aTag;
 		                }
 		            }
@@ -291,7 +289,7 @@
 		            "orderable": false,
 		            "searchable": false,
 		            "data": "",
-		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>'
+		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>&nbsp;&nbsp;<i class="fa fa-cart-plus fa-lg" title="AdHoc Order"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>'
 
 		        }],
 		        "createdRow": function(row, data, dataIndex) {
@@ -351,8 +349,7 @@
 		            "defaultContent": "-"
 		        }, {
 		            "data": "dischargedTime",
-		            "defaultContent": "-",
-		            "searchable": false
+		            "defaultContent": "-"
 		        }, {
 		            "data": "bedString",
 		            "defaultContent": "-",
@@ -362,20 +359,9 @@
 		            "data": "doctor",
 		            "defaultContent": "-"
 		        }, {
-		            "data": "dietTypeOralSolid.value",
+		            "data": "dietTypeSolidLiquidQuantityFrequencyString",
 		            "defaultContent": "-",
-		            "searchable": false
-		        }, {
-		            "data": "dietTypeOralLiquidTF.value",
-		            "defaultContent": "-",
-		            "searchable": false
-		        }, {
-		            "data": "frequency.valueStr",
-		            "defaultContent": "-",
-		            "searchable": false
-		        }, {
-		            "data": "quantity.valueStr",
-		            "defaultContent": "-",
+		            "orderable": false,
 		            "searchable": false
 		        }, {
 		            "data": "medicalComorbiditiesString",
@@ -391,15 +377,22 @@
 		                if (type === "sort" || type === "filter" || type === 'type') {
 		                    return (data);
 		                } else {
-		                    var div = '<div data-title="' + data + '"> ' + data.substring(0, 50) + '..</div>';
-		                    return div;
+		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data + '</a>';
+		                    if (data) {
+		                    	if (data.length > 50) {
+		                    		aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    	}
+		                    } else {
+		                    	aTag = "-";
+		                    }
+		                    return aTag;
 		                }
 		            }
 		        }, {
 		            "orderable": false,
 		            "searchable": false,
 		            "data": "",
-		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;</i>'
+		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>&nbsp;&nbsp;<i class="fa fa-cart-plus fa-lg" title="AdHoc Order"></i>'
 
 		        }],
 		        'paging': true,
@@ -427,6 +420,31 @@
 		        var data_row = activePatientsTable.row($(this).closest('tr')).data();
 		        window.location = contextPath + "/diet/diet-instruction?patientId=" + data_row["patientId"];
 		    })
+		    
+		    $('#active-patients-table').on('click', 'tbody .fa-cart-plus', function() {
+		        var data_row = activePatientsTable.row($(this).closest('tr')).data();
+		        window.location = contextPath + "/diet/adhoc-order?patientId=" + data_row["patientId"];
+		    })
+		    
+		    $('#active-patients-table').on('click', 'tbody .fa-tags', function() {
+		        var data_row = activePatientsTable.row($(this).closest('tr')).data();
+		        window.location = contextPath + "/diet/stickers?patientId=" + data_row["patientId"];
+		    })
+		    
+		    $('#discharged-patients-table').on('click', 'tbody .fa-edit', function() {
+		        var data_row = dischargedPatientsTable.row($(this).closest('tr')).data();
+		        window.location = contextPath + "/diet/patient-details?patientId=" + data_row["patientId"];
+		    })
+
+		    $('#discharged-patients-table').on('click', 'tbody .fa-list-alt', function() {
+		        var data_row = dischargedPatientsTable.row($(this).closest('tr')).data();
+		        window.location = contextPath + "/diet/diet-instruction?patientId=" + data_row["patientId"];
+		    })
+		    
+		    $('#discharged-patients-table').on('click', 'tbody .fa-cart-plus', function() {
+		        var data_row = dischargedPatientsTable.row($(this).closest('tr')).data();
+		        window.location = contextPath + "/diet/adhoc-order?patientId=" + data_row["patientId"];
+		    })		    
 		    
 		    $("#Export-PDF").bind("click", function() {
 		        var activeTab = $(".customtab").find(".active").attr("href");
@@ -487,6 +505,13 @@
 		        }
 		        window.location = contextPath + "/diet/export/excel/patient-details?patientStatus=" + patientStatus + "&searchText=" + searchText + "&orderColumn=" + orderColumn + "&direction=" + direction;
 		    });
+		    
+		    function refreshPatientsTable() {
+		    	newPatientsTable.ajax.reload();
+		    	activePatientsTable.ajax.reload();
+		    	dischargedPatientsTable.ajax.reload();
+		    }
+		    window.setInterval(refreshPatientsTable, setIntervalTime); 
 		});
 		</script>  
 	</body>

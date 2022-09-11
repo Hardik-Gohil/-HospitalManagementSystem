@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.HospitalManagementSystem.dto.DietInstructionDto;
 import com.HospitalManagementSystem.dto.PatientDto;
@@ -29,6 +30,8 @@ import com.HospitalManagementSystem.repository.DietInstructionRepository;
 import com.HospitalManagementSystem.repository.PatientRepository;
 import com.HospitalManagementSystem.repository.ServiceMasterRepository;
 import com.HospitalManagementSystem.service.DietInstructionService;
+import com.HospitalManagementSystem.service.DietPlanService;
+import com.HospitalManagementSystem.service.NotificationsService;
 import com.HospitalManagementSystem.utility.CommonUtility;
 import com.HospitalManagementSystem.utility.DietUtility;
 
@@ -48,32 +51,23 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 	private CommonUtility commonUtility;
 	@Autowired
 	private DietUtility dietUtility;
+	
+	@Autowired
+	private DietPlanService dietPlanService;
+	@Autowired
+	private NotificationsService notificationsService;
 
 	@Override
-	public void save(DietInstruction dietInstruction) {
-//		if(ObjectUtils.isNotEmpty(patient.getBed()) && ObjectUtils.isEmpty(patient.getBed().getBedId())) {
-//			patient.setBed(null);
-//		}
-//		if(ObjectUtils.isNotEmpty(patient.getDietTypeOralSolid()) && ObjectUtils.isEmpty(patient.getDietTypeOralSolid().getDietTypeOralSolidId())) {
-//			patient.setDietTypeOralSolid(null);
-//		}
-//		if(ObjectUtils.isNotEmpty(patient.getDietTypeOralLiquidTF()) && ObjectUtils.isEmpty(patient.getDietTypeOralLiquidTF().getDietTypeOralLiquidTFId())) {
-//			patient.setDietTypeOralLiquidTF(null);
-//		}
-//		if(ObjectUtils.isNotEmpty(patient.getDietSubType()) && ObjectUtils.isEmpty(patient.getDietSubType().getDietSubTypeId())) {
-//			patient.setDietSubType(null);
-//		}
-//		if(ObjectUtils.isNotEmpty(patient.getQuantity()) && ObjectUtils.isEmpty(patient.getQuantity().getQuantityId())) {
-//			patient.setQuantity(null);
-//		}
-//		if(ObjectUtils.isNotEmpty(patient.getFrequency()) && ObjectUtils.isEmpty(patient.getFrequency().getFrequencyId())) {
-//			patient.setFrequency(null);
-//		}
+	public DietInstruction save(DietInstruction dietInstruction) {
+		if (CollectionUtils.isNotEmpty(dietInstruction.getServiceMasters())) {
+			dietInstruction.setServiceMasters(serviceMasterRepository.findAllById(dietInstruction.getServiceMasters().stream().map(serviceMasters -> serviceMasters.getServiceMasterId()).toList()));
+		}
 		dietInstruction = dietInstructionRepository.save(dietInstruction);
 //		PatientHistory patientHistory = modelMapper.map(patient, PatientHistory.class);
 //		patientHistory.setHistoryCreatedOn(patient.getModifiedOn());
 //		patientHistory.setHistoryCreatedBy(patient.getModifiedBy());
 //		patientHistory = patientHistoryRepository.save(patientHistory);
+		return dietInstruction;
 	}
 	
 	@Override
@@ -129,10 +123,18 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 
 	
 	@Override
-	public String saveDietInstruction(DietInstructionDto dietInstructionDto) {
+	public String saveDietInstruction(RedirectAttributes redir, DietInstructionDto dietInstructionDto) {
+		boolean isValid = true;
+		Patient patient = patientRepository.findById(dietInstructionDto.getPatient().getPatientId()).get();
+		if (patient.getPatientStatus() == 2) {
+			isValid = false;
+			redir.addFlashAttribute("errorMsg", "Patien has been discharged");
+		}
+		if (!isValid) {
+			return "redirect:/diet/patients";
+		}		
 		LocalDateTime now = LocalDateTime.now();
 		User currentUser = commonUtility.getCurrentUser();
-		Patient patient = patientRepository.findById(dietInstructionDto.getPatient().getPatientId()).get();
 		Optional<DietInstruction> dietInstruction = Optional.empty();
 		if (ObjectUtils.isNotEmpty(dietInstructionDto.getDietInstructionId()) && dietInstructionDto.getDietInstructionId() > 0) {
 			dietInstruction = dietInstructionRepository.findById(dietInstructionDto.getDietInstructionId());
@@ -174,10 +176,13 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 			saveDietInstruction.setCreatedUserHistoryId(currentUser.getCurrenUserHistoryId());
 			saveDietInstruction.setModifiedUserHistoryId(currentUser.getCurrenUserHistoryId());
 		}
+		saveDietInstruction.setPatient(patient);
 		saveDietInstruction.setDietTypeOralSolid(patient.getDietTypeOralSolid());
 		saveDietInstruction.setDietSubType(patient.getDietSubType());
 		saveDietInstruction.setExtraLiquid(patient.getExtraLiquid());
-		save(saveDietInstruction);
+		saveDietInstruction = save(saveDietInstruction);
+		dietPlanService.prepareDietPlan(List.of(patient), currentUser, false);
+		notificationsService.sendDietInstruction(saveDietInstruction);
 		return "redirect:/diet/diet-instruction?patientId=" + dietInstructionDto.getPatient().getPatientId();
 	}
 	
@@ -190,6 +195,7 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 	public String deleteDietInstruction(Long dietInstructionId) {
 		Optional<DietInstruction> dietInstruction = dietInstructionRepository.findById(dietInstructionId);
 		Long patientId = dietInstruction.get().getPatient().getPatientId();
+		dietInstructionRepository.deleteDietInstructionFromDietPlan(dietInstructionId);
 		dietInstructionRepository.deleteById(dietInstructionId);
 		return "redirect:/diet/diet-instruction?patientId=" + patientId;
 	}

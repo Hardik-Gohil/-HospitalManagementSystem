@@ -12,12 +12,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.HospitalManagementSystem.entity.master.Bed;
@@ -149,6 +149,13 @@ public class Patient {
 	@Transient
 	private String specialNotesByNursingString;
 	
+	@Getter(lombok.AccessLevel.NONE)
+	@Transient
+	private String dietTypeSolidLiquidQuantityFrequencyString;
+	
+	@Transient
+	private List<DietPlan> dietPlans;
+	
 	/**
 	 * 0 New
 	 * 1 Active
@@ -168,10 +175,12 @@ public class Patient {
 
 	private Long modifiedUserHistoryId;
 	
+	private String ipAddress;
+	
 	
 	public String getBedString() {
 		this.setBedString(StringUtils.stripToEmpty(bed.getWardName()) + "/"
-				+ StringUtils.stripToEmpty(bed.getFloor().getFloorName()) + "/"
+				+ StringUtils.stripToEmpty(ObjectUtils.isNotEmpty(bed.getFloor()) ? (bed.getFloor().getFloorName() + "/") : "")
 				+ StringUtils.stripToEmpty(bed.getBedCode()));
 		return bedString;
 	}
@@ -194,7 +203,7 @@ public class Patient {
 
 	public String getSpecialNotesByNursingString() {
 		this.setSpecialNotesByNursingString(StringUtils.isEmpty(specialNotesByNursingString) && CollectionUtils.isNotEmpty(specialNotesByNursing)
-				? specialNotesByNursing.stream().map(x -> String.valueOf(x.getValue())).collect(Collectors.joining(","))
+				? specialNotesByNursing.stream().map(x -> String.valueOf(x.getValue())).collect(Collectors.joining(", "))
 				: specialNotesByNursingString);
 		if (StringUtils.isNotEmpty(othersSpecialNotesByNursing)) {
 			if (StringUtils.isNotEmpty(specialNotesByNursingString)) {
@@ -204,5 +213,15 @@ public class Patient {
 			}
 		}
 		return specialNotesByNursingString;
+	}
+
+	public String getDietTypeSolidLiquidQuantityFrequencyString() {
+		StringBuilder str = new StringBuilder();
+		str.append(ObjectUtils.isNotEmpty(dietTypeOralSolid)
+				? dietTypeOralSolid.getValue() + (ObjectUtils.isNotEmpty(dietTypeOralLiquidTF) ? "/" : "")
+				: "");
+		str.append(ObjectUtils.isNotEmpty(dietTypeOralLiquidTF) ? dietTypeOralLiquidTF.getValue() + "/" + quantity.getValueStr() + "/" + frequency.getValueStr() : "");
+		this.setDietTypeSolidLiquidQuantityFrequencyString(str.toString());
+		return dietTypeSolidLiquidQuantityFrequencyString;
 	}
 }

@@ -25,6 +25,7 @@ import com.HospitalManagementSystem.entity.master.DietSubType;
 import com.HospitalManagementSystem.entity.master.DietTypeOralSolid;
 import com.HospitalManagementSystem.entity.master.ServiceMaster;
 import com.HospitalManagementSystem.utility.CommonUtility;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.Getter;
@@ -40,6 +41,7 @@ public class DietInstruction {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "patient_id")
+	@JsonIgnore
 	private Patient patient;
 
 	@Column(length = 1024)

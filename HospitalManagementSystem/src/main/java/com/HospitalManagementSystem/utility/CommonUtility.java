@@ -14,10 +14,13 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.HospitalManagementSystem.auth.service.PrincipalUser;
 import com.HospitalManagementSystem.dto.BedDto;
@@ -25,7 +28,9 @@ import com.HospitalManagementSystem.dto.PatientDto;
 import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.entity.master.Bed;
 import com.HospitalManagementSystem.repository.BedRepository;
+import com.HospitalManagementSystem.repository.PatientRepository;
 import com.HospitalManagementSystem.repository.UserRepository;
+import com.HospitalManagementSystem.service.DietPlanService;
 
 @Component
 public class CommonUtility {
@@ -37,10 +42,32 @@ public class CommonUtility {
 	private UserRepository userRepository;
 	@Autowired
 	private BedRepository bedRepository;
+	@Autowired
+	private PatientRepository patientRepository;
+	
+	@Autowired
+	@Lazy
+	private DietPlanService dietPlanService;
 	
 	public static String localDateTimeFormat= "MM/dd/yyyy hh:mm:ss a";
 	public static DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static DateTimeFormatter localDateFormatterSQL = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormat);
+	
+	
+	// at 12:00 AM every day
+    @Scheduled(cron="0 5 0 * * ?")
+	public void dietPlanCronJobScheduler() {
+    	System.out.println("dietPlanCronJobScheduler");
+    	dietPlanService.prepareDietPlan();
+	}
+    
+    @Scheduled(cron="0 0 0 * * ?")
+    @Transactional
+	public void patientCronJobScheduler() {
+    	System.out.println("patientCronJobScheduler");
+    	patientRepository.updatePatientData();
+	}
 	
 	public User getCurrentUser() {
 		if (ObjectUtils.isNotEmpty(httpSession.getAttribute("currentUser"))) {

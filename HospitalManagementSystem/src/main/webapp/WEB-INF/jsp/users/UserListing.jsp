@@ -120,7 +120,7 @@
         		'autoWidth': false,
         		"fnDrawCallback": function() {
         			$(".status_switch").bootstrapToggle();
-        		},
+        		}
         	});
 
 

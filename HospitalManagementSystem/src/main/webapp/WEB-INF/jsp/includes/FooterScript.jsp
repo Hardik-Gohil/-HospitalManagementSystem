@@ -18,4 +18,25 @@
 	$("ul.sidebar-menu > li").each(function() {
 		$(this).removeClass("active");
 	});
+	
+    function updateNotificationsCount() {
+		$.ajax({
+			url: contextPath + "/notifications-count",
+			type: "GET",
+			success: function(data) {
+				if (data && data > 0){
+					$("#notifications-heartbit").show();
+					$("#Notifications-Count").text(data);
+				} else {
+					$("#notifications-heartbit").hide();
+					$("#Notifications-Count").text('');
+				}
+			},
+			error: function() {
+			}
+		});
+      }
+    
+    updateNotificationsCount();
+    window.setInterval(updateNotificationsCount, setIntervalTime);
 </script>

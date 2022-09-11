@@ -26,6 +26,8 @@ public class ServiceMaster {
 	
 	private String service;
 	
+	private String timeStr;
+	
 	private LocalTime fromTime;
 	
 	private LocalTime toTime;
@@ -79,5 +81,7 @@ public class ServiceMaster {
 	private YesNo clearLiquidsThroughTubeFeeding;
     
     private Boolean isActive = Boolean.FALSE;
+    
+	private String serviceItemsColumnName;
 	
 }

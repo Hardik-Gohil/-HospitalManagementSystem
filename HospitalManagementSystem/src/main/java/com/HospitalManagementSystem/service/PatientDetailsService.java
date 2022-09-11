@@ -3,6 +3,7 @@ package com.HospitalManagementSystem.service;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
 import com.HospitalManagementSystem.dto.PatientDto;
@@ -14,7 +15,7 @@ public interface PatientDetailsService {
 
 	PatientDataTablesOutputDto getPatientData(DataTablesInput input, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip);
 	
-	String savePatientDetails(PatientDto patientDto);
+	String savePatientDetails(RedirectAttributes redir, PatientDto patientDto);
 	
 	ResponseEntity<String> addPatient(PatientDto patientDto);
 	
@@ -22,7 +23,7 @@ public interface PatientDetailsService {
 
 	ResponseEntity<String> dischragePatient(PatientDto patientDto);
 
-	void save(Patient patient);
+	Patient save(Patient patient);
 
 	String checkUniqueIpNumber(String ipNumber, Long patientId);
 

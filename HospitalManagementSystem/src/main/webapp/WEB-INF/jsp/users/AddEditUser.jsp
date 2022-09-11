@@ -118,10 +118,10 @@
 		    };
 		});
 
-		jQuery.validator.addMethod("alphanumericWithSpace", function(value, element) {
+		jQuery.validator.addMethod("alphanumericWithSpeCharValidator", function(value, element) {
 		    $(element).val((this.elementValue(element).replace(/\s+/g, ' ')));
 		    this.value = $(element).val();
-		    if (/^[a-zA-Z0-9 ]*$/.test(value)) {
+		    if (alphanumericWithSpeChar.test(value)) {
 		        return true;
 		    } else {
 		        return false;
@@ -193,17 +193,17 @@
 		                required: true,
 		                minlength: 2,
 		                maxlength: 50,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            designation: {
 		                minlength: 2,
 		                maxlength: 50,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            employeeNumber: {
 		                minlength: 2,
 		                maxlength: 50,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            "department.departmentId": {
 		                required: true
@@ -239,17 +239,17 @@
 		                required: "Please enter Name",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 50 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            designation: {
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 50 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            employeeNumber: {
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 50 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            "department.departmentId": {
 		                required: "Please Select Department"

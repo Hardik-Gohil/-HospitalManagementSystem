@@ -31,6 +31,7 @@
 							<form:form method="POST" action="${contextPath}/diet/patient-details" modelAttribute="patientDto" onsubmit="return Validation();" id="planDetailsForm">
 								<input type="hidden" id="admittedDateStr" value="${not empty patientDto.admittedDate ? patientDto.admittedDate.format(localDateTimeFormatter) : ''}"></input>
 								<form:hidden path="patientId" id="patientId"/>
+								<form:hidden path="immediateService" id="immediateService"/>
 								<div class="row">
 									<div class="col-lg-4">
 										<fieldset class="form-group">
@@ -168,7 +169,7 @@
 									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="medicalComorbidities">Medical Co-morbidities</label><span class="text-danger">*</span>
-											<select class="form-control selectpicker" id="medicalComorbidities" name="medicalComorbiditiesIds" multiple data-live-search="true" data-size="10">
+											<select class="form-control selectpicker" id="medicalComorbidities" name="medicalComorbiditiesIds" multiple data-live-search="true" data-size="10" title="Please select">
 												<c:forEach items="${medicalComorbiditiesList}" var="medicalComorbidities">
 													<option value="${medicalComorbidities.medicalComorbiditiesId}">${medicalComorbidities.value}</option>
 												</c:forEach>
@@ -178,7 +179,7 @@
 									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="diagonosis">Diagonosis</label><span class="text-danger">*</span>
-											<select class="form-control selectpicker" id="diagonosis" name="diagonosisIds" multiple data-live-search="true" data-size="10">
+											<select class="form-control selectpicker" id="diagonosis" name="diagonosisIds" multiple data-live-search="true" data-size="10" title="Please select">
 												<c:forEach items="${diagonosisList}" var="diagonosis">
 													<option value="${diagonosis.diagonosisId}">${diagonosis.value}</option>
 												</c:forEach>
@@ -188,7 +189,7 @@
 									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="specialNotesByNursing">Special Notes By Nursing</label><span class="text-danger">*</span>
-											<select class="form-control selectpicker" id="specialNotesByNursing" name="specialNotesByNursingIds" multiple data-live-search="true" data-size="10" onchange="specialNotesByNursingChange();">
+											<select class="form-control selectpicker" id="specialNotesByNursing" name="specialNotesByNursingIds" multiple data-live-search="true" data-size="10" onchange="specialNotesByNursingChange();" title="Please select">
 												<c:forEach items="${specialNotesByNursingList}" var="specialNotesByNursing">
 													<option value="${specialNotesByNursing.specialNotesByNursingId}">${specialNotesByNursing.value}</option>
 												</c:forEach>
@@ -207,10 +208,10 @@
 								</div>
 								<div class="row">
 									<div class="col-lg-4">
-										<div class="checkbox">
-											<form:checkbox id="startServiceImmediately" path="startServiceImmediately"></form:checkbox>
-											<label for="startServiceImmediately">Start Service Immediately</label><span class="text-danger">*</span>
-										</div>
+<!-- 										<div class="checkbox"> -->
+<%-- 											<form:checkbox id="startServiceImmediately" path="startServiceImmediately"></form:checkbox> --%>
+<!-- 											<label for="startServiceImmediately">Start Service Immediately</label><span class="text-danger">*</span> -->
+<!-- 										</div> -->
 										<div class="checkbox">
 											<form:checkbox id="isVip" path="isVip"></form:checkbox>
 											<label for="isVip">Is VIP</label><span class="text-danger">*</span>
@@ -222,17 +223,25 @@
 											<form:input cssClass="form-control" id="nursingName" path="nursingName"></form:input>
 										</fieldset>
 									</div>
-									<div class="col-lg-4">
+									<div class="col-lg-4" style="display: none;">
 										<fieldset class="form-group">
 											<label for="employeeNo">Employee No</label><span class="text-danger">*</span>
 											<form:input cssClass="form-control" id="employeeNo" path="employeeNo"></form:input>
 										</fieldset>
 									</div>
 								</div>
-								<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
-								<a href="${contextPath}/diet/patients">
-									<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
-								</a>
+								<c:if test="${patientDto.patientStatus ne 2}">
+									<button type="submit" class="btn btn-success waves-effect waves-light" onclick="changeImmediateService('FALSE')">Submit</button>
+									<a href="${contextPath}/diet/patients">
+										<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
+									</a>									
+									<button type="submit" class="btn btn-primary waves-effect waves-light" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
+								</c:if>
+								<c:if test="${patientDto.patientStatus eq 2}">
+									<a href="${contextPath}/diet/patients">
+										<button type="button" class="btn btn-primary waves-effect waves-light">Go To Patients</button>
+									</a>								
+								</c:if>
 							</form:form>
 						</div>
 					</div>
@@ -248,10 +257,10 @@
 		<script src="${contextPath}/resources/dist/plugins/moment/min/moment.min.js"></script>
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 		<script type="text/javascript">
-		jQuery.validator.addMethod("alphanumericWithSpace", function(value, element) {
+		jQuery.validator.addMethod("alphanumericWithSpeCharValidator", function(value, element) {
 		    $(element).val((this.elementValue(element).replace(/\s+/g, ' ')));
 		    this.value = $(element).val();
-		    if (/^[a-zA-Z0-9 ]*$/.test(value)) {
+		    if (alphanumericWithSpeChar.test(value)) {
 		        return true;
 		    } else {
 		        return false;
@@ -279,6 +288,11 @@
 		});
 		</script>  
 		<script type="text/javascript">
+		var dateFormat = "MM/DD/YYYY h:mm:ss a";
+		function changeImmediateService(value) {
+		    $("#immediateService").val(value);
+		}
+		
 		function nbmChange() {
 		    if ($("#nbm").val() == "true") {
 		        $("#dietTypeOralSolid").attr("disabled", true);
@@ -384,11 +398,17 @@
 		    });
 		    if ($('#admittedDateStr').val() != "") {
 		        $('#admittedDate').data('daterangepicker').setStartDate($('#admittedDateStr').val());
+		    } else {
+		    	 $('#admittedDate').data('daterangepicker').setStartDate(moment().format(dateFormat));
 		    }
 		    bedChange();
-		    nbmChange();
 		    dietTypeOralLiquidTFChange();
+		    nbmChange();
 		    specialNotesByNursingChange();
+		    <c:if test="${not empty patientDto.dietSubType.dietSubTypeId}">
+		   		$("#dietSubType").val("${patientDto.dietSubType.dietSubTypeId}"); 
+		   	 	$('.selectpicker').selectpicker('refresh');
+	   		</c:if> 		    
 
 		    $("#planDetailsForm").validate({
 		        // in 'rules' user have to specify all the constraints for respective fields
@@ -397,7 +417,7 @@
 		                required: true,
 		                minlength: 2,
 		                maxlength: 150,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            umrNumber: {
 		                required: true,
@@ -428,7 +448,7 @@
 		                required: true,
 		                minlength: 2,
 		                maxlength: 150,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            "dietTypeOralSolid.dietTypeOralSolidId": {
 		                required: {
@@ -482,19 +502,19 @@
 		                },
 		                minlength: 2,
 		                maxlength: 150,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            nursingName: {
 		                required: true,
 		                minlength: 2,
 		                maxlength: 150,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            },
 		            employeeNo: {
-		                required: true,
+		                required: false,
 		                minlength: 2,
 		                maxlength: 150,
-		                alphanumericWithSpace: true
+		                alphanumericWithSpeCharValidator: true
 		            }
 		        },
 		        errorPlacement: function(error, element) {
@@ -510,7 +530,7 @@
 		                required: "Please enter Patient Name",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            umrNumber: {
 		                required: "Please enter UMR No",
@@ -529,7 +549,7 @@
 		                required: "Please enter Doctor Name",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            "dietTypeOralSolid.dietTypeOralSolidId": {
 		                required: "Please Select Diet Type- Oral Solid or Diet Type- Oral Liquid/TF"
@@ -559,19 +579,19 @@
 		                required: "Please enter Others Special Notes By Nursing",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            nursingName: {
 		                required: "Please enter Nursing Name",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            },
 		            employeeNo: {
 		                required: "Please enter Employee No",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
-		                alphanumericWithSpace: "Only Alphanumeric characters are allowed"
+		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            }
 		        }
 		    });
