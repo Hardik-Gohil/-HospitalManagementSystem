@@ -37,7 +37,7 @@ public class User {
 	 */
 	private Integer passwordResetType;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Role> roles;
 
 	private String name;

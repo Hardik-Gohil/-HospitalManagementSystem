@@ -26,6 +26,7 @@ import org.springframework.ui.Model;
 import com.HospitalManagementSystem.dto.PatientServiceReportDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
 import com.HospitalManagementSystem.entity.Patient;
+import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.repository.PatientDataTablesRepository;
 import com.HospitalManagementSystem.service.AdHocOrderService;
 import com.HospitalManagementSystem.service.ExportService;
@@ -58,6 +59,9 @@ public class ExportServiceImpl implements ExportService {
 	private ReportService reportService;
 	@Autowired
 	private AdHocOrderService adHocOrderService;
+
+	@Autowired
+	private CommonUtility commonUtility;
 	
 	@Override
 	public ResponseEntity<ByteArrayResource> getByteArrayResource(String reportName, String type, List<JasperPrint> jasperPrints, Map<String, Object> parameters) throws JRException {
@@ -99,6 +103,13 @@ public class ExportServiceImpl implements ExportService {
 	}
 	
 	private ResponseEntity<ByteArrayResource> exportPatientData(String type, String searchText, String orderColumn, boolean direction, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
+		User currentUser = commonUtility.getCurrentUser();
+		final boolean isNursing;
+		if (currentUser.getRoles().stream().filter(role -> role.getName().equals("ROLE_NURSING")).findFirst().isPresent()) {
+			isNursing = true;
+		} else {
+			isNursing = false;
+		}		
 		DataTablesInput input = new DataTablesInput();
 		input.addColumn("patientName", true, true, null);
 		input.addColumn("umrNumber", true, true, null);
@@ -127,6 +138,9 @@ public class ExportServiceImpl implements ExportService {
 			}
 			if (isVip) {
 				predicates.add(criteriaBuilder.equal(root.get("isVip"), isVip));
+			}
+			if (isNursing) {
+				predicates.add(criteriaBuilder.equal(root.get("bed").get("floor").get("floorId"), currentUser.getFloor().getFloorId()));
 			}
 			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 		};

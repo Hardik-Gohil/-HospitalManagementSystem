@@ -19,4 +19,6 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 	@Modifying
 	@Query("UPDATE Patient patient SET patient.showUpdated = FALSE WHERE patient.showUpdated = TRUE")
 	void updatePatientData();
+
+	Integer countByPatientStatusAndBedFloorFloorId(Integer patientStatus, Long floorId);
 }

@@ -434,12 +434,20 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 
 	@Override
 	public PatientDataTablesOutputDto getPatientData(DataTablesInput input, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
+		User currentUser = commonUtility.getCurrentUser();
 		input.addColumn("bed.bedCode", true, true, null);
 		input.addColumn("modifiedOn", false, true, null);
 		input.addOrder("modifiedOn", false);
 		List<Order> orders = input.getOrder();
 		orders.add(0, orders.get(orders.size()-1));
 		orders.remove(orders.size()-1);
+		final boolean isNursing;
+		if (currentUser.getRoles().stream().filter(role -> role.getName().equals("ROLE_NURSING")).findFirst().isPresent()) {
+			isNursing = true;
+		} else {
+			isNursing = false;
+		}
+		
 		Specification<Patient> additionalSpecification = (root, query, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(root.get("patientStatus"), patientStatus));
@@ -455,11 +463,18 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 			if (isVip) {
 				predicates.add(criteriaBuilder.equal(root.get("isVip"), isVip));
 			}
+			if (isNursing) {
+				predicates.add(criteriaBuilder.equal(root.get("bed").get("floor").get("floorId"), currentUser.getFloor().getFloorId()));
+			}
 			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 		};
 		PatientDataTablesOutputDto patientDataTablesOutputDto = new PatientDataTablesOutputDto();
 		patientDataTablesOutputDto.setData(patientDataTablesRepository.findAll(input, additionalSpecification));
-		patientDataTablesOutputDto.setCount(patientRepository.countByPatientStatus(patientStatus));
+		if (isNursing) {
+			patientDataTablesOutputDto.setCount(patientRepository.countByPatientStatusAndBedFloorFloorId(patientStatus, currentUser.getFloor().getFloorId()));
+		} else {
+			patientDataTablesOutputDto.setCount(patientRepository.countByPatientStatus(patientStatus));
+		}
 		return patientDataTablesOutputDto;
 	}
 
