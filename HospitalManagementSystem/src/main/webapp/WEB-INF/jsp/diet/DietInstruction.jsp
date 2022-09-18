@@ -78,7 +78,9 @@
 									</div>
 								</div>
 								<c:if test="${patient.patientStatus ne 2}">
-									<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+									<c:if test="${isDietitian || isAdmin}">
+										<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+									</c:if>
 									<a href="${contextPath}/diet/diet-instruction?patientId=${dietInstructionDto.patient.patientId}">
 										<button type="button" class="btn btn-inverse waves-effect waves-light">Clear</button>
 									</a>
@@ -98,7 +100,7 @@
 		                                 <th>Diet Instruction</th>
 		                                 <th>Service Type</th>
 		                                 <th>Diet Type- Oral Solid</th>
-		                                 <th>Diet Type  - Pral Liquid/TF</th>
+		                                 <th>Diet Type  - Oral Liquid/TF</th>
 		                                 <th>Extra Liquid</th>
 		                                 <th>Applicable for</th>
 		                                 <th>Date Selection</th>
@@ -305,7 +307,7 @@
         			"orderable": false,
         			"searchable": false,
         			"data": "",
-        			"defaultContent": ${patient.patientStatus ne 2} ? '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i>' : ''
+        			"defaultContent": ${patient.patientStatus ne 2 && (isDietitian || isAdmin)} ? '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i>' : ''
 
         		}],
 		        "createdRow": function(row, data, dataIndex) {

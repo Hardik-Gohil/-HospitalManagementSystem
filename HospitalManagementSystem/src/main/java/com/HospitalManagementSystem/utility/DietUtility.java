@@ -278,7 +278,12 @@ public class DietUtility {
 				} else if (patient.getDietTypeOralSolid().getDietTypeOralSolidId() == 3) {
 					predicates.add(criteriaBuilder.equal(root.get("semiSolidDiet"), YesNo.YES));
 				}
+			} else if (patient.getNbm()) {
+				predicates.add(criteriaBuilder.equal(root.get("fullDiet"), YesNo.NO));
+				predicates.add(criteriaBuilder.equal(root.get("softDiet"), YesNo.NO));
+				predicates.add(criteriaBuilder.equal(root.get("semiSolidDiet"), YesNo.NO));
 			}
+			
 
 			if (CollectionUtils.isNotEmpty(patient.getMedicalComorbidities())) {
 				// 1 Normal

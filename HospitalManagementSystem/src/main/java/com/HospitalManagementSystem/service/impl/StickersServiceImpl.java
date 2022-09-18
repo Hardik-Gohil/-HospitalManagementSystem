@@ -67,8 +67,9 @@ public class StickersServiceImpl implements StickersService {
 	private static final String BACKSLASH = " / ";
 	private static final String PIPE = " | ";
 	private static final String BRTAG = "<br/>";
-	private static final List<Long> dietTypeSolid = List.of(1l, 2l, 3l, 4l, 5l, 6l, 7l, 8l);
-	private static final List<Long> dietTypeLiquidOralTF = List.of(9l, 10l, 11l, 12l, 13l, 14l, 15l, 16l, 17l, 18l, 19l, 20l, 21l, 22l, 23l, 24l, 25l, 26l, 27l) ;
+	private static final List<Long> dietTypeSolid = List.of(1l, 2l, 3l, 5l, 7l, 8l);
+	private static final List<Long> extraLiquid = List.of(4l, 6l);
+	private static final List<Long> dietTypeLiquidOralTF = List.of(10l, 11l, 12l, 13l, 14l, 15l, 16l, 17l, 18l, 19l, 20l, 21l, 22l, 23l, 24l, 25l, 26l, 27l) ;
 	
 	@Override
 	public String stickers(Model model, Long patientId) {
@@ -137,6 +138,9 @@ public class StickersServiceImpl implements StickersService {
 					if(dietTypeSolid.contains(serviceMasterId)) {
 						stickers.append(dietPlan.getPatient().getDietTypeOralSolid().getValue() + BACKSLASH + dietPlan.getPatient().getMedicalComorbiditiesString() + BRTAG);
 					}
+					if (extraLiquid.contains(serviceMasterId)) {
+						stickers.append(dietPlan.getPatient().getDietTypeOralSolid().getValue() + BACKSLASH + dietPlan.getPatient().getMedicalComorbiditiesString() + BACKSLASH + dietPlan.getItem() + BRTAG);
+					}
 					if(dietTypeLiquidOralTF.contains(serviceMasterId)) {
 						String proteinCalories = "";
 						if (CollectionUtils.isNotEmpty(dietPlan.getServiceItems()) && dietPlan.getServiceItems().size() == 1
@@ -155,8 +159,13 @@ public class StickersServiceImpl implements StickersService {
 								+ PIPE  + proteinCalories + dietPlan.getPatient().getQuantity().getValueStr() + BACKSLASH
 								+ dietPlan.getPatient().getFrequency().getValueStr() + BRTAG);
 					}
-					if(CollectionUtils.isNotEmpty(dietPlan.getDietInstructions())) {
-						stickers.append(dietPlan.getDietInstructions().stream().map(di -> di.getInstruction()).collect(Collectors.joining(", ")) + PIPE + dietPlan.getPatient().getSpecialNotesByNursingString());
+					if (CollectionUtils.isNotEmpty(dietPlan.getDietInstructions())) {
+						stickers.append(dietPlan.getDietInstructions().stream().map(di -> di.getInstruction()).collect(Collectors.joining(", ")));
+						if (StringUtils.isNotEmpty(dietPlan.getPatient().getSpecialNotesByNursingString())) {
+							stickers.append(PIPE + dietPlan.getPatient().getSpecialNotesByNursingString());
+						}
+					} else if (StringUtils.isNotEmpty(dietPlan.getPatient().getSpecialNotesByNursingString())) {
+						stickers.append(dietPlan.getPatient().getSpecialNotesByNursingString());
 					}
 					stickersList.add(stickers.toString());
 				}

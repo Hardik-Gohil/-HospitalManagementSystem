@@ -91,12 +91,16 @@ public class DietPlanServiceImpl implements DietPlanService {
 					if (CollectionUtils.isNotEmpty(upcommingDietPlans)) {
 						dietPlanRepository.deleteAll(upcommingDietPlans);
 					}
+					List<DietPlan> upcommingDietPlansForTomorrow = dietPlanRepository.findAllByPatientPatientIdAndDietDate(patient.getPatientId(), now.toLocalDate().plusDays(1));
+					if (CollectionUtils.isNotEmpty(upcommingDietPlansForTomorrow)) {
+						dietPlanRepository.deleteAll(upcommingDietPlansForTomorrow);
+					}
 				}
 				
 				if (patient.getPatientStatus() == 1) {
 					List<DietPlan> dietPlanList = new ArrayList<>();
 					List<DietPlan> dietPlanListForTomorrow = new ArrayList<>();
-					List<DietInstruction> dietInstructionList = dietInstructionRepository.findAllByPatientPatientId(patient.getPatientId());
+					List<DietInstruction> dietInstructionList = dietInstructionRepository.findAllByPatientPatientIdAndDietInstructionStatus(patient.getPatientId(), 1);
 					List<ServiceMaster> serviceMasterList = serviceMasterRepository.findAll(dietUtility.getServiceMasterSpecification(patient, Collections.EMPTY_LIST));
 					if (CollectionUtils.isNotEmpty(serviceMasterList)) {
 						for (ServiceMaster serviceMaster : serviceMasterList) {

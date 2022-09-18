@@ -65,10 +65,12 @@
 									<span class="hidden-xs-down">Discharged</span>&nbsp;&nbsp;&nbsp;<span class="badge bg-blue" id="Discharged-Patients-Count">0</span>
 									</a>
 								</li>
-								<li class="nav-item ml-auto">
-									<button id="Export-PDF" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;PDF</button>
-									<button id="Export-Excel" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;Excel</button>
-								</li>
+								<c:if test="${isDietitian || isAdmin}">
+									<li class="nav-item ml-auto">
+										<button id="Export-PDF" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;PDF</button>
+										<button id="Export-Excel" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;Excel</button>
+									</li>
+								</c:if>
 							</ul>
 							<!-- Tab panes -->
 							<div class="tab-content">
@@ -207,8 +209,7 @@
 		        "serverSide": true,
 		        "pageLength": 25,
 		        "fnDrawCallback": function(data) {
-		            $(".status_switch").bootstrapToggle();
-		        },
+		        }
 		    });
 
 		    var activePatientsTable = $('#active-patients-table').DataTable({
@@ -250,6 +251,7 @@
 		            "defaultContent": "-"
 		        }, {
 		            "data": "bedString",
+		            "defaultContent": "-",
 		            "orderable": false,
 		            "searchable": false
 		        }, {
@@ -289,8 +291,14 @@
 		            "orderable": false,
 		            "searchable": false,
 		            "data": "",
-		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>&nbsp;&nbsp;<i class="fa fa-cart-plus fa-lg" title="AdHoc Order"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>'
-
+// 		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>&nbsp;&nbsp;<i class="fa fa-cart-plus fa-lg" title="AdHoc Order"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>'
+        			"render": function(data, type, row) {
+        				var action = '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>&nbsp;&nbsp;<i class="fa fa-cart-plus fa-lg" title="AdHoc Order"></i>';
+        				if (isDietitian || isKitchen || isAdmin) {
+            				action += '&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
+        				}
+        				return action;
+        			}
 		        }],
 		        "createdRow": function(row, data, dataIndex) {
 		            if (data['showUpdated']) {
@@ -303,7 +311,9 @@
 		        'autoWidth': false,
 		        "serverSide": true,
 		        "pageLength": 25,
-		        "fnDrawCallback": function() {},
+		        "fnDrawCallback": function() {
+		        	
+		        }
 		    });
 
 		    var filters = '<div class="pull-left">';
@@ -402,8 +412,7 @@
 		        "serverSide": true,
 		        "pageLength": 25,
 		        "fnDrawCallback": function() {
-		            $(".status_switch").bootstrapToggle();
-		        },
+		        }
 		    });
 
 		    $('#new-patients-table').on('click', 'tbody .fa-edit', function() {

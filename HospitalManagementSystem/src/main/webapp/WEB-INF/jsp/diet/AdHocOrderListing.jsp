@@ -57,10 +57,12 @@
             <!-- Content Header (Page header) -->
             <div class="content-header sty-one">
                <h1>AdHoc Oders</h1>
-				<div style="padding: 7px 5px;position: absolute;top: 11px;right: 10px;">
-					<button id="Export-PDF" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;PDF</button>
-					<button id="Export-Excel" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;Excel</button>
-				</div>               
+               <c:if test="${isDietitian || isKitchen || isAdmin}">
+					<div style="padding: 7px 5px;position: absolute;top: 11px;right: 10px;">
+						<button id="Export-PDF" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;PDF</button>
+						<button id="Export-Excel" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;Excel</button>
+					</div>      
+			   </c:if>         
             </div>
             <!-- Main content -->
             <div class="content">
@@ -210,9 +212,12 @@
         			"searchable": false,
         			"data": "",
         			"render": function(data, type, row) {
-        				var action = '<i class="fa fa-file-invoice fa-lg" title="KOT"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
-        				if (row['orderStatus'] == 1 && row['serviceDeliveryDateTime'] > moment().format(dateFormat)) {
-        					action += '&nbsp;&nbsp;<i class="fa fa-times fa-lg" title="Cancel"></i>';
+        				var action = '';
+        				if (isDietitian || isKitchen || isAdmin) {
+            				action = '<i class="fa fa-file-invoice fa-lg" title="KOT"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
+            				if (row['orderStatus'] == 1 && row['serviceDeliveryDateTime'] > moment().format(dateFormat)) {
+            					action += '&nbsp;&nbsp;<i class="fa fa-times fa-lg" title="Cancel"></i>';
+            				}
         				}
         				return action;
         			}

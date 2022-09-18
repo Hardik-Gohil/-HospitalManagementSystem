@@ -89,6 +89,12 @@ public class DietInstruction {
 
 	private Long modifiedUserHistoryId;
 	
+	/**
+	 * 1 Active
+	 * 2 Deleted
+	 */
+	private Integer dietInstructionStatus;
+	
 	@Getter(lombok.AccessLevel.NONE)
 	@Transient
 	private String serviceMastersString;

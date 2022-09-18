@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,10 +24,12 @@ import com.HospitalManagementSystem.dto.DietInstructionDto;
 import com.HospitalManagementSystem.dto.PatientDto;
 import com.HospitalManagementSystem.dto.ServiceMasterDto;
 import com.HospitalManagementSystem.entity.DietInstruction;
+import com.HospitalManagementSystem.entity.DietPlan;
 import com.HospitalManagementSystem.entity.Patient;
 import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.entity.master.ServiceMaster;
 import com.HospitalManagementSystem.repository.DietInstructionRepository;
+import com.HospitalManagementSystem.repository.DietPlanRepository;
 import com.HospitalManagementSystem.repository.PatientRepository;
 import com.HospitalManagementSystem.repository.ServiceMasterRepository;
 import com.HospitalManagementSystem.service.DietInstructionService;
@@ -44,6 +47,9 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 	private ServiceMasterRepository serviceMasterRepository;
 	@Autowired
 	private DietInstructionRepository dietInstructionRepository;
+	@Autowired
+	private DietPlanRepository dietPlanRepository;
+	
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -63,6 +69,7 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 			dietInstruction.setServiceMasters(serviceMasterRepository.findAllById(dietInstruction.getServiceMasters().stream().map(serviceMasters -> serviceMasters.getServiceMasterId()).toList()));
 		}
 		dietInstruction = dietInstructionRepository.save(dietInstruction);
+		dietInstruction.setDietInstructionStatus(1);
 //		PatientHistory patientHistory = modelMapper.map(patient, PatientHistory.class);
 //		patientHistory.setHistoryCreatedOn(patient.getModifiedOn());
 //		patientHistory.setHistoryCreatedBy(patient.getModifiedBy());
@@ -74,7 +81,7 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 	public String getDietInstruction(Long patientId, Long dietInstructionId, Model model) {
 		Map<Long, List<String>> serviceInvalidDateRangeMap = new HashMap<>();
 		Patient patient = patientRepository.findById(patientId).get();
-		List<DietInstruction> dietInstructions = dietInstructionRepository.findAllByPatientPatientIdAndDietInstructionIdNot(patientId, ObjectUtils.isNotEmpty(dietInstructionId) ? dietInstructionId : 0l);
+		List<DietInstruction> dietInstructions = dietInstructionRepository.findAllByPatientPatientIdAndDietInstructionIdNotAndDietInstructionStatus(patientId, ObjectUtils.isNotEmpty(dietInstructionId) ? dietInstructionId : 0l, 1);
 		List<Long> dailyServiceMaster = new ArrayList<Long>();
 		if (CollectionUtils.isNotEmpty(dietInstructions)) {
 			for (DietInstruction dietInstruction : dietInstructions) {
@@ -188,15 +195,34 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 	
 	@Override
 	public List<DietInstruction> getDietInstructionData(Long patientId) {
-		return dietInstructionRepository.findAllByPatientPatientId(patientId);
+		return dietInstructionRepository.findAllByPatientPatientIdAndDietInstructionStatus(patientId, 1);
 	}
 	
 	@Override
+	@Transactional
 	public String deleteDietInstruction(Long dietInstructionId) {
+		LocalDateTime now = LocalDateTime.now();
 		Optional<DietInstruction> dietInstruction = dietInstructionRepository.findById(dietInstructionId);
 		Long patientId = dietInstruction.get().getPatient().getPatientId();
-		dietInstructionRepository.deleteDietInstructionFromDietPlan(dietInstructionId);
-		dietInstructionRepository.deleteById(dietInstructionId);
+		List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndServiceMasterFromTimeGreaterThan(patientId, now.toLocalTime());
+		List<DietPlan> upcommingDietPlansForTomorrow = dietPlanRepository.findAllByPatientPatientIdAndDietDate(patientId, now.toLocalDate().plusDays(1));
+		if (CollectionUtils.isNotEmpty(upcommingDietPlans)) {
+			for (DietPlan dietPlan : upcommingDietPlans) {
+				if (CollectionUtils.isNotEmpty(dietPlan.getDietInstructions())) {
+					dietPlan.getDietInstructions().removeIf(d -> d.getDietInstructionId().equals(dietInstructionId));
+				}
+			}
+			dietPlanRepository.saveAll(upcommingDietPlans);
+		}
+		if (CollectionUtils.isNotEmpty(upcommingDietPlansForTomorrow)) {
+			for (DietPlan dietPlan : upcommingDietPlansForTomorrow) {
+				if (CollectionUtils.isNotEmpty(dietPlan.getDietInstructions())) {
+					dietPlan.getDietInstructions().removeIf(d -> d.getDietInstructionId().equals(dietInstructionId));
+				}
+			}
+			dietPlanRepository.saveAll(upcommingDietPlansForTomorrow);
+		}
+		dietInstructionRepository.updateDietInstructionStatus(2, dietInstructionId);
 		return "redirect:/diet/diet-instruction?patientId=" + patientId;
 	}
 }

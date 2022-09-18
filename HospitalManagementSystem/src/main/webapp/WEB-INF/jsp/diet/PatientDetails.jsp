@@ -188,7 +188,7 @@
 									</div>
 									<div class="col-lg-4">
 										<fieldset class="form-group">
-											<label for="specialNotesByNursing">Special Notes By Nursing</label><span class="text-danger">*</span>
+											<label for="specialNotesByNursing">Special Notes By Nursing</label>
 											<select class="form-control selectpicker" id="specialNotesByNursing" name="specialNotesByNursingIds" multiple data-live-search="true" data-size="10" onchange="specialNotesByNursingChange();" title="Please select">
 												<c:forEach items="${specialNotesByNursingList}" var="specialNotesByNursing">
 													<option value="${specialNotesByNursing.specialNotesByNursingId}">${specialNotesByNursing.value}</option>
@@ -231,11 +231,15 @@
 									</div>
 								</div>
 								<c:if test="${patientDto.patientStatus ne 2}">
-									<button type="submit" class="btn btn-success waves-effect waves-light" onclick="changeImmediateService('FALSE')">Submit</button>
+									<c:if test="${isNursing || isDietitian || isAdmin}">
+										<button type="submit" class="btn btn-success waves-effect waves-light" onclick="changeImmediateService('FALSE')">Submit</button>
+									</c:if>
 									<a href="${contextPath}/diet/patients">
 										<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
-									</a>									
-									<button type="submit" class="btn btn-primary waves-effect waves-light" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
+									</a>	
+									<c:if test="${isNursing || isDietitian || isAdmin}">								
+										<button type="submit" class="btn btn-primary waves-effect waves-light" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
+									</c:if>
 								</c:if>
 								<c:if test="${patientDto.patientStatus eq 2}">
 									<a href="${contextPath}/diet/patients">
@@ -318,6 +322,9 @@
 		        $("#dietSubType").attr("disabled", true);
 		        $("#quantity").attr("disabled", true);
 		        $("#frequency").attr("disabled", true);
+		        $("#dietTypeOralLiquidTF").val("");
+		        $("#dietSubType").val("");
+		        dietTypeOralLiquidTFChange();
 		    } else {
 		        $("#dietTypeOralLiquidTF").attr("disabled", false);
 		        $("#dietSubType").attr("disabled", false);
@@ -492,7 +499,7 @@
 		                required: true
 		            },
 		            specialNotesByNursingIds: {
-		                required: true
+		                required: false
 		            },
 		            othersSpecialNotesByNursing: {
 		                required: {

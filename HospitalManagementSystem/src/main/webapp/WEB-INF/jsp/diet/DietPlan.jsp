@@ -140,7 +140,11 @@
     	            returnStr += "</td>";
     	            if (d.dietPlans[i].serviceMaster.serviceItemsColumnName != null) {
     	            	returnStr += "<td>" + '<input type="text" class="form-control" id="item_' + d.dietPlans[i].dietPlanId + '" value="' + (d.dietPlans[i].item == null ? "" : d.dietPlans[i].item) + '" size="70">' + "</td>";
-    	            	returnStr += "<td>" + '<button type="submit" id="saveItem_' + d.dietPlans[i].dietPlanId +'" class="btn btn-success waves-effect waves-light btn-sm">Save</button>' + "</td>";
+    	            	if (isDietitian || isAdmin) {
+    	            		returnStr += "<td>" + '<button type="submit" id="saveItem_' + d.dietPlans[i].dietPlanId +'" class="btn btn-success waves-effect waves-light btn-sm">Save</button>' + "</td>";
+    	            	} else {
+    	            		returnStr += "<td> - </td>";
+    	            	}
     	            } else {
     	            	returnStr += "<td>" + "-" + "</td>";
     	            	returnStr += "<td>" + "-" + "</td>";

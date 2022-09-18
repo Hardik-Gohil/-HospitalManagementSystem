@@ -20,17 +20,23 @@
 			<li class="" id="DietPlan">
 				<a href="${contextPath}/diet/diet-plan"> <i class="fa fa-bowl-food"></i> <span>Diet Plan</span></a>
 			</li>
-			<li class="" id="AdHocOder">
-				<a href="${contextPath}/diet/adhoc-order-listing"> <i class="fa fa-cart-plus"></i> <span>AdHoc Oder</span></a>
-			</li>		
-			<li class="" id="Stickers">
-				<a href="${contextPath}/diet/stickers"> <i class="fa fa-tags"></i> <span>Stickers</span></a>
-			</li>
-			<li class="treeview menu-open"> <a href="#"> <i class="fa fa-file"></i> <span>Reports</span> <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span> </a>
-	          <ul class="treeview-menu" style="display: block;">
-	            <li><a href="${contextPath}/reports/patient-service-report"><i class="fa fa-angle-right"></i> Diet MIS report</a></li>
-	          </ul>
-			</li>							
+			<c:if test="${isDietitian || isKitchen || isAdmin}">
+				<li class="" id="AdHocOder">
+					<a href="${contextPath}/diet/adhoc-order-listing"> <i class="fa fa-cart-plus"></i> <span>AdHoc Oder</span></a>
+				</li>		
+			</c:if>
+			<c:if test="${isDietitian || isKitchen || isAdmin}">
+				<li class="" id="Stickers">
+					<a href="${contextPath}/diet/stickers"> <i class="fa fa-tags"></i> <span>Stickers</span></a>
+				</li>
+			</c:if>
+			<c:if test="${isDietitian || isAdmin}">
+				<li class="treeview menu-open"> <a href="#"> <i class="fa fa-file"></i> <span>Reports</span> <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span> </a>
+		          <ul class="treeview-menu" style="display: block;">
+		            <li><a href="${contextPath}/reports/patient-service-report"><i class="fa fa-angle-right"></i> Diet MIS report</a></li>
+		          </ul>
+				</li>	
+			</c:if>						
 		</ul>
 	</div>
 	<!-- /.sidebar --> 

@@ -75,7 +75,7 @@
 										<fieldset class="form-group">
 											<label for="quantitySelection">Quantity:</label><span class="text-danger">*</span>
 											<select class="form-control selectpicker" id="quantitySelection" name="quantitySelection" data-live-search="true" data-size="10">
-												<c:forEach begin="1" end="20" varStatus="loop">
+												<c:forEach begin="1" end="4" varStatus="loop">
 													<option value="${loop.index}">${loop.index}</option>
 												</c:forEach>
 											</select>
@@ -121,7 +121,9 @@
 									</div>
 								</div>
 								<c:if test="${patient.patientStatus ne 2}">
-									<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+									<c:if test="${isNursing || isDietitian || isAdmin}">
+										<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+									</c:if>
 									<a href="${contextPath}/diet/adhoc-order?patientId=${adHocOrderDto.patient.patientId}">
 										<button type="button" class="btn btn-inverse waves-effect waves-light">Clear</button>
 									</a>
@@ -348,8 +350,11 @@
         			"searchable": false,
         			"data": "",
         			"render": function(data, type, row) {
-        				var action = '<i class="fa fa-file-invoice fa-lg" title="KOT"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
-        				if (row['orderStatus'] == 1 && row['serviceDeliveryDateTime'] > moment().format(dateFormat)) {
+        				var action = '<i class="fa fa-file-invoice fa-lg" title="KOT"></i>';
+        				if ((isNursing || isDietitian || isAdmin)) {
+        					action += '&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
+        				}
+        				if ((isDietitian || isKitchen || isAdmin) && row['orderStatus'] == 1 && row['serviceDeliveryDateTime'] > moment().format(dateFormat)) {
         					action += '&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i>';
         				}
         				return action;
