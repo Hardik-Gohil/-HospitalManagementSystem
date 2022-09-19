@@ -436,6 +436,8 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	public PatientDataTablesOutputDto getPatientData(DataTablesInput input, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
 		User currentUser = commonUtility.getCurrentUser();
 		input.addColumn("bed.bedCode", true, true, null);
+		input.addColumn("bed.wardName", true, true, null);
+		input.addColumn("bed.floor.floorName", true, true, null);
 		input.addColumn("modifiedOn", false, true, null);
 		input.addOrder("modifiedOn", false);
 		List<Order> orders = input.getOrder();

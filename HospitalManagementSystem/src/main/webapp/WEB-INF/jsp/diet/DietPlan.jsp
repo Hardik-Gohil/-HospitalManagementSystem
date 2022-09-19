@@ -46,6 +46,10 @@
 /* 		     padding-top: 5px !important; */
 /* 		     padding-bottom: 5px !important; */
 /* 		} */
+
+		div.dataTables_wrapper div.dataTables_processing {
+		   top: 7%;
+		}
       </style>
    </head>
    <body class="skin-blue sidebar-mini">
@@ -236,7 +240,14 @@
 		                if (type === "sort" || type === "filter" || type === 'type') {
 		                    return (data);
 		                } else {
-		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data + '</a>';
+		                    if (data) {
+		                    	if (data.length > 50) {
+		                    		aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    	}
+		                    } else {
+		                    	aTag = "-";
+		                    }
 		                    return aTag;
 		                }
 		            }
@@ -257,6 +268,11 @@
 		        "lengthMenu": [25, 50, 100, 200],
 		        "pageLength": 200,
 		        "fnDrawCallback": function() {},
+		        'processing': true,
+		        'language': {
+		            'loadingRecords': '&nbsp;',
+		            'processing': '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span> '
+		        } 
 		    });
 		    
 		    var filters = '<div class="pull-left">';
@@ -264,7 +280,8 @@
 		    filters += '<input id="extraLiquid" type="checkbox" class="refreshTable"><label for="extraLiquid">&nbsp;Extra Liquid</label>';
 		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
 		    filters += '</div>';
-		    $('#patients-table_filter').html(filters + $('#patients-table_filter').html());
+// 		    $('#patients-table_filter').html(filters + $('#patients-table_filter').html());
+			$(filters).insertBefore($("#patients-table_filter").find("label"));
 		    $('#dateSelection').daterangepicker({
 		        alwaysShowCalendars: true,
 		        singleDatePicker: true,

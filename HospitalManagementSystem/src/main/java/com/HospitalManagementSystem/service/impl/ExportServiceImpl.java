@@ -117,6 +117,8 @@ public class ExportServiceImpl implements ExportService {
 		input.addColumn("admittedDate", true, true, null);
 		input.addColumn("doctor", true, true, null);
 		input.addColumn("bed.bedCode", true, true, null);
+		input.addColumn("bed.wardName", true, true, null);
+		input.addColumn("bed.floor.floorName", true, true, null);
 		input.addColumn("modifiedOn", false, true, null);
 
 		input.addOrder("modifiedOn", false);

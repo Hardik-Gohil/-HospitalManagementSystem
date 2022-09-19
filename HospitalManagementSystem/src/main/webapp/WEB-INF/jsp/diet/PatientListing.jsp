@@ -18,6 +18,9 @@
 				color: #0c5460 !important;
 				background-color: #bee5eb !important;
 			}	
+			.specialNotesbyNurising {
+				background-color: #f5c6cb !important;
+			}	
 		</style>
 	</head>
 	<body class="skin-blue sidebar-mini">
@@ -107,7 +110,7 @@
 														<th>Doctor Name</th>
 														<th>Diet Type Solid/Liquid orally/TF/Quantity/Frequency</th>
 														<th>Co-morbities</th>
-														<th>Special Notes by Nurising</th>
+														<th class="specialNotesbyNurising">Special Notes by Nurising</th>
 														<th>Action</th>
 													</tr>
 												</thead>
@@ -269,6 +272,7 @@
 		            "searchable": false
 		        }, {
 		            "data": "specialNotesByNursingString",
+		            "className": "specialNotesbyNurising",
 		            "defaultContent": "-",
 		            "orderable": false,
 		            "searchable": false,
@@ -322,7 +326,8 @@
 // 		    filters += '<input id="startServiceImmediately" type="checkbox" class="refreshTable"><label for="startServiceImmediately">&nbsp;Start Service Immediately</label>'
 		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
 		    filters += '</div>';
-		    $('#active-patients-table_filter').html(filters + $('#active-patients-table_filter').html());
+// 		    $('#active-patients-table_filter').html(filters + $('#active-patients-table_filter').html());
+			$(filters).insertBefore($("#active-patients-table_filter").find("label"));
 		    $(".refreshTable").bind("click", function() {
 		        activePatientsTable.ajax.url(contextPath + "/diet/patient-data?patientStatus=1&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip"));
 		        activePatientsTable.ajax.reload();

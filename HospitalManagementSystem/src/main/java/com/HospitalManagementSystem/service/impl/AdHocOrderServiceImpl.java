@@ -246,6 +246,9 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 
 	@Override
 	public DataTablesOutput<AdHocOrder> getAdhocOrderListing(DataTablesInput input) {
+		input.addColumn("patient.bed.bedCode", true, true, null);
+		input.addColumn("patient.bed.wardName", true, true, null);
+		input.addColumn("patient.bed.floor.floorName", true, true, null);
 		return adHocOrderDataTablesRepository.findAll(input);
 	}
 
