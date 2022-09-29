@@ -68,7 +68,7 @@
 									<span class="hidden-xs-down">Discharged</span>&nbsp;&nbsp;&nbsp;<span class="badge bg-blue" id="Discharged-Patients-Count">0</span>
 									</a>
 								</li>
-								<c:if test="${isDietitian || isAdmin}">
+								<c:if test="${isDietitian || isKitchen || isAdmin}">
 									<li class="nav-item ml-auto">
 										<button id="Export-PDF" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;PDF</button>
 										<button id="Export-Excel" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;Excel</button>

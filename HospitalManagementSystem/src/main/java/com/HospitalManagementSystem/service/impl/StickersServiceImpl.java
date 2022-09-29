@@ -69,7 +69,7 @@ public class StickersServiceImpl implements StickersService {
 	private static final String BRTAG = "<br/>";
 	private static final List<Long> dietTypeSolid = List.of(1l, 2l, 3l, 5l, 7l, 8l);
 	private static final List<Long> extraLiquid = List.of(4l, 6l);
-	private static final List<Long> dietTypeLiquidOralTF = List.of(10l, 11l, 12l, 13l, 14l, 15l, 16l, 17l, 18l, 19l, 20l, 21l, 22l, 23l, 24l, 25l, 26l, 27l) ;
+	private static final List<Long> dietTypeLiquidOralTF = List.of(9l, 10l, 11l, 12l, 13l, 14l, 15l, 16l, 17l, 18l, 19l, 20l, 21l, 22l, 23l, 24l, 25l, 26l, 27l) ;
 	
 	@Override
 	public String stickers(Model model, Long patientId) {
@@ -88,17 +88,23 @@ public class StickersServiceImpl implements StickersService {
 
 	private ResponseEntity<Resource> generateStickers(List<String> stickersList) throws JRException {
 		List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
-		InputStream jasperInput = ExportServiceImpl.class.getResourceAsStream("/" + "jasper/Stickers.jrxml");
+		InputStream jasperInput = ExportServiceImpl.class.getResourceAsStream("/" + "jasper/StickersTemplate1.jrxml");
 		JasperDesign jasperDesign = JRXmlLoader.load(jasperInput);
 		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);			
 		if (CollectionUtils.isNotEmpty(stickersList)) {
-			List<List<String>> lists = ListUtils.partition(stickersList, 18);
-			for (List<String> list : lists) {
+//			List<List<String>> lists = ListUtils.partition(stickersList, 18);
+//			for (List<String> list : lists) {
+//				Map<String, Object> parameters = new HashMap<String, Object>();
+//				int index = 1;
+//				for (String stickersData : list) {
+//					parameters.put("stickersData_" + index++, stickersData);
+//				}
+//				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+//				jasperPrints.add(jasperPrint);
+//			}
+			for (String stickersData : stickersList) {
 				Map<String, Object> parameters = new HashMap<String, Object>();
-				int index = 1;
-				for (String stickersData : list) {
-					parameters.put("stickersData_" + index++, stickersData);
-				}
+				parameters.put("stickersData", stickersData);
 				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
 				jasperPrints.add(jasperPrint);
 			}
@@ -131,6 +137,9 @@ public class StickersServiceImpl implements StickersService {
 			
 			if (CollectionUtils.isNotEmpty(dietPlanList)) {
 				for (DietPlan dietPlan : dietPlanList) {
+					if (dietPlan.getIsPaused()) {
+						continue;
+					}
 					StringBuilder stickers = new StringBuilder(1000);
 					stickers.append(dietPlan.getServiceMaster().getService() + BACKSLASH + dietPlan.getServiceMaster().getTimeStr() + BACKSLASH + stickersDate + BRTAG);
 					stickers.append(dietPlan.getPatient().getIpNumber() + BACKSLASH + "<b>" + dietPlan.getPatient().getBed().getBedCode() + "</b>" + BRTAG);

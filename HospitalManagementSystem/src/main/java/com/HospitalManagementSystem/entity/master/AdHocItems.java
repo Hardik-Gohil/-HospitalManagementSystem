@@ -52,6 +52,34 @@ public class AdHocItems {
 	@Column(columnDefinition = "ENUM('YES', 'NO')")
 	@Enumerated(EnumType.STRING)
 	private YesNo fatFree;
+	
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo extraLiquid;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo clearLiquids;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo allLiquidsOrally;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo bariatrics;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo rtFeeding;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo pegFeeding;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo ngFeeding;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo jjFeeding;
+	@Column(columnDefinition = "ENUM('YES', 'NO')")
+	@Enumerated(EnumType.STRING)
+	private YesNo clearLiquidsThroughTubeFeeding;
 
 	private Boolean isActive = Boolean.FALSE;
 }

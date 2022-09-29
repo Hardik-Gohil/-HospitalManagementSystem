@@ -124,7 +124,7 @@
       function format(d) {
     	    var returnStr = "No Record Found";
     	    if (Array.isArray(d.dietPlans)) {
-    	        returnStr = "<div class='card-body' style='padding: 5px 0px 0px 5px;'><table class='table table-bordered table-striped' style='width: auto;margin-left: 1%;'><thead><tr style='background: white;'><th>Service</th><th>Time</th><th>Diet Instruction</th><th>Item</th><th>Action</th></thead></tr><tbody>";
+    	        returnStr = "<div class='card-body' style='padding: 5px 0px 0px 5px;'><table class='table table-bordered table-striped' style='width: auto;margin-left: 1%;'><thead><tr style='background: white;'><th>Service</th><th>Time</th><th>Diet Instruction</th><th>Item</th><th>Action</th><th>Paused?</th></thead></tr><tbody>";
 
     	        for (let i = 0; i < d.dietPlans.length; i++) {
     	            returnStr += "<td>" + d.dietPlans[i].serviceMaster.service + "</td>";
@@ -145,7 +145,7 @@
     	            if (d.dietPlans[i].serviceMaster.serviceItemsColumnName != null) {
     	            	returnStr += "<td>" + '<input type="text" class="form-control" id="item_' + d.dietPlans[i].dietPlanId + '" value="' + (d.dietPlans[i].item == null ? "" : d.dietPlans[i].item) + '" size="70">' + "</td>";
     	            	if (isDietitian || isAdmin) {
-    	            		returnStr += "<td>" + '<button type="submit" id="saveItem_' + d.dietPlans[i].dietPlanId +'" class="btn btn-success waves-effect waves-light btn-sm">Save</button>' + "</td>";
+    	            		returnStr += "<td>" + '<button type="submit" id="saveItem_' + d.dietPlans[i].dietPlanId +'" class="save-btn btn btn-success waves-effect waves-light btn-sm">Save</button>' + "</td>";
     	            	} else {
     	            		returnStr += "<td> - </td>";
     	            	}
@@ -153,6 +153,11 @@
     	            	returnStr += "<td>" + "-" + "</td>";
     	            	returnStr += "<td>" + "-" + "</td>";
     	            }
+	            	if (isDietitian || isAdmin) {
+	            		returnStr += "<td>" + '<input type="checkbox" id="pauseItem_' + d.dietPlans[i].dietPlanId +'" class="pause_switch" ' + (d.dietPlans[i].isPaused ? 'checked="checked"' : '') + ' data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="danger" data-offstyle="success">' + "</td>";
+	            	} else {
+	            		returnStr += "<td>" + '<input type="checkbox" disabled="disabled" class="pause_switch" ' + (d.dietPlans[i].isPaused ? 'checked="checked"' : '') + ' data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="danger" data-offstyle="success">' + "</td>";
+	            	}
     	            returnStr += "</tr>";
     	        }
     	        returnStr += "</tbody></table></div>";
@@ -267,7 +272,9 @@
 		        "serverSide": true,
 		        "lengthMenu": [25, 50, 100, 200],
 		        "pageLength": 200,
-		        "fnDrawCallback": function() {},
+		        "fnDrawCallback": function() {
+		        	$(".pause_switch").bootstrapToggle();
+		        },
 		        'processing': true,
 		        'language': {
 		            'loadingRecords': '&nbsp;',
@@ -321,6 +328,7 @@
 		            row.child(format(row.data())).show();
 		            tr.addClass('dt-hasChild');
 		            tr.addClass('shown');
+		            $(".pause_switch").bootstrapToggle();
 		        }
 		    });
 
@@ -334,6 +342,7 @@
 		                this.child(format(this.data())).show();
 		                $(this.node()).addClass('shown');
 		                $(this.node()).addClass('dt-hasChild');
+		                $(".pause_switch").bootstrapToggle();
 		            }
 		        });
 		    });
@@ -353,7 +362,7 @@
 		    });
 		    
 		    
-        	$('#patients-table').on('click', 'tbody .btn-success', function(e) {
+        	$('#patients-table').on('click', 'tbody .save-btn', function(e) {
         		var dietPlanId = $(this).attr("id").split("_")[1];
         		var item = $("#item_" + dietPlanId).val();
         		var title_Text = "Are you sure, you want to update the item?";
@@ -386,6 +395,74 @@
             						Swal.fire({
             							icon: 'warning',
             							title: "You can not update the Item whose Delivery Date Time lapsed",
+            							showConfirmButton: false,
+            							timer: 1500
+            						})
+        						}        						
+        					},
+        					error: function() {
+        						Swal.fire({
+        							icon: 'warning',
+        							title: "Something went wrong",
+        							showConfirmButton: false,
+        							timer: 1500
+        						})
+        					}
+        				});
+
+        			}
+        		});
+        	})
+        	
+        	$('#patients-table').on('change', 'tbody .pause_switch', function(e) {
+        		var title_Text = "";
+        		var confirmButtonText_Text = "";
+        		var isPaused = false;
+        		if ($(this).is(":checked")) {
+        			$(this).bootstrapToggle('off', true);
+        			title_Text = "Are you sure, you want to Pause the service?";
+        			confirmButtonText_Text = "Yes, Pause it!";
+        			isPaused = true;
+        		} else {
+        			$(this).bootstrapToggle('on', true);
+        			title_Text = "Are you sure, you want to Resume the service?";
+        			confirmButtonText_Text = "Yes, Resume it!";
+        		}
+        		var toggle = $(this);
+        		var dietPlanId = $(this).attr("id").split("_")[1];
+        		Swal.fire({
+        			title: title_Text,	
+        			icon: 'warning',
+        			showCancelButton: true,
+        			confirmButtonColor: '#3085d6',
+        			cancelButtonColor: '#d33',
+        			confirmButtonText: confirmButtonText_Text
+        		}).then((result) => {
+        			if (result.isConfirmed) {
+        				var formData = "dietPlanId=" + dietPlanId + "&isPaused=" + isPaused; //Name value Pair             
+        				$.ajax({
+        					url: contextPath + "/diet/update-diet-plan-item-paused-unpaused",
+        					type: "POST",
+        					data: formData,
+        					success: function(data) {
+        						if (data == "Item has been updated") {
+            						Swal.fire({
+            							icon: 'success',
+            							title: "Service has been updated",
+            							showConfirmButton: false,
+            							timer: 1500
+            						}).then((result) => {
+            							if (isPaused) {
+            								toggle.bootstrapToggle('on', true);
+            							} else {
+            								toggle.bootstrapToggle('off', true);
+            							}
+//             							patientsTable.ajax.reload();
+            						})
+        						} else {
+            						Swal.fire({
+            							icon: 'warning',
+            							title: "You can not update the Service whose Delivery Date Time lapsed",
             							showConfirmButton: false,
             							timer: 1500
             						})

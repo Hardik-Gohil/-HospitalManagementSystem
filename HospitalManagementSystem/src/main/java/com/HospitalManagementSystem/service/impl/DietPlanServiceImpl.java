@@ -134,6 +134,7 @@ public class DietPlanServiceImpl implements DietPlanService {
 			dietPlan.setOriginalItem(previousDietPlan.isPresent() ? previousDietPlan.get().getOriginalItem() : dietPlan.getServiceItems().stream().map(si -> si.getItemName()).collect(Collectors.joining(", ")));
 			dietPlan.setItem(previousDietPlan.isPresent() ? previousDietPlan.get().getItem() : dietPlan.getOriginalItem());
 		}
+		dietPlan.setIsPaused(previousDietPlan.isPresent() ? previousDietPlan.get().getIsPaused() : false);
 		dietPlan.setCreatedOn(now);
 		dietPlan.setDietDate(dietDate);
 		dietPlan.setCreatedBy(ObjectUtils.isNotEmpty(currentUser) ? currentUser.getUserId() : null);
@@ -217,4 +218,39 @@ public class DietPlanServiceImpl implements DietPlanService {
 		return ResponseEntity.badRequest().body("Diet Plan not found");
 	}
 
+	
+	@Override
+	public ResponseEntity<String> updateDietPlanPausedUnpaused(Long dietPlanId, boolean isPaused) {
+		boolean isValid = true;
+		LocalDateTime now = LocalDateTime.now();
+		User currentUser = commonUtility.getCurrentUser();
+		Optional<DietPlan> dietPlan = dietPlanRepository.findById(dietPlanId);
+		if (dietPlan.isPresent()) {
+			DietPlan dietPlanEntity = dietPlan.get();
+			if (now.isAfter(dietPlanEntity.getDietDate().atTime(dietPlanEntity.getServiceMaster().getFromTime()))) {
+				isValid = false;
+				return ResponseEntity.ok().body("You can not update the Item whose Delivery Date Time lapsed");
+			}
+			
+			if (isValid) {
+				dietPlanEntity.setIsPaused(isPaused);
+				dietPlanEntity.setModifiedOn(LocalDateTime.now());
+				dietPlanEntity.setModifiedBy(currentUser.getUserId());
+				dietPlanEntity.setModifiedUserHistoryId(currentUser.getCurrenUserHistoryId());
+				dietPlanRepository.save(dietPlanEntity);
+				
+				Optional<DietPlan> dietPlanForTomorrow = dietPlanRepository.findByServiceMasterServiceMasterIdAndPatientPatientIdAndDietDate(dietPlanEntity.getServiceMaster().getServiceMasterId(), dietPlanEntity.getPatient().getPatientId(), dietPlanEntity.getDietDate().plusDays(1));
+				if (dietPlanForTomorrow.isPresent()) {
+					DietPlan dietPlanEntityForTomorrow = dietPlanForTomorrow.get();
+					dietPlanEntityForTomorrow.setIsPaused(isPaused);
+					dietPlanEntityForTomorrow.setModifiedOn(LocalDateTime.now());
+					dietPlanEntityForTomorrow.setModifiedBy(currentUser.getUserId());
+					dietPlanEntityForTomorrow.setModifiedUserHistoryId(currentUser.getCurrenUserHistoryId());
+					dietPlanRepository.save(dietPlanEntityForTomorrow);
+				}
+				return ResponseEntity.ok().body("Item has been updated");
+			}
+		}
+		return ResponseEntity.badRequest().body("Diet Plan not found");
+	}
 }

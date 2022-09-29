@@ -278,6 +278,24 @@ public class DietUtility {
 				} else if (patient.getDietTypeOralSolid().getDietTypeOralSolidId() == 3) {
 					predicates.add(criteriaBuilder.equal(root.get("semiSolidDiet"), YesNo.YES));
 				}
+			} else if (ObjectUtils.isNotEmpty(patient.getDietSubType())) {
+				if (patient.getDietSubType().getDietSubTypeId() == 1) {
+					predicates.add(criteriaBuilder.equal(root.get("clearLiquids"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 2) {
+					predicates.add(criteriaBuilder.equal(root.get("allLiquidsOrally"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 3) {
+					predicates.add(criteriaBuilder.equal(root.get("bariatrics"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 4) {
+					predicates.add(criteriaBuilder.equal(root.get("rtFeeding"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 5) {
+					predicates.add(criteriaBuilder.equal(root.get("pegFeeding"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 6) {
+					predicates.add(criteriaBuilder.equal(root.get("ngFeeding"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 7) {
+					predicates.add(criteriaBuilder.equal(root.get("jjFeeding"), YesNo.YES));
+				} else if (patient.getDietSubType().getDietSubTypeId() == 8) {
+					predicates.add(criteriaBuilder.equal(root.get("clearLiquidsThroughTubeFeeding"), YesNo.YES));
+				}	
 			} else if (patient.getNbm()) {
 				predicates.add(criteriaBuilder.equal(root.get("fullDiet"), YesNo.NO));
 				predicates.add(criteriaBuilder.equal(root.get("softDiet"), YesNo.NO));

@@ -198,7 +198,7 @@
         				if (type === "sort" || type === "filter" || type === 'type') {
         					return (data ? 'Yes' : 'No');
         				} else {
-        					var checkbox = '<input type="checkbox" class="chargable_switch" ' + (data ? 'checked="checked"' : '') + ' data-toggle="toggle" data-size="xs" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">';
+        					var checkbox = '<input type="checkbox" class="chargable_switch" ' + (data ? 'checked="checked"' : '') + ' data-toggle="toggle" data-size="sm" data-on="Yes" data-off="No" data-onstyle="success" data-offstyle="danger">';
         					return checkbox;
         				}
         			}

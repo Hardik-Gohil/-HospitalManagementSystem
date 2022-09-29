@@ -49,6 +49,8 @@ public class DietPlan {
 	private String originalItem;
 
 	private LocalDate dietDate;
+	
+	private Boolean isPaused = Boolean.FALSE;
 
 	private LocalDateTime createdOn;
 

@@ -156,6 +156,12 @@ public class DietPlanController {
 		return dietPlanService.updateDietPlanItem(dietPlanId, item);
 	}
 	
+	@PostMapping("/update-diet-plan-item-paused-unpaused")
+	@ResponseBody
+	public ResponseEntity<String> updateDietPlanPausedUnpaused(@RequestParam("dietPlanId") Long dietPlanId, @RequestParam("isPaused") boolean isPaused) {
+		return dietPlanService.updateDietPlanPausedUnpaused(dietPlanId, isPaused);
+	}
+	
 	@GetMapping("/adhoc-order")
 	public String adHocOrder(@RequestParam("patientId") Long patientId, @RequestParam(name = "immediateService", required = false) Boolean immediateService, Model model) {
 		return adHocOrderService.getAdHocOrder(patientId, immediateService, model);
