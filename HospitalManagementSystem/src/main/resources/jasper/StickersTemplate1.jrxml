@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.13.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Stickers" pageWidth="142" pageHeight="170" columnWidth="142" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5d5de3eb-9058-4d96-9e00-1ce101f7b641">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Stickers" pageWidth="170" pageHeight="142" columnWidth="170" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5d5de3eb-9058-4d96-9e00-1ce101f7b641">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="fs-8-al" hTextAlign="Left" fontSize="8"/>
 	<parameter name="stickersData" class="java.lang.String"/>
@@ -8,9 +8,9 @@
 		<band splitType="Stretch"/>
 	</background>
 	<detail>
-		<band height="170" splitType="Stretch">
+		<band height="142" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
-				<reportElement style="fs-8-al" x="0" y="0" width="142" height="170" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+				<reportElement style="fs-8-al" x="0" y="0" width="170" height="142" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
 				<textElement markup="styled"/>
 				<textFieldExpression><![CDATA[$P{stickersData} != null && !$P{stickersData}.equals("") ? $P{stickersData} : ""]]></textFieldExpression>
