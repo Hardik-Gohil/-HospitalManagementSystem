@@ -11,7 +11,7 @@
 		<band height="142" splitType="Stretch">
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="0" width="170" height="142" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
-				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
+				<box topPadding="1" leftPadding="7" bottomPadding="1" rightPadding="1"/>
 				<textElement markup="styled"/>
 				<textFieldExpression><![CDATA[$P{stickersData} != null && !$P{stickersData}.equals("") ? $P{stickersData} : ""]]></textFieldExpression>
 			</textField>

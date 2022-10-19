@@ -384,6 +384,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 				return ResponseEntity.ok().body("{\"status\":\"bedcd not matched\"}");
 			}
 			Patient patientEntity = patientRepository.findByIpNumber(patientDto.getIpNumber());	
+			Long oldBedId = patientEntity.getBed().getBedId();
 			Patient savePatient = modelMapper.map(patientDto, Patient.class);
 			if(ObjectUtils.isNotEmpty(patientEntity)) {
 				savePatient = patientEntity;
@@ -393,7 +394,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 				savePatient.setModifiedBy(0l);
 				savePatient.setModifiedUserHistoryId(0l);
 				savePatient = save(savePatient);
-				notificationsService.sendPatientTransferred(savePatient.getPatientId(), patientDto.getBed().getBedId());
+				notificationsService.sendPatientTransferred(savePatient.getPatientId(), oldBedId);
 				return ResponseEntity.ok().body("{\"status\":\"sucess\"}");
 			} 
 		} catch (Exception e) {

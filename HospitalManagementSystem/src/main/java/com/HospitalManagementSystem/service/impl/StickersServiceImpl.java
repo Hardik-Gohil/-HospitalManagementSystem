@@ -141,7 +141,7 @@ public class StickersServiceImpl implements StickersService {
 						continue;
 					}
 					StringBuilder stickers = new StringBuilder(1000);
-					stickers.append(dietPlan.getServiceMaster().getService() + BACKSLASH + dietPlan.getServiceMaster().getTimeStr() + BACKSLASH + stickersDate + BRTAG);
+					stickers.append(dietPlan.getServiceMaster().getService() + BACKSLASH + dietPlan.getServiceMaster().getTimeStr() + BACKSLASH + stickersDate.format(CommonUtility.localDateFormatterSticker) + BRTAG);
 					stickers.append(dietPlan.getPatient().getIpNumber() + BACKSLASH + "<b>" + dietPlan.getPatient().getBed().getBedCode() + "</b>" + BRTAG);
 					stickers.append("<b>" + dietPlan.getPatient().getPatientName()+ "</b>" + BRTAG);
 					if(dietTypeSolid.contains(serviceMasterId)) {

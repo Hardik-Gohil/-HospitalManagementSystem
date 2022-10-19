@@ -62,7 +62,7 @@
 									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="doctor">Doctor Name</label><span class="text-danger">*</span>
-											<form:input cssClass="form-control" id="doctor" path="doctor" readonly="${patientDto.patientId ge 0}"></form:input>
+											<form:input cssClass="form-control" id="doctor" path="doctor"></form:input>
 										</fieldset>
 									</div>
 								</div>
@@ -232,13 +232,13 @@
 								</div>
 								<c:if test="${patientDto.patientStatus ne 2}">
 									<c:if test="${isNursing || isDietitian || isAdmin}">
-										<button type="submit" class="btn btn-success waves-effect waves-light" onclick="changeImmediateService('FALSE')">Submit</button>
+										<button type="submit" class="submitBtn btn btn-success waves-effect waves-light" onclick="changeImmediateService('FALSE')">Submit</button>
 									</c:if>
 									<a href="${contextPath}/diet/patients">
 										<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
 									</a>	
 									<c:if test="${isNursing || isDietitian || isAdmin}">								
-										<button type="submit" class="btn btn-primary waves-effect waves-light" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
+										<button type="submit" class="submitBtn btn btn-primary waves-effect waves-light" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
 									</c:if>
 								</c:if>
 								<c:if test="${patientDto.patientStatus eq 2}">
@@ -600,6 +600,10 @@
 		                maxlength: "Max 150 characters allowed",
 		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
 		            }
+		        },
+		        submitHandler: function(form) { // <- pass 'form' argument in
+		            $(".submitBtn").attr("disabled", "disabled");
+		            form.submit(); // <- use 'form' argument here.
 		        }
 		    });
 		});
