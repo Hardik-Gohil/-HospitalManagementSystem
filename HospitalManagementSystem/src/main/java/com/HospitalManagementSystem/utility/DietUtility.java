@@ -38,22 +38,26 @@ public class DietUtility {
 	public Specification<ServiceMaster> getServiceMasterSpecification(Patient patient, List<Long> dailyServiceMaster) {
 		Specification<ServiceMaster> specification = (root, query, criteriaBuilder) -> {
 			List<LocalTime> fromTimeList = new ArrayList<>();
-			List<Predicate> predicates = new ArrayList<>();
+//			List<Predicate> predicates = new ArrayList<>();
+			Predicate predicateDietTypeOralSolid = null;
+			Predicate predicateExtraLiquid = null;
+			Predicate predicateDietSubType =  null;
+			Predicate predicateDietSubTypeFinal =  null;
 			if (ObjectUtils.isNotEmpty(patient.getDietTypeOralSolid())) {
 				// 1 Full Diet
 				// 2 Soft Diet
 				// 3 Semi Solid Diet
 				if (patient.getDietTypeOralSolid().getDietTypeOralSolidId() == 1) {
-					predicates.add(criteriaBuilder.equal(root.get("fullDiet"), YesNo.YES));
+					predicateDietTypeOralSolid = criteriaBuilder.equal(root.get("fullDiet"), YesNo.YES);
 				} else if (patient.getDietTypeOralSolid().getDietTypeOralSolidId() == 2) {
-					predicates.add(criteriaBuilder.equal(root.get("softDiet"), YesNo.YES));
+					predicateDietTypeOralSolid = criteriaBuilder.equal(root.get("softDiet"), YesNo.YES);
 				} else if (patient.getDietTypeOralSolid().getDietTypeOralSolidId() == 3) {
-					predicates.add(criteriaBuilder.equal(root.get("semiSolidDiet"), YesNo.YES));
+					predicateDietTypeOralSolid = criteriaBuilder.equal(root.get("semiSolidDiet"), YesNo.YES);
 				}
 			}
 
 			if (patient.getExtraLiquid()) {
-				predicates.add(criteriaBuilder.equal(root.get("extraLiquid"), YesNo.YES));
+				predicateExtraLiquid = criteriaBuilder.equal(root.get("extraLiquid"), YesNo.YES);
 			}
 
 			if (ObjectUtils.isNotEmpty(patient.getDietSubType())) {
@@ -66,21 +70,21 @@ public class DietUtility {
 				// 7 JJ FEEDING
 				// 8 CLEAR LIQUIDS THROUGH TUBE FEEDING
 				if (patient.getDietSubType().getDietSubTypeId() == 1) {
-					predicates.add(criteriaBuilder.equal(root.get("clearLiquids"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("clearLiquids"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 2) {
-					predicates.add(criteriaBuilder.equal(root.get("allLiquidsOrally"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("allLiquidsOrally"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 3) {
-					predicates.add(criteriaBuilder.equal(root.get("bariatrics"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("bariatrics"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 4) {
-					predicates.add(criteriaBuilder.equal(root.get("rtFeeding"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("rtFeeding"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 5) {
-					predicates.add(criteriaBuilder.equal(root.get("pegFeeding"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("pegFeeding"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 6) {
-					predicates.add(criteriaBuilder.equal(root.get("ngFeeding"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("ngFeeding"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 7) {
-					predicates.add(criteriaBuilder.equal(root.get("jjFeeding"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("jjFeeding"), YesNo.YES);
 				} else if (patient.getDietSubType().getDietSubTypeId() == 8) {
-					predicates.add(criteriaBuilder.equal(root.get("clearLiquidsThroughTubeFeeding"), YesNo.YES));
+					predicateDietSubType = criteriaBuilder.equal(root.get("clearLiquidsThroughTubeFeeding"), YesNo.YES);
 				}
 				
 				if (ObjectUtils.isEmpty(patient.getDietSubType().getFromTime())) {
@@ -98,15 +102,26 @@ public class DietUtility {
 				}
 			}
 			List<Predicate> finalPredicates = new ArrayList<>();
-			finalPredicates.add(criteriaBuilder.equal(root.get("isActive"), Boolean.TRUE));
+//			finalPredicates.add();
 //			if (CollectionUtils.isNotEmpty(dailyServiceMaster)) {
 //				finalPredicates.add(root.get("serviceMasterId").in(dailyServiceMaster).not());
 //			}
-			if (CollectionUtils.isNotEmpty(fromTimeList)) {
-				finalPredicates.add(root.get("fromTime").in(fromTimeList));
+			if (CollectionUtils.isNotEmpty(fromTimeList) && ObjectUtils.isNotEmpty(predicateDietSubType)) {
+				predicateDietSubTypeFinal = criteriaBuilder.and(root.get("fromTime").in(fromTimeList), predicateDietSubType);
 			}		
-			finalPredicates.add(criteriaBuilder.or(predicates.toArray(new Predicate[0])));
-			return criteriaBuilder.and(finalPredicates.toArray(new Predicate[0]));
+			
+			if (ObjectUtils.isNotEmpty(predicateDietTypeOralSolid)) {
+				finalPredicates.add(predicateDietTypeOralSolid);
+			}
+			
+			if (ObjectUtils.isNotEmpty(predicateExtraLiquid)) {
+				finalPredicates.add(predicateExtraLiquid);
+			}
+			
+			if (ObjectUtils.isNotEmpty(predicateDietSubTypeFinal)) {
+				finalPredicates.add(predicateDietSubTypeFinal);
+			}	
+			return criteriaBuilder.and(criteriaBuilder.equal(root.get("isActive"), Boolean.TRUE), criteriaBuilder.or(finalPredicates.toArray(new Predicate[0])));
 		};
 		return specification;
 	}

@@ -250,7 +250,6 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 			savePatient.setAge(patientEntity.getAge());
 			savePatient.setGender(patientEntity.getGender());
 			savePatient.setAllergicto(patientEntity.getAllergicto());
-			savePatient.setDoctor(patientEntity.getDoctor());
 			savePatient.setAdmissionType(patientEntity.getAdmissionType());
 			savePatient.setProcedureStr(patientEntity.getProcedureStr());
 			savePatient.setPaymentType(patientEntity.getPaymentType());
