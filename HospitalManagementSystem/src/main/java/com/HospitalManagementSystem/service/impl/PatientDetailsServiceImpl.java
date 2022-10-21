@@ -484,7 +484,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	public String checkUniqueIpNumber(String ipNumber, Long patientId) {
 		try {
 			Patient patient = patientRepository.findByIpNumber(ipNumber);
-			if (ObjectUtils.isEmpty(patient) || patient.getPatientId() == patientId) {
+			if (ObjectUtils.isEmpty(patient) || patient.getPatientId().equals(patientId)) {
 				return "true";
 			}
 		} catch (Exception e) {

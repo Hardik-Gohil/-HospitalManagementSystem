@@ -202,14 +202,16 @@ public class Patient {
 	}
 
 	public String getSpecialNotesByNursingString() {
-		this.setSpecialNotesByNursingString(StringUtils.isEmpty(specialNotesByNursingString) && CollectionUtils.isNotEmpty(specialNotesByNursing)
-				? specialNotesByNursing.stream().map(x -> String.valueOf(x.getValue())).collect(Collectors.joining(", "))
-				: specialNotesByNursingString);
-		if (StringUtils.isNotEmpty(othersSpecialNotesByNursing)) {
-			if (StringUtils.isNotEmpty(specialNotesByNursingString)) {
-				this.setSpecialNotesByNursingString(specialNotesByNursingString + ", " + othersSpecialNotesByNursing);
-			} else {
-				this.setSpecialNotesByNursingString(othersSpecialNotesByNursing);
+		if (StringUtils.isEmpty(specialNotesByNursingString)) {
+			this.setSpecialNotesByNursingString(StringUtils.isEmpty(specialNotesByNursingString) && CollectionUtils.isNotEmpty(specialNotesByNursing)
+					? specialNotesByNursing.stream().map(x -> String.valueOf(x.getValue())).collect(Collectors.joining(", "))
+					: specialNotesByNursingString);
+			if (StringUtils.isNotEmpty(othersSpecialNotesByNursing)) {
+				if (StringUtils.isNotEmpty(specialNotesByNursingString)) {
+					this.setSpecialNotesByNursingString(specialNotesByNursingString + ", " + othersSpecialNotesByNursing);
+				} else {
+					this.setSpecialNotesByNursingString(othersSpecialNotesByNursing);
+				}
 			}
 		}
 		return specialNotesByNursingString;

@@ -299,6 +299,7 @@
 		
 		function nbmChange() {
 		    if ($("#nbm").val() == "true") {
+		    	$("#extraLiquid").val("false");
 		        $("#dietTypeOralSolid").attr("disabled", true);
 		        $("#extraLiquid").attr("disabled", true);
 		        $("#dietTypeOralLiquidTF").attr("disabled", true);
@@ -317,45 +318,52 @@
 		}
 
 		function extraLiquidChange() {
-		    if ($("#extraLiquid").val() == "true") {
-		        $("#dietTypeOralLiquidTF").attr("disabled", true);
-		        $("#dietSubType").attr("disabled", true);
-		        $("#quantity").attr("disabled", true);
-		        $("#frequency").attr("disabled", true);
-		        $("#dietTypeOralLiquidTF").val("");
-		        $("#dietSubType").val("");
-		        dietTypeOralLiquidTFChange();
-		    } else {
-		        $("#dietTypeOralLiquidTF").attr("disabled", false);
-		        $("#dietSubType").attr("disabled", false);
-		        $("#quantity").attr("disabled", false);
-		        $("#frequency").attr("disabled", false);
-		    }
+			if (!$("#extraLiquid").is(':disabled')) {
+			    if ($("#extraLiquid").val() == "true") {
+			        $("#dietTypeOralLiquidTF").attr("disabled", true);
+			        $("#dietSubType").attr("disabled", true);
+			        $("#quantity").attr("disabled", true);
+			        $("#frequency").attr("disabled", true);
+			        $("#dietTypeOralLiquidTF").val("");
+			        $("#dietSubType").val("");
+			        dietTypeOralLiquidTFChange();
+			    } else {
+			        $("#dietTypeOralLiquidTF").attr("disabled", false);
+			        $("#dietSubType").attr("disabled", false);
+			        $("#quantity").attr("disabled", false);
+			        $("#frequency").attr("disabled", false);
+			    }
+			}
 		    $('.selectpicker').selectpicker('refresh');
 		}
 		
 		function dietTypeOralLiquidTFChange() {
-		    if ($("#dietTypeOralLiquidTF").val() == "") {
-		    	$("#extraLiquid").attr("disabled", false);
-		        $("#dietTypeOralLiquidTF_row").hide();
-		        $("#dietSubType").attr("disabled", true);
-		        $("#quantity").attr("disabled", true);
-		        $("#frequency").attr("disabled", true);
-		    } else {
-		    	$("#extraLiquid").attr("disabled", true);
-		        $("#dietTypeOralLiquidTF_row").show();
-		        $("#dietSubType").attr("disabled", false);
-		        $("#quantity").attr("disabled", false);
-		        $("#frequency").attr("disabled", false);
-		        $("#dietSubType").val("");
-		        $(".dietSubType_options").each(function() {
-		            if ($(this).attr("data-dietTypeOralLiquidTF") == $("#dietTypeOralLiquidTF").val()) {
-		                $(this).show();
-		            } else {
-		                $(this).hide();
-		            }
-		        });
-		    }
+			if (!$("#dietTypeOralLiquidTF").is(':disabled')) {
+			    if ($("#dietTypeOralLiquidTF").val() == "") {
+			    	$("#extraLiquid").attr("disabled", false);
+			        $("#dietTypeOralLiquidTF_row").hide();
+			        $("#dietSubType").attr("disabled", true);
+			        $("#quantity").attr("disabled", true);
+			        $("#frequency").attr("disabled", true);
+			    } else {
+			    	$("#extraLiquid").val("false");
+			    	$("#extraLiquid").attr("disabled", true);
+			        $("#dietTypeOralLiquidTF_row").show();
+			        $("#dietSubType").attr("disabled", false);
+			        $("#quantity").attr("disabled", false);
+			        $("#frequency").attr("disabled", false);
+			        $("#dietSubType").val("");
+			        $(".dietSubType_options").each(function() {
+			            if ($(this).attr("data-dietTypeOralLiquidTF") == $("#dietTypeOralLiquidTF").val()) {
+			                $(this).show();
+			            } else {
+			                $(this).hide();
+			            }
+			        });
+			    }
+			} else {
+				$("#dietTypeOralLiquidTF_row").hide();
+			}
 		    $('.selectpicker').selectpicker('refresh');
 		}
 
@@ -409,8 +417,9 @@
 		    	 $('#admittedDate').data('daterangepicker').setStartDate(moment().format(dateFormat));
 		    }
 		    bedChange();
-		    dietTypeOralLiquidTFChange();
 		    nbmChange();
+		    extraLiquidChange();
+		    dietTypeOralLiquidTFChange();
 		    specialNotesByNursingChange();
 		    <c:if test="${not empty patientDto.dietSubType.dietSubTypeId}">
 		   		$("#dietSubType").val("${patientDto.dietSubType.dietSubTypeId}"); 

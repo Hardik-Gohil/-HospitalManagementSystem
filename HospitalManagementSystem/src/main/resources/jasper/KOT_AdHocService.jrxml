@@ -41,6 +41,9 @@
 	<field name="dietTypeOralLiquidTFValue" class="java.lang.String">
 		<fieldDescription><![CDATA[patient.dietTypeOralLiquidTF.value]]></fieldDescription>
 	</field>
+	<field name="dietSubTypeValue" class="java.lang.String">
+		<fieldDescription><![CDATA[patient.dietSubType.value]]></fieldDescription>
+	</field>
 	<field name="medicalComorbiditiesString" class="java.lang.String">
 		<fieldDescription><![CDATA[patient.medicalComorbiditiesString]]></fieldDescription>
 	</field>
@@ -169,7 +172,7 @@
 						<rightPen lineWidth="1.0" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{dietTypeOralSolidValue}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[($F{dietTypeOralSolidValue} != null && !$F{dietTypeOralSolidValue}.equals("") ? $F{dietTypeOralSolidValue} + ($F{dietTypeOralLiquidTFValue} != null && !$F{dietTypeOralLiquidTFValue}.equals("") ? " | ": "" ) : "") + ($F{dietTypeOralLiquidTFValue} != null && !$F{dietTypeOralLiquidTFValue}.equals("") ? $F{dietTypeOralLiquidTFValue} : "")]]></textFieldExpression>
 				</textField>
 			</elementGroup>
 			<elementGroup>
@@ -212,7 +215,7 @@
 						<rightPen lineWidth="1.0" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{dietTypeOralLiquidTFValue}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{dietSubTypeValue} != null && !$F{dietSubTypeValue}.equals("") ? $F{dietSubTypeValue} : ""]]></textFieldExpression>
 				</textField>
 			</elementGroup>
 		</band>

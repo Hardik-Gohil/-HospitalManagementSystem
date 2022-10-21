@@ -1,6 +1,6 @@
 <header class="main-header">
 	<!-- Logo --> 
-	<a href="index.html" class="logo blue-bg">
+	<a href="#" class="logo blue-bg">
 		<!-- mini logo for sidebar mini 50x50 pixels --> 
 		<span class="logo-mini"><img src="${contextPath}/resources/dist/img/favicon.ico" alt=""></span> 
 		<!-- logo for regular state and mobile devices --> 
