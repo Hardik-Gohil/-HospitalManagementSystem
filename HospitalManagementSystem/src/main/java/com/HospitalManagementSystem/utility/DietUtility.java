@@ -99,6 +99,9 @@ public class DietUtility {
 				while (fromTime.isBefore(toTime)) {
 					fromTimeList.add(fromTime.toLocalTime());
 					fromTime = fromTime.plusHours(patient.getFrequency().getValue());
+					if (LocalDate.now().plusDays(1).atStartOfDay().isEqual(fromTime)) {
+						fromTime = fromTime.minusMinutes(1);
+					}
 				}
 			}
 			List<Predicate> finalPredicates = new ArrayList<>();

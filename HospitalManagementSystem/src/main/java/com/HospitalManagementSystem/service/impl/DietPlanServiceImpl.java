@@ -84,7 +84,10 @@ public class DietPlanServiceImpl implements DietPlanService {
 		if (CollectionUtils.isNotEmpty(patientList)) {
 			LocalDateTime now = LocalDateTime.now();
 			Map<String, List<ServiceItems>> serviceItemsMap = dietUtility.getServiceItemsMap();
-			List<DietPlan> previousDietPlanList = dietPlanRepository.findAllByDietDate(now.toLocalDate());
+			List<DietPlan> previousDietPlanList = new ArrayList<>();
+			if (prepareAll) {
+				previousDietPlanList = dietPlanRepository.findAllByDietDate(now.toLocalDate());
+			}
 			for (Patient patient : patientList) {
 				if (!prepareAll) {
 					List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndServiceMasterFromTimeGreaterThan(patient.getPatientId(), now.toLocalTime());

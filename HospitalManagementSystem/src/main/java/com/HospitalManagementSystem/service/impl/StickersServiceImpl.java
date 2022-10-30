@@ -145,28 +145,28 @@ public class StickersServiceImpl implements StickersService {
 					stickers.append(dietPlan.getPatient().getIpNumber() + BACKSLASH + "<b>" + dietPlan.getPatient().getBed().getBedCode() + "</b>" + BRTAG);
 					stickers.append("<b>" + dietPlan.getPatient().getPatientName()+ "</b>" + BRTAG);
 					if(dietTypeSolid.contains(serviceMasterId)) {
-						stickers.append(dietPlan.getPatient().getDietTypeOralSolid().getValue() + BACKSLASH + dietPlan.getPatient().getMedicalComorbiditiesString() + BRTAG);
+						stickers.append((ObjectUtils.isNotEmpty(dietPlan.getPatient().getDietTypeOralSolid()) ? dietPlan.getPatient().getDietTypeOralSolid().getValue() : "") + BACKSLASH + dietPlan.getPatient().getMedicalComorbiditiesString() + BRTAG);
 					}
 					if (extraLiquid.contains(serviceMasterId)) {
-						stickers.append(dietPlan.getPatient().getDietTypeOralSolid().getValue() + BACKSLASH + dietPlan.getPatient().getMedicalComorbiditiesString() + BACKSLASH + dietPlan.getItem() + BRTAG);
+						stickers.append((ObjectUtils.isNotEmpty(dietPlan.getPatient().getDietTypeOralSolid()) ? dietPlan.getPatient().getDietTypeOralSolid().getValue() : "") + BACKSLASH + dietPlan.getPatient().getMedicalComorbiditiesString() + BACKSLASH + dietPlan.getItem() + BRTAG);
 					}
 					if(dietTypeLiquidOralTF.contains(serviceMasterId)) {
 						String proteinCalories = "";
 						if (CollectionUtils.isNotEmpty(dietPlan.getServiceItems()) && dietPlan.getServiceItems().size() == 1
 								&& StringUtils.equalsAnyIgnoreCase(StringUtils.stripToEmpty(dietPlan.getItem()), StringUtils.stripToEmpty(dietPlan.getOriginalItem()))) {
 							ServiceItems serviceItems = dietPlan.getServiceItems().get(0);
-							if (ObjectUtils.isNotEmpty(serviceItems.getCalories()) && ObjectUtils.isNotEmpty(serviceItems.getProtien())) {
+							if (ObjectUtils.isNotEmpty(dietPlan.getPatient().getQuantity()) && ObjectUtils.isNotEmpty(serviceItems.getCalories()) && ObjectUtils.isNotEmpty(serviceItems.getProtien())) {
 								BigDecimal multiplicand = new BigDecimal(dietPlan.getPatient().getQuantity().getValue() / 5);
 								proteinCalories = "P:" + serviceItems.getProtien().multiply(multiplicand).setScale(2, RoundingMode.HALF_EVEN) + " gms ";	
 								proteinCalories += "C:" + serviceItems.getCalories().multiply(multiplicand).setScale(2, RoundingMode.HALF_EVEN) + " kcal " + PIPE;	
 							}
 						}
 						
-						stickers.append(dietPlan.getPatient().getDietTypeOralLiquidTF().getValue() + BACKSLASH
-								+ dietPlan.getPatient().getDietSubType().getValue() + BACKSLASH
+						stickers.append((ObjectUtils.isNotEmpty(dietPlan.getPatient().getDietTypeOralLiquidTF()) ? dietPlan.getPatient().getDietTypeOralLiquidTF().getValue() : "") + BACKSLASH
+								+ (ObjectUtils.isNotEmpty(dietPlan.getPatient().getDietSubType()) ? dietPlan.getPatient().getDietSubType().getValue() : "") + BACKSLASH
 								+ dietPlan.getPatient().getMedicalComorbiditiesString() + BACKSLASH + dietPlan.getItem()
-								+ PIPE  + proteinCalories + dietPlan.getPatient().getQuantity().getValueStr() + BACKSLASH
-								+ dietPlan.getPatient().getFrequency().getValueStr() + BRTAG);
+								+ PIPE  + proteinCalories +  (ObjectUtils.isNotEmpty(dietPlan.getPatient().getQuantity()) ? dietPlan.getPatient().getQuantity().getValueStr() : "") + BACKSLASH
+								+ (ObjectUtils.isNotEmpty(dietPlan.getPatient().getFrequency()) ? dietPlan.getPatient().getFrequency().getValueStr() : "") + BRTAG);
 					}
 					if (CollectionUtils.isNotEmpty(dietPlan.getDietInstructions())) {
 						stickers.append(dietPlan.getDietInstructions().stream().map(di -> di.getInstruction()).collect(Collectors.joining(", ")));

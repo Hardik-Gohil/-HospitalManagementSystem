@@ -54,7 +54,7 @@
 										<fieldset class="form-group">
 											<label for="serviceType">Service Type:</label><span class="text-danger">*</span>
 											<div class="radio">
-											<label><input type="radio" name="serviceType" id="serviceType1" value="1"> Immediate Service </label>
+											<label><input type="radio" name="serviceType" id="serviceType1" value="1" <c:if test="${patient.nbm}">disabled="disabled"</c:if>> Immediate Service </label>
 											<label><input type="radio" name="serviceType" id="serviceType2" value="2"> AdHoc Service </label>
 											</div>
 										</fieldset>	

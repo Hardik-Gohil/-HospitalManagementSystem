@@ -238,7 +238,7 @@
 										<button type="button" class="btn btn-inverse waves-effect waves-light">Cancel</button>
 									</a>	
 									<c:if test="${isNursing || isDietitian || isAdmin}">								
-										<button type="submit" class="submitBtn btn btn-primary waves-effect waves-light" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
+										<button type="submit" class="submitBtn btn btn-primary waves-effect waves-light" id="startServiceImmediately" onclick="changeImmediateService('TRUE')">Start Service Immediately</button>
 									</c:if>
 								</c:if>
 								<c:if test="${patientDto.patientStatus eq 2}">
@@ -306,6 +306,7 @@
 		        $("#dietSubType").attr("disabled", true);
 		        $("#quantity").attr("disabled", true);
 		        $("#frequency").attr("disabled", true);
+		        $("#startServiceImmediately").hide();
 		    } else {
 		        $("#dietTypeOralSolid").attr("disabled", false);
 		        $("#extraLiquid").attr("disabled", false);
@@ -313,6 +314,7 @@
 		        $("#dietSubType").attr("disabled", false);
 		        $("#quantity").attr("disabled", false);
 		        $("#frequency").attr("disabled", false);
+		        $("#startServiceImmediately").show();
 		    }
 		    $('.selectpicker').selectpicker('refresh');
 		}
