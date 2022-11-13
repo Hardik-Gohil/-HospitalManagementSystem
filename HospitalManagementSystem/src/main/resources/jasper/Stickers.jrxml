@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.13.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Stickers" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="24" bottomMargin="26" uuid="5d5de3eb-9058-4d96-9e00-1ce101f7b641">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<style name="fs-8-al" hTextAlign="Left" fontSize="8"/>
+	<style name="fs-8-al" hTextAlign="Left" fontSize="8" pdfFontName="Helvetica" isPdfEmbedded="false"/>
 	<parameter name="stickersData_1" class="java.lang.String"/>
 	<parameter name="stickersData_2" class="java.lang.String"/>
 	<parameter name="stickersData_3" class="java.lang.String"/>
@@ -29,109 +29,109 @@
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="0" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_1} != null && !$P{stickersData_1}.equals("") ? $P{stickersData_1} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="188" y="0" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_2} != null && !$P{stickersData_2}.equals("") ? $P{stickersData_2} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="376" y="0" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_3} != null && !$P{stickersData_3}.equals("") ? $P{stickersData_3} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="132" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_4} != null && !$P{stickersData_4}.equals("") ? $P{stickersData_4} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="188" y="132" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_5} != null && !$P{stickersData_5}.equals("") ? $P{stickersData_5} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="376" y="132" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_6} != null && !$P{stickersData_6}.equals("") ? $P{stickersData_6} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="264" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_7} != null && !$P{stickersData_7}.equals("") ? $P{stickersData_7} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="188" y="264" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_8} != null && !$P{stickersData_8}.equals("") ? $P{stickersData_8} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="376" y="264" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_9} != null && !$P{stickersData_9}.equals("") ? $P{stickersData_9} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="396" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_10} != null && !$P{stickersData_10}.equals("") ? $P{stickersData_10} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="188" y="396" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_11} != null && !$P{stickersData_11}.equals("") ? $P{stickersData_11} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="376" y="396" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_12} != null && !$P{stickersData_12}.equals("") ? $P{stickersData_12} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="528" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_13} != null && !$P{stickersData_13}.equals("") ? $P{stickersData_13} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="188" y="528" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_14} != null && !$P{stickersData_14}.equals("") ? $P{stickersData_14} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="376" y="528" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_15} != null && !$P{stickersData_15}.equals("") ? $P{stickersData_15} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="0" y="660" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_16} != null && !$P{stickersData_16}.equals("") ? $P{stickersData_16} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="188" y="660" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_17} != null && !$P{stickersData_17}.equals("") ? $P{stickersData_17} : ""]]></textFieldExpression>
 			</textField>
 			<textField textAdjust="StretchHeight">
 				<reportElement style="fs-8-al" x="376" y="660" width="179" height="132" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 				<box topPadding="1" leftPadding="1" bottomPadding="1" rightPadding="1"/>
-				<textElement markup="styled"/>
+				<textElement markup="html"/>
 				<textFieldExpression><![CDATA[$P{stickersData_18} != null && !$P{stickersData_18}.equals("") ? $P{stickersData_18} : ""]]></textFieldExpression>
 			</textField>
 		</band>

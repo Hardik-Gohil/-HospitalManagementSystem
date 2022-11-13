@@ -130,7 +130,7 @@ public class DietPlanServiceImpl implements DietPlanService {
 		dietPlan.setDietInstructions(dietInstructionList.stream()
 				.filter(di -> Arrays.asList(di.getServiceMasterIds().split(",")).contains(String.valueOf(serviceMaster.getServiceMasterId())))
 				.filter(di -> di.getApplicableFor() == 2 || (!(dietDate.isBefore(di.getApplicableFrom()) || dietDate.isAfter(di.getApplicableTo()))))
-				.toList());
+				.collect(Collectors.toList()));
 		
 		dietPlan.setServiceItems(previousDietPlan.isPresent() ? previousDietPlan.get().getServiceItems().stream().map(x -> SerializationUtils.clone(x)).collect(Collectors.toList()) : serviceItemsMap.get(serviceMaster.getServiceItemsColumnName() + "_" + dietUtility.getKeySuffix(patient)));
 		if (CollectionUtils.isNotEmpty(dietPlan.getServiceItems())) {
@@ -255,5 +255,30 @@ public class DietPlanServiceImpl implements DietPlanService {
 			}
 		}
 		return ResponseEntity.badRequest().body("Diet Plan not found");
+	}
+
+	@Override
+	public void updateDietInstruction(Patient patient) {
+		LocalDateTime now = LocalDateTime.now();
+		List<DietPlan> dietPlanList = new ArrayList<DietPlan>();
+		List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndServiceMasterFromTimeGreaterThan(patient.getPatientId(), now.toLocalTime());
+		if (CollectionUtils.isNotEmpty(upcommingDietPlans)) {
+			dietPlanList.addAll(upcommingDietPlans);
+		}
+		List<DietPlan> upcommingDietPlansForTomorrow = dietPlanRepository.findAllByPatientPatientIdAndDietDate(patient.getPatientId(), now.toLocalDate().plusDays(1));
+		if (CollectionUtils.isNotEmpty(upcommingDietPlansForTomorrow)) {
+			dietPlanList.addAll(upcommingDietPlansForTomorrow);
+		}
+
+		if (CollectionUtils.isNotEmpty(dietPlanList)) {
+			List<DietInstruction> dietInstructionList = dietInstructionRepository.findAllByPatientPatientIdAndDietInstructionStatus(patient.getPatientId(), 1);
+			for (DietPlan dietPlan : dietPlanList) {
+				dietPlan.setDietInstructions(dietInstructionList.stream()
+						.filter(di -> Arrays.asList(di.getServiceMasterIds().split(",")).contains(String.valueOf(dietPlan.getServiceMaster().getServiceMasterId())))
+						.filter(di -> di.getApplicableFor() == 2 || (!(dietPlan.getDietDate().isBefore(di.getApplicableFrom()) || dietPlan.getDietDate().isAfter(di.getApplicableTo()))))
+						.collect(Collectors.toList()));
+			}
+			dietPlanRepository.saveAll(dietPlanList);
+		}
 	}
 }

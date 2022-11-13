@@ -68,8 +68,8 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 		if (CollectionUtils.isNotEmpty(dietInstruction.getServiceMasters())) {
 			dietInstruction.setServiceMasters(serviceMasterRepository.findAllById(dietInstruction.getServiceMasters().stream().map(serviceMasters -> serviceMasters.getServiceMasterId()).toList()));
 		}
-		dietInstruction = dietInstructionRepository.save(dietInstruction);
 		dietInstruction.setDietInstructionStatus(1);
+		dietInstruction = dietInstructionRepository.save(dietInstruction);
 //		PatientHistory patientHistory = modelMapper.map(patient, PatientHistory.class);
 //		patientHistory.setHistoryCreatedOn(patient.getModifiedOn());
 //		patientHistory.setHistoryCreatedBy(patient.getModifiedBy());
@@ -188,7 +188,7 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 		saveDietInstruction.setDietSubType(patient.getDietSubType());
 		saveDietInstruction.setExtraLiquid(patient.getExtraLiquid());
 		saveDietInstruction = save(saveDietInstruction);
-		dietPlanService.prepareDietPlan(List.of(patient), currentUser, false);
+		dietPlanService.updateDietInstruction(patient);
 		notificationsService.sendDietInstruction(saveDietInstruction);
 		return "redirect:/diet/diet-instruction?patientId=" + dietInstructionDto.getPatient().getPatientId();
 	}

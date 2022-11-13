@@ -83,7 +83,7 @@
 									<th>Nursing name</th>
 									<th>Order Placed on</th>
 									<th>Delivery Time</th>
-									<th>Chargable?</th>
+									<th>Delivered?</th>
 									<th>Status</th>
 									<th>Action</th>
 								</tr>
@@ -282,7 +282,7 @@
         		var data_row = adHocOderTable.row($(this).closest('tr')).data();
         		var adHocOrderId = data_row["adHocOrderId"];
         		var chargable = data_row["chargable"]
-        		var title_Text = "Are you sure, you want to change the chargable status of the order?";
+        		var title_Text = "Are you sure, you want to change the Delivered status of the order?";
         		var confirmButtonText_Text = "Yes!";
         		Swal.fire({
         			title: title_Text,
@@ -301,7 +301,7 @@
         					success: function(data) {
         						Swal.fire({
         							icon: 'success',
-        							title: "Order has been to" + (chargable ? "non chargable" : "chargable"),
+        							title: "Order has been to" + (chargable ? "not Delivered" : "Delivered"),
         							showConfirmButton: false,
         							timer: 1500
         						}).then((result) => {

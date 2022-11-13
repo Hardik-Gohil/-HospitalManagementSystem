@@ -21,4 +21,6 @@ public interface DietPlanService {
 
 	ResponseEntity<String> updateDietPlanPausedUnpaused(Long dietPlanId, boolean isPaused);
 
+	void updateDietInstruction(Patient patient);
+
 }
