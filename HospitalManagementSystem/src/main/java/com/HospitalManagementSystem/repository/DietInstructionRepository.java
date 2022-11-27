@@ -22,4 +22,6 @@ public interface DietInstructionRepository extends JpaRepository<DietInstruction
 	@Modifying
 	@Query(value = "UPDATE diet_instruction set diet_instruction_status=:dietInstructionStatus WHERE diet_instruction_id=:dietInstructionId", nativeQuery = true)
 	void updateDietInstructionStatus(@Param("dietInstructionStatus") Integer dietInstructionStatus, @Param("dietInstructionId") Long dietInstructionId);
+
+	void deleteAllByPatientPatientId(Long patientId);
 }

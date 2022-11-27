@@ -33,4 +33,6 @@ public interface DietPlanRepository extends JpaRepository<DietPlan, Long>, JpaSp
 	
 	Optional<DietPlan> findByServiceMasterServiceMasterIdAndPatientPatientIdAndDietDate(Long serviceMasterId, Long patientId, LocalDate dietDate);
 
+	void deleteAllByPatientPatientId(Long patientId);
+
 }

@@ -11,4 +11,6 @@ public interface AdHocOrderRepository extends JpaRepository<AdHocOrder, Long>, J
 
 	List<AdHocOrder> findAllByPatientPatientId(Long patientId);
 
+	void deleteAllByPatientPatientId(Long patientId);
+
 }

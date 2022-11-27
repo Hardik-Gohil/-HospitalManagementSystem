@@ -10,6 +10,7 @@ import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.HospitalManagementSystem.dto.AdHocOrderDto;
+import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.dto.DietInstructionDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
 import com.HospitalManagementSystem.dto.PatientDto;
@@ -30,6 +32,7 @@ import com.HospitalManagementSystem.service.DietInstructionService;
 import com.HospitalManagementSystem.service.DietPlanService;
 import com.HospitalManagementSystem.service.ExportService;
 import com.HospitalManagementSystem.service.PatientDetailsService;
+import com.HospitalManagementSystem.service.SearchService;
 import com.HospitalManagementSystem.service.StickersService;
 
 @Controller
@@ -53,6 +56,9 @@ public class DietPlanController {
 	
 	@Autowired
 	private StickersService stickersService;
+	
+	@Autowired
+	private SearchService searchService;
 	
 	@GetMapping("/patients")
 	public String patientListing(Model model) {
@@ -79,6 +85,12 @@ public class DietPlanController {
 	@ResponseBody
 	public String checkUniqueIpNumber(@RequestParam("ipNumber") String ipNumber, @RequestParam(name = "patientId", required = false) Long patientId) {
 		return patientDetailsService.checkUniqueIpNumber(ipNumber, patientId);
+	}
+	
+	@DeleteMapping("/delete-patient")
+	@ResponseBody
+	public ResponseEntity<String> deletePatient(@RequestParam("patientId") Long patientId) {
+		return patientDetailsService.deletePatient(patientId);
 	}
 	
 	@PostMapping("/patient-details")
@@ -201,14 +213,15 @@ public class DietPlanController {
 	}
 	
 	@GetMapping("/adhoc-order-listing")
-	public String adhocOrderListing() {
+	public String adhocOrderListing(Model model) {
+		searchService.setMasterData(model);
 		return "diet/AdHocOrderListing";
 	}
 	
 	@PostMapping("/adhoc-order-listing-data")
 	@ResponseBody
-	public DataTablesOutput<AdHocOrder> getAdhocOrderListing(@RequestBody DataTablesInput input) {
-		return adHocOrderService.getAdhocOrderListing(input);
+	public DataTablesOutput<AdHocOrder> getAdhocOrderListing(@RequestBody AdHocSearchDto adHocSearchDto) {
+		return adHocOrderService.getAdhocOrderListing(adHocSearchDto);
 	}
 	
 	@GetMapping("/export/pdf/adhoc-order")

@@ -27,4 +27,6 @@ public interface PatientDetailsService {
 
 	String checkUniqueIpNumber(String ipNumber, Long patientId);
 
+	ResponseEntity<String> deletePatient(Long patientId);
+
 }

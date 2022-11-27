@@ -18,6 +18,7 @@ import org.springframework.data.jpa.datatables.mapping.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -27,17 +28,22 @@ import com.HospitalManagementSystem.dto.MedicalComorbiditiesDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
 import com.HospitalManagementSystem.dto.PatientDto;
 import com.HospitalManagementSystem.dto.SpecialNotesByNursingDto;
+import com.HospitalManagementSystem.entity.DietPlan;
 import com.HospitalManagementSystem.entity.Patient;
 import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.entity.history.PatientHistory;
 import com.HospitalManagementSystem.entity.master.Diagonosis;
+import com.HospitalManagementSystem.repository.AdHocOrderRepository;
 import com.HospitalManagementSystem.repository.BedRepository;
 import com.HospitalManagementSystem.repository.DiagonosisRepository;
+import com.HospitalManagementSystem.repository.DietInstructionRepository;
+import com.HospitalManagementSystem.repository.DietPlanRepository;
 import com.HospitalManagementSystem.repository.DietSubTypeRepository;
 import com.HospitalManagementSystem.repository.DietTypeOralLiquidTFRepository;
 import com.HospitalManagementSystem.repository.DietTypeOralSolidRepository;
 import com.HospitalManagementSystem.repository.FrequencyRepository;
 import com.HospitalManagementSystem.repository.MedicalComorbiditiesRepository;
+import com.HospitalManagementSystem.repository.NotificationsRepository;
 import com.HospitalManagementSystem.repository.PatientDataTablesRepository;
 import com.HospitalManagementSystem.repository.PatientHistoryRepository;
 import com.HospitalManagementSystem.repository.PatientRepository;
@@ -76,6 +82,14 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	private DiagonosisRepository diagonosisRepository;
 	@Autowired
 	private SpecialNotesByNursingRepository specialNotesByNursingRepository;	
+	@Autowired
+	private AdHocOrderRepository adHocOrderRepository;
+	@Autowired
+	private DietInstructionRepository dietInstructionRepository;
+	@Autowired
+	private DietPlanRepository dietPlanRepository;
+	@Autowired
+	private NotificationsRepository notificationsRepository;
 	
 	@Autowired
 	private ModelMapper modelMapper;
@@ -493,4 +507,29 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 		return "false";
 	}
 
+	@Override
+	@Transactional
+	public ResponseEntity<String> deletePatient(Long patientId) {
+		Optional<Patient> patient = patientRepository.findById(patientId);
+		if (patient.isPresent() && patient.get().getPatientStatus() == 2) {
+			return ResponseEntity.ok().body("Patient has been discharged");
+		}
+		if (patient.isPresent()) {
+			List<String> notificationCodeList = new ArrayList<String>();
+			notificationCodeList.add("ADD_PATIENT");
+			notificationCodeList.add("ADHOC_ORDER");
+			notificationCodeList.add("DIET_INSTRUCTION");
+			notificationCodeList.add("PATIENT_DISCHARGE");
+			notificationCodeList.add("PATIENT_TRANSFERRED");
+			notificationCodeList.add("UPDATE_PATIENT");
+			notificationsRepository.deleteAllByCodeInAndObjectId(notificationCodeList, patientId);
+			patientHistoryRepository.deleteAllByPatientId(patientId);
+			adHocOrderRepository.deleteAllByPatientPatientId(patientId);
+			dietPlanRepository.deleteAllByPatientPatientId(patientId);
+			dietInstructionRepository.deleteAllByPatientPatientId(patientId);
+			patientRepository.deleteById(patientId);
+			return ResponseEntity.ok().body("Patient has been deleted");
+		}
+		return ResponseEntity.badRequest().body("Patient not found");
+	}
 }

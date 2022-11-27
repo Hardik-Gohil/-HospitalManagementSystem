@@ -12,6 +12,8 @@
       <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
       <!-- SweetAlert2 -->
       <link rel="stylesheet" href="${contextPath}/resources/dist/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+	  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />      
       <style type="text/css">
          .custom-control-label::before ,.custom-control-label::after{width:20px; height:20px}
 		table.dataTable td.dt-control {
@@ -68,6 +70,148 @@
             <div class="content">
                <div class="card">              
                   <div class="card-body">
+					<form action="" id="searchForm">
+						<div class="row">
+							<div class="col-lg-4">
+								<fieldset class="form-group">
+									<input type="text" id="searchText" class="form-control" placeholder="Search Order ID, Patient name, IP Number, Doctor Name and Nursing name">
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="serviceType" name="serviceType" multiple data-live-search="true" data-size="10" title="Service Type">
+										<option value="1">Immediate Service</option>
+										<option value="2">AdHoc Service</option>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="medicalComorbiditiesIds" name="medicalComorbiditiesIds" multiple data-live-search="true" data-size="10" title="Co-morbidities">
+										<c:forEach items="${searchMedicalComorbiditiesList}" var="medicalComorbidities">
+											<option value="${medicalComorbidities.medicalComorbiditiesId}">${medicalComorbidities.value}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="floorIds" name="floorIds" multiple data-live-search="true" data-size="10" title="Floor">
+										<c:forEach items="${searchFloorList}" var="floor">
+											<option value="${floor.floorId}">${floor.floorName}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="bedIds" name="bedIds" multiple data-live-search="true" data-size="10" title="Bed">
+										<c:forEach items="${searchBedList}" var="bed">
+											<option value="${bed.bedId}">${bed.bedCode}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="dietTypeOralSolidIds" name="dietTypeOralSolidIds" multiple data-live-search="true" data-size="10" title="Diet Type- Oral Solid">
+										<c:forEach items="${searchDietTypeOralSolidList}" var="dietTypeOralSolid">
+											<option value="${dietTypeOralSolid.dietTypeOralSolidId}">${dietTypeOralSolid.value}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="dietTypeOralLiquidTFIds" name="dietTypeOralLiquidTFIds" multiple data-live-search="true" data-size="10" title="Diet Type- Oral Liquid/TF">
+										<c:forEach items="${searchDietTypeOralLiquidTFList}" var="dietTypeOralLiquidTF">
+											<option value="${dietTypeOralLiquidTF.dietTypeOralLiquidTFId}">${dietTypeOralLiquidTF.value}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="dietSubTypeIds" name="dietSubTypeIds" multiple data-live-search="true" data-size="10" title="Diet Sub Type">
+										<c:forEach items="${searchDietSubTypeList}" var="dietSubType">
+											<option value="${dietSubType.dietSubTypeId}" class="dietSubType_options">${dietSubType.value}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-1">
+								<fieldset class="form-group">
+									<div class="checkbox">
+										<input id="isVip" type="checkbox" name="isVip" class="">
+										<label for="isVip">Is VIP</label>
+									</div>
+								</fieldset>
+							</div>
+							<div class="col-lg-3">
+								<fieldset class="form-group">
+									<input type="text" class="form-control daterange-single" id="orderPlacedDateAndTime" name="orderPlacedDateAndTime" placeholder="Order placed Date & Time"></input>
+								</fieldset>
+							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="delivered" name="delivered" multiple data-live-search="true" data-size="10" title="Delivered">
+										<option value="1">Yes</option>
+										<option value="2" selected="selected">No</option>
+									</select>
+								</fieldset>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="statusList" name="statusList" multiple data-live-search="true" data-size="10" title="Status">
+										<option value="1">Active</option>
+										<option value="2">Cancel</option>
+										<option value="3">Deleted</option>
+									</select>
+								</fieldset>
+							</div>
+							<div class="col-lg-8"></div>
+							<div class="col-lg-2">
+								<button type="button" class="btn btn-success waves-effect waves-light btn-block refreshTable">Search</button>
+							</div>
+						</div>
+					</form>
+
+						<!-- 				<div class="row"> -->
+<!-- 					<div class="col-md-12"> -->
+<!-- 						<div class="card p-3  py-4"> -->
+<!-- 							<div class="row g-3 mt-2"> -->
+<!-- 								<div class="col-md-6"> -->
+<!-- 									<input type="text" class="form-control" placeholder="Search Order ID, Patient name, IP Number, Doctor Name and Nursing name"> -->
+<!-- 								</div> -->
+<!-- 								<div class="col-md-3"> -->
+<!-- 									<button class="btn btn-secondary btn-block">Search</button> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 							<div class="mt-3"> -->
+<!-- 								<a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="advanced"> Advance Search With Filters <i class="fa fa-angle-down"></i></a> -->
+<!-- 								<div class="collapse" id="collapseExample"> -->
+<!-- 									<div class="card card-body"> -->
+<!-- 										<div class="row"> -->
+<!-- 											<div class="col-md-4"> -->
+<!-- 												<input type="text" placeholder="Property ID" class="form-control"> -->
+<!-- 											</div> -->
+<!-- 											<div class="col-md-4"> -->
+<!-- 												<input type="text" class="form-control" placeholder="Search by MAP"> -->
+<!-- 											</div> -->
+<!-- 											<div class="col-md-4"> -->
+<!-- 												<input type="text" class="form-control" placeholder="Search by Country"> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 				</div>                   -->
                      <div class="table-responsive">
                         <table id="adhoc-oder-table" class="table table-bordered table-striped">
                            <thead>
@@ -114,15 +258,38 @@
       <script src="${contextPath}/resources/dist/plugins/moment/min/moment.min.js"></script>
       <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
       <script>
-      var dateFormat = "MM/DD/YYYY h:mm:ss a";
+      var dateFormat = "MM/DD/YYYY hh:mm:ss a";
       $(document).ready(function() {
+    	  $('.selectpicker').selectpicker(); 
+		    $('#orderPlacedDateAndTime').daterangepicker({
+		        alwaysShowCalendars: true,
+		        timePicker: true,
+		        startDate: moment().subtract(3, 'months').format(dateFormat),
+		        endDate: moment().format(dateFormat),
+		        locale: {
+		            format: dateFormat
+		        }
+		    });
 		    var adHocOderTable = $('#adhoc-oder-table').DataTable({
 		        "ajax": {
 		            'contentType': 'application/json',
 		            'url': contextPath + "/diet/adhoc-order-listing-data",
 		            'method': "POST",
 		            'data': function(d) {
-		                return JSON.stringify(d);
+	           	         return JSON.stringify($.extend( {}, d, { 
+				          "searchText": getValue("searchText"),
+	           	     	  "serviceType": getValue("serviceType"),
+		           	      "medicalComorbiditiesIds": getValue("medicalComorbiditiesIds"),
+	           	      	  "floorIds": getValue("floorIds"),
+	           	     	  "bedIds": getValue("bedIds"),
+	           	      	  "dietTypeOralSolidIds": getValue("dietTypeOralSolidIds"),
+	           	      	  "dietTypeOralLiquidTFIds": getValue("dietTypeOralLiquidTFIds"),
+	           	       	  "dietSubTypeIds": getValue("dietSubTypeIds"),
+	           	      	  "isVip": getCheckboxValue("isVip"),
+		           	      "orderPlacedDateAndTime": getValue("orderPlacedDateAndTime"),
+		           	      "delivered": getValue("delivered"),
+		           	      "statusList": getValue("statusList")
+				         }))
 		            }
 // 		    		,
 // 		            'dataSrc': function(json) {
@@ -141,7 +308,7 @@
 		                    return (data);
 		                } else {
 		                    var text = '';
-		                    if (row["isVip"]) {
+		                    if (row["patient"]["isVip"]) {
 		                        text = '<img height="23px" width="23px" src="${contextPath}/resources/dist/img/icons8-star-48.png" alt="">';
 		                    }
 		                    text += data;
@@ -242,27 +409,27 @@
         		}
 		    });
 		    
-		    var filters = '<div class="pull-left">';
-		    filters += '<label for="isVip">Date:</label><input class="form-control daterange-single" id="dateSelection" name="dateSelection"></input>';		    
-		    filters += '<input id="extraLiquid" type="checkbox" class="refreshTable"><label for="extraLiquid">&nbsp;Extra Liquid</label>';
-		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
-		    filters += '</div>';
-		    $('#patients-table_filter').html(filters + $('#patients-table_filter').html());
-		    $('#dateSelection').daterangepicker({
-		        alwaysShowCalendars: true,
-		        singleDatePicker: true,
-		        locale: {
-		            format: 'DD/MM/YYYY'
-		        }
-		    });
-		    $("#dateSelection").bind("change", function() {
-		    	patientsTable.ajax.url(contextPath + "/diet/diet-plan-data?extraLiquid=" + getCheckboxValue("extraLiquid") + "&isVip=" + getCheckboxValue("isVip") + "&dateSelection=" + getValue("dateSelection"));
-		    	patientsTable.ajax.reload();
-		    });
-		    $(".refreshTable").bind("click", function() {
-		    	patientsTable.ajax.url(contextPath + "/diet/diet-plan-data?extraLiquid=" + getCheckboxValue("extraLiquid") + "&isVip=" + getCheckboxValue("isVip") + "&dateSelection=" + getValue("dateSelection"));
-		    	patientsTable.ajax.reload();
-		    });
+// 		    var filters = '<div class="pull-left">';
+// 		    filters += '<label for="isVip">Date:</label><input class="form-control daterange-single" id="dateSelection" name="dateSelection"></input>';		    
+// 		    filters += '<input id="extraLiquid" type="checkbox" class="refreshTable"><label for="extraLiquid">&nbsp;Extra Liquid</label>';
+// 		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
+// 		    filters += '</div>';
+		    $('#adhoc-oder-table_filter').html("");
+// 		    $('#dateSelection').daterangepicker({
+// 		        alwaysShowCalendars: true,
+// 		        singleDatePicker: true,
+// 		        locale: {
+// 		            format: 'DD/MM/YYYY'
+// 		        }
+// 		    });
+// 		    $("#dateSelection").bind("change", function() {
+// 		    	patientsTable.ajax.url(contextPath + "/diet/diet-plan-data?extraLiquid=" + getCheckboxValue("extraLiquid") + "&isVip=" + getCheckboxValue("isVip") + "&dateSelection=" + getValue("dateSelection"));
+// 		    	patientsTable.ajax.reload();
+// 		    });
+// 		    $(".refreshTable").bind("click", function() {
+// 		    	patientsTable.ajax.url(contextPath + "/diet/diet-plan-data?extraLiquid=" + getCheckboxValue("extraLiquid") + "&isVip=" + getCheckboxValue("isVip") + "&dateSelection=" + getValue("dateSelection"));
+// 		    	patientsTable.ajax.reload();
+// 		    });
 		    
 		    function getCheckboxValue(id) {
 		        return $('#' + id).is(":checked");
@@ -399,6 +566,10 @@
 
 		    $("#Export-Excel").bind("click", function() {
 		    	 window.location = contextPath + "/diet/export/excel/adhoc-order";
+		    });
+		    
+		    $(".refreshTable").bind("click", function() {
+		    	adHocOderTable.ajax.reload();
 		    });
 		    
 		    function refreshAdHocOderTable() {

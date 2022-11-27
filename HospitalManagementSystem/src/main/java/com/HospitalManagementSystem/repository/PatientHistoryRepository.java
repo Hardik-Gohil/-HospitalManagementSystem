@@ -6,4 +6,6 @@ import com.HospitalManagementSystem.entity.history.PatientHistory;
 
 public interface PatientHistoryRepository extends JpaRepository<PatientHistory, Long> {
 
+	void deleteAllByPatientId(Long patientId);
+
 }

@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
+import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.dto.PatientServiceReportDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
 import com.HospitalManagementSystem.entity.Patient;
@@ -184,7 +185,7 @@ public class ExportServiceImpl implements ExportService {
 	}
 	
 	private ResponseEntity<ByteArrayResource> exportAdhocOrderData(String type) {
-		DataTablesInput input = new DataTablesInput();
+		AdHocSearchDto input = new AdHocSearchDto();
 		input.setLength(Integer.MAX_VALUE);
 
 		DataTablesOutput<AdHocOrder> dataTablesOutput = adHocOrderService.getAdhocOrderListing(input);

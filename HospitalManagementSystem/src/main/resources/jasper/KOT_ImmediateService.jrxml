@@ -2,9 +2,9 @@
 <!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.13.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="KOT" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f4da8e44-cea2-420a-af64-192d6e78d48b">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KOT"/>
-	<style name="fs-17-ac" hTextAlign="Center" fontSize="17"/>
-	<style name="fs-8-ac" hTextAlign="Center" fontSize="8"/>
-	<style name="fs-10-al" hTextAlign="Left" fontSize="10"/>
+	<style name="fs-17-ac" hTextAlign="Center" fontSize="17" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+	<style name="fs-8-ac" hTextAlign="Center" fontSize="8" pdfFontName="Helvetica" isPdfEmbedded="false"/>
+	<style name="fs-10-al" hTextAlign="Left" fontSize="10" pdfFontName="Helvetica" isPdfEmbedded="false"/>
 	<subDataset name="Dataset1" uuid="4a972433-b2b6-40d6-bcbc-3822b76f3736">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="KOT"/>
 		<parameter name="medicalComorbiditiesString" class="java.lang.String"/>
@@ -46,6 +46,12 @@
 	<field name="medicalComorbiditiesString" class="java.lang.String">
 		<fieldDescription><![CDATA[patient.medicalComorbiditiesString]]></fieldDescription>
 	</field>
+	<field name="quantityString" class="java.lang.String">
+		<fieldDescription><![CDATA[patient.quantity.valueStr]]></fieldDescription>
+	</field>
+	<field name="specialNotesByNursingString" class="java.lang.String">
+		<fieldDescription><![CDATA[patient.specialNotesByNursingString]]></fieldDescription>
+	</field>
 	<field name="remarks" class="java.lang.String">
 		<fieldDescription><![CDATA[remarks]]></fieldDescription>
 	</field>
@@ -62,7 +68,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="200" splitType="Stretch">
+		<band height="240" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
 				<reportElement style="fs-10-al" x="0" y="0" width="277" height="15" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
@@ -223,12 +229,78 @@
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Service Type"]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="110" width="200" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<box topPadding="1" leftPadding="5">
+						<topPen lineWidth="1.0" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Immediate Service"]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="278" y="110" width="100" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<box topPadding="1" leftPadding="5">
+						<topPen lineWidth="1.0" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Quantity"]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="378" y="110" width="177" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<box topPadding="1" leftPadding="5">
+						<topPen lineWidth="1.0" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{quantityString} != null && !$F{quantityString}.equals("") ? $F{quantityString} : ""]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<elementGroup>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="0" y="130" width="77" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<box topPadding="1" leftPadding="5">
+						<topPen lineWidth="1.0" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA["Special Notes By Nursing"]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="130" width="478" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<box topPadding="1" leftPadding="5">
+						<topPen lineWidth="1.0" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineColor="#000000"/>
+						<bottomPen lineWidth="1.0" lineColor="#000000"/>
+						<rightPen lineWidth="1.0" lineColor="#000000"/>
+					</box>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{specialNotesByNursingString} != null && !$F{specialNotesByNursingString}.equals("") ? $F{specialNotesByNursingString} : ""]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+			<elementGroup>
+				<textField textAdjust="StretchHeight">
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="0" y="150" width="77" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<box topPadding="1" leftPadding="5">
+						<topPen lineWidth="1.0" lineColor="#000000"/>
+						<leftPen lineWidth="1.0" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
 					<textFieldExpression><![CDATA["Remarks"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="110" width="478" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="150" width="478" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -240,7 +312,7 @@
 			</elementGroup>
 			<elementGroup>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="0" y="130" width="77" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="0" y="170" width="77" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -249,7 +321,7 @@
 					<textFieldExpression><![CDATA["Requested On"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="130" width="200" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="170" width="200" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -258,7 +330,7 @@
 					<textFieldExpression><![CDATA[$F{createdOn} != null && !$F{createdOn}.equals("") ? ($F{createdOn}).format($P{localDateTimeFormatter}) : "N/A"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="278" y="130" width="100" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="278" y="170" width="100" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -267,7 +339,7 @@
 					<textFieldExpression><![CDATA["Guest Signature"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="378" y="130" width="177" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="378" y="170" width="177" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -279,7 +351,7 @@
 			</elementGroup>
 			<elementGroup>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="0" y="150" width="77" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="0" y="190" width="77" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -289,7 +361,7 @@
 					<textFieldExpression><![CDATA["Expected Delivery Time"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="150" width="200" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="77" y="190" width="200" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -299,7 +371,7 @@
 					<textFieldExpression><![CDATA[$F{serviceDeliveryDateTime} != null && !$F{serviceDeliveryDateTime}.equals("") ? ($F{serviceDeliveryDateTime}).format($P{localDateTimeFormatter}) : "N/A"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="278" y="150" width="100" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="278" y="190" width="100" height="20" uuid="a2a2cac8-5a7d-4487-8c54-dab235ce4e21"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>
@@ -309,7 +381,7 @@
 					<textFieldExpression><![CDATA["Actual Delivery Time"]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
-					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="378" y="150" width="177" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
+					<reportElement style="fs-10-al" positionType="Float" stretchType="ElementGroupHeight" x="378" y="190" width="177" height="20" uuid="204308ea-33d6-432c-9b8a-8631fb64e796"/>
 					<box topPadding="1" leftPadding="5">
 						<topPen lineWidth="1.0" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineColor="#000000"/>

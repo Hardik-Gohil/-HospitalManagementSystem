@@ -202,8 +202,14 @@
 		            "orderable": false,
 		            "searchable": false,
 		            "data": "",
-		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>'
-
+// 		            "defaultContent": '<i class="fa fa-edit fa-lg" title="Edit"></i>'
+	            	"render": function(data, type, row) {
+        				var action = '<i class="fa fa-edit fa-lg" title="Edit"></i>';
+        				if (isDietitian || isAdmin) {
+            				action += '&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i>';
+        				}
+        				return action;
+        			}
 		        }],
 		        'paging': true,
 		        'ordering': true,
@@ -300,6 +306,9 @@
         				var action = '<i class="fa fa-edit fa-lg" title="Edit"></i>&nbsp;&nbsp;<i class="fa fa-list-alt fa-lg" title="Diet Instruction"></i>&nbsp;&nbsp;<i class="fa fa-cart-plus fa-lg" title="AdHoc Order"></i>';
         				if (isDietitian || isKitchen || isAdmin) {
             				action += '&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
+        				}
+        				if (isDietitian || isAdmin) {
+            				action += '&nbsp;&nbsp;<i class="fa fa-trash-o fa-lg" title="Delete"></i>';
         				}
         				return action;
         			}
@@ -520,6 +529,110 @@
 		        window.location = contextPath + "/diet/export/excel/patient-details?patientStatus=" + patientStatus + "&searchText=" + searchText + "&orderColumn=" + orderColumn + "&direction=" + direction;
 		    });
 		    
+        	$('#new-patients-table').on('click', 'tbody .fa-trash-o', function(e) {
+		        var data_row = newPatientsTable.row($(this).closest('tr')).data();
+        		var patientId = data_row["patientId"];
+        		var title_Text = "Deleted patient cannot be retrieved. Are you sure you want to delete the patient? <br>" + data_row["patientName"];
+        		var confirmButtonText_Text = "Yes, delete it!";
+        		Swal.fire({
+        			title: title_Text,	
+        			icon: 'warning',
+        			showCancelButton: true,
+        			confirmButtonColor: '#3085d6',
+        			cancelButtonColor: '#d33',
+        			confirmButtonText: confirmButtonText_Text
+        		}).then((result) => {
+        			if (result.isConfirmed) {
+        				var formData = "patientId=" + patientId;
+        				$.ajax({
+        					url: contextPath + "/diet/delete-patient",
+        					type: "DELETE",
+        					data: formData,
+        					success: function(data) {
+        						if (data == "Patient has been deleted") {
+            						Swal.fire({
+            							icon: 'success',
+            							title: "Patient has been deleted",
+            							showConfirmButton: false,
+            							timer: 1500
+            						}).then((result) => {
+            							newPatientsTable.ajax.reload();
+            						})
+        						} else {
+            						Swal.fire({
+            							icon: 'warning',
+            							title: "The patient can not be deleted",
+            							showConfirmButton: false,
+            							timer: 1500
+            						})
+        						}        						
+        					},
+        					error: function() {
+        						Swal.fire({
+        							icon: 'warning',
+        							title: "Something went wrong",
+        							showConfirmButton: false,
+        							timer: 1500
+        						})
+        					}
+        				});
+
+        			}
+        		});
+        	});
+        	
+        	$('#active-patients-table').on('click', 'tbody .fa-trash-o', function(e) {
+		        var data_row = activePatientsTable.row($(this).closest('tr')).data();
+        		var patientId = data_row["patientId"];
+        		var title_Text = "Deleted patient cannot be retrieved. Are you sure you want to delete the patient? <br>" + data_row["patientName"];
+        		var confirmButtonText_Text = "Yes, delete it!";
+        		Swal.fire({
+        			title: title_Text,	
+        			icon: 'warning',
+        			showCancelButton: true,
+        			confirmButtonColor: '#3085d6',
+        			cancelButtonColor: '#d33',
+        			confirmButtonText: confirmButtonText_Text
+        		}).then((result) => {
+        			if (result.isConfirmed) {
+        				var formData = "patientId=" + patientId;
+        				$.ajax({
+        					url: contextPath + "/diet/delete-patient",
+        					type: "DELETE",
+        					data: formData,
+        					success: function(data) {
+        						if (data == "Patient has been deleted") {
+            						Swal.fire({
+            							icon: 'success',
+            							title: "Patient has been deleted",
+            							showConfirmButton: false,
+            							timer: 1500
+            						}).then((result) => {
+            							activePatientsTable.ajax.reload();
+            						})
+        						} else {
+            						Swal.fire({
+            							icon: 'warning',
+            							title: "The patient can not be deleted",
+            							showConfirmButton: false,
+            							timer: 1500
+            						})
+        						}        						
+        					},
+        					error: function() {
+        						Swal.fire({
+        							icon: 'warning',
+        							title: "Something went wrong",
+        							showConfirmButton: false,
+        							timer: 1500
+        						})
+        					}
+        				});
+
+        			}
+        		});
+        	});
+        	
 		    function refreshPatientsTable() {
 		    	newPatientsTable.ajax.reload();
 		    	activePatientsTable.ajax.reload();

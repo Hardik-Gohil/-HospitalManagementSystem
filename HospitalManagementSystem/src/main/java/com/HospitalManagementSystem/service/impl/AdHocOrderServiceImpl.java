@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +21,8 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Search;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,11 +33,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.HospitalManagementSystem.dto.AdHocItemsDto;
 import com.HospitalManagementSystem.dto.AdHocOrderDto;
 import com.HospitalManagementSystem.dto.AdHocOrderItemsDto;
+import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.dto.PatientDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
 import com.HospitalManagementSystem.entity.AdHocOrderItems;
 import com.HospitalManagementSystem.entity.Patient;
 import com.HospitalManagementSystem.entity.User;
+import com.HospitalManagementSystem.entity.master.MedicalComorbidities;
 import com.HospitalManagementSystem.repository.AdHocItemsRepository;
 import com.HospitalManagementSystem.repository.AdHocOrderDataTablesRepository;
 import com.HospitalManagementSystem.repository.AdHocOrderItemsRepository;
@@ -245,11 +252,57 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 	}
 
 	@Override
-	public DataTablesOutput<AdHocOrder> getAdhocOrderListing(DataTablesInput input) {
+	public DataTablesOutput<AdHocOrder> getAdhocOrderListing(AdHocSearchDto adHocSearchDto) {
+		DataTablesInput input = adHocSearchDto;
 		input.addColumn("patient.bed.bedCode", true, true, null);
 		input.addColumn("patient.bed.wardName", true, true, null);
 		input.addColumn("patient.bed.floor.floorName", true, true, null);
-		return adHocOrderDataTablesRepository.findAll(input);
+		input.setSearch(new Search(adHocSearchDto.getSearchText(), false));
+		
+		Specification<AdHocOrder> additionalSpecification = (root, query, criteriaBuilder) -> {
+			List<Predicate> predicates = new ArrayList<>();
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getServiceType())) {
+				predicates.add(root.get("serviceType").in(adHocSearchDto.getServiceType()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getMedicalComorbiditiesIds())) {
+				Join<Patient, AdHocOrder> patientJoin = root.join("patient");
+				Join<MedicalComorbidities, Patient> medicalComorbiditiesJoin = patientJoin.join("medicalComorbidities");
+				predicates.add(medicalComorbiditiesJoin.get("medicalComorbiditiesId").in(adHocSearchDto.getMedicalComorbiditiesIds()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getFloorIds())) {
+				predicates.add(root.get("patient").get("bed").get("floor").get("floorId").in(adHocSearchDto.getFloorIds()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getBedIds())) {
+				predicates.add(root.get("patient").get("bed").get("bedId").in(adHocSearchDto.getBedIds()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getDietTypeOralSolidIds())) {
+				predicates.add(root.get("patient").get("dietTypeOralSolid").get("dietTypeOralSolidId").in(adHocSearchDto.getDietTypeOralSolidIds()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getDietTypeOralLiquidTFIds())) {
+				predicates.add(root.get("patient").get("dietTypeOralLiquidTF").get("dietTypeOralLiquidTFId").in(adHocSearchDto.getDietTypeOralLiquidTFIds()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getDietSubTypeIds())) {
+				predicates.add(root.get("patient").get("dietSubType").get("dietSubTypeId").in(adHocSearchDto.getDietSubTypeIds()));
+			}
+			if (adHocSearchDto.getIsVip()) {
+				predicates.add(criteriaBuilder.equal(root.get("patient").get("isVip"), adHocSearchDto.getIsVip()));
+			}
+			if (StringUtils.isNotEmpty(adHocSearchDto.getOrderPlacedDateAndTime())) {
+				String[] dates = adHocSearchDto.getOrderPlacedDateAndTime().split(" - ");
+				predicates.add(criteriaBuilder.between(root.get("createdOn"),
+						LocalDateTime.parse(dates[0], CommonUtility.localDateTimeFormatter),
+						LocalDateTime.parse(dates[1], CommonUtility.localDateTimeFormatter)));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getDelivered()) && adHocSearchDto.getDelivered().size() == 1) {
+				predicates.add(criteriaBuilder.equal(root.get("chargable"), adHocSearchDto.getDelivered().get(0) == 1));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getStatusList())) {
+				predicates.add(root.get("orderStatus").in(adHocSearchDto.getStatusList()));
+			}
+			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+		};
+		
+		return adHocOrderDataTablesRepository.findAll(input, additionalSpecification);
 	}
 
 	@Override

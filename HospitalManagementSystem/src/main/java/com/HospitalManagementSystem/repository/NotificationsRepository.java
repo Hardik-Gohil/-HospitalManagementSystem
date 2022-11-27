@@ -1,5 +1,7 @@
 package com.HospitalManagementSystem.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -10,5 +12,7 @@ public interface NotificationsRepository extends JpaRepository<Notifications, Lo
 	Integer countByUserUserId(Long userId);
 
 	Integer countByUserUserIdAndIsRead(Long userId, Boolean isRead);
+
+	void deleteAllByCodeInAndObjectId(List<String> notificationCodeList, Long objectId);
 
 }

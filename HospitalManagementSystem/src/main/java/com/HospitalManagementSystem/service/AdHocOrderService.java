@@ -3,13 +3,13 @@ package com.HospitalManagementSystem.service;
 import java.util.List;
 
 import org.springframework.core.io.Resource;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.HospitalManagementSystem.dto.AdHocOrderDto;
+import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
 
 public interface AdHocOrderService {
@@ -28,7 +28,7 @@ public interface AdHocOrderService {
 
 	ResponseEntity<Resource> adhocOrderKOT(Long adHocOrderId);
 
-	DataTablesOutput<AdHocOrder> getAdhocOrderListing(DataTablesInput input);
+	DataTablesOutput<AdHocOrder> getAdhocOrderListing(AdHocSearchDto adHocSearchDto);
 
 	ResponseEntity<String> chargableAdHocOrder(Long adHocOrderId, Boolean chargable);
 
