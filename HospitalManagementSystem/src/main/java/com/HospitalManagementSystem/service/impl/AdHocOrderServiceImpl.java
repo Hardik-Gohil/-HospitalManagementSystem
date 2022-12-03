@@ -2,6 +2,7 @@ package com.HospitalManagementSystem.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -287,11 +288,12 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 			if (adHocSearchDto.getIsVip()) {
 				predicates.add(criteriaBuilder.equal(root.get("patient").get("isVip"), adHocSearchDto.getIsVip()));
 			}
-			if (StringUtils.isNotEmpty(adHocSearchDto.getOrderPlacedDateAndTime())) {
-				String[] dates = adHocSearchDto.getOrderPlacedDateAndTime().split(" - ");
-				predicates.add(criteriaBuilder.between(root.get("createdOn"),
-						LocalDateTime.parse(dates[0], CommonUtility.localDateTimeFormatter),
-						LocalDateTime.parse(dates[1], CommonUtility.localDateTimeFormatter)));
+			if (ObjectUtils.isNotEmpty(adHocSearchDto.getOrderPlacedStartDateAndTime()) && ObjectUtils.isNotEmpty(adHocSearchDto.getOrderPlacedEndDateAndTime())) {
+				try {
+					predicates.add(criteriaBuilder.between(root.get("createdOn"), commonUtility.getLocalDateTime(adHocSearchDto.getOrderPlacedStartDateAndTime()), commonUtility.getLocalDateTime(adHocSearchDto.getOrderPlacedEndDateAndTime())));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			}
 			if (CollectionUtils.isNotEmpty(adHocSearchDto.getDelivered()) && adHocSearchDto.getDelivered().size() == 1) {
 				predicates.add(criteriaBuilder.equal(root.get("chargable"), adHocSearchDto.getDelivered().get(0) == 1));

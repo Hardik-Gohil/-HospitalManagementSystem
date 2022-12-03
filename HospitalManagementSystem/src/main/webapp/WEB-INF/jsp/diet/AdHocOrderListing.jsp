@@ -286,7 +286,8 @@
 	           	      	  "dietTypeOralLiquidTFIds": getValue("dietTypeOralLiquidTFIds"),
 	           	       	  "dietSubTypeIds": getValue("dietSubTypeIds"),
 	           	      	  "isVip": getCheckboxValue("isVip"),
-		           	      "orderPlacedDateAndTime": getValue("orderPlacedDateAndTime"),
+		           	      "orderPlacedStartDateAndTime": getValue("orderPlacedDateAndTime").split(" - ")[0],
+		           	   	  "orderPlacedEndDateAndTime": getValue("orderPlacedDateAndTime").split(" - ")[1],
 		           	      "delivered": getValue("delivered"),
 		           	      "statusList": getValue("statusList")
 				         }))
