@@ -255,9 +255,9 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 	@Override
 	public DataTablesOutput<AdHocOrder> getAdhocOrderListing(AdHocSearchDto adHocSearchDto) {
 		DataTablesInput input = adHocSearchDto;
-		input.addColumn("patient.bed.bedCode", true, true, null);
-		input.addColumn("patient.bed.wardName", true, true, null);
-		input.addColumn("patient.bed.floor.floorName", true, true, null);
+//		input.addColumn("patient.bed.bedCode", true, true, null);
+//		input.addColumn("patient.bed.wardName", true, true, null);
+//		input.addColumn("patient.bed.floor.floorName", true, true, null);
 		input.setSearch(new Search(adHocSearchDto.getSearchText(), false));
 		
 		Specification<AdHocOrder> additionalSpecification = (root, query, criteriaBuilder) -> {

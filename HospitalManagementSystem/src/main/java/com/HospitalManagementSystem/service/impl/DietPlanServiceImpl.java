@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -19,16 +20,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
+import org.springframework.data.jpa.datatables.mapping.Search;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.HospitalManagementSystem.dto.DietPlanSearchDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
+import com.HospitalManagementSystem.entity.AdHocOrder;
 import com.HospitalManagementSystem.entity.DietInstruction;
 import com.HospitalManagementSystem.entity.DietPlan;
 import com.HospitalManagementSystem.entity.Patient;
 import com.HospitalManagementSystem.entity.User;
+import com.HospitalManagementSystem.entity.master.MedicalComorbidities;
 import com.HospitalManagementSystem.entity.master.ServiceItems;
 import com.HospitalManagementSystem.entity.master.ServiceMaster;
 import com.HospitalManagementSystem.repository.DietInstructionRepository;
@@ -149,26 +154,53 @@ public class DietPlanServiceImpl implements DietPlanService {
 	
 
 	@Override
-	public PatientDataTablesOutputDto getDietPlanData(DataTablesInput input, String dateSelection, boolean extraLiquid, boolean isVip) {
-		input.addColumn("umrNumber", true, true, null);
-		input.addColumn("bed.bedCode", true, true, null);
-		input.addColumn("bed.wardName", true, true, null);
-		input.addColumn("bed.floor.floorName", true, true, null);
+	public PatientDataTablesOutputDto getDietPlanData(DietPlanSearchDto dietPlanSearchDto) {
+		DataTablesInput input = dietPlanSearchDto;
+		input.setSearch(new Search(dietPlanSearchDto.getSearchText(), false));
 		LocalDate date = LocalDate.now();
-		if (StringUtils.isNotEmpty(dateSelection)) {
-			date = LocalDate.parse(dateSelection, CommonUtility.localDateFormatter);
+		if (StringUtils.isNotEmpty(dietPlanSearchDto.getDateSelection())) {
+			date = LocalDate.parse(dietPlanSearchDto.getDateSelection(), CommonUtility.localDateFormatter);
 		}
 		PatientDataTablesOutputDto patientDataTablesOutputDto = new PatientDataTablesOutputDto();
-		List<Patient> patientList = dietPlanRepository.findAllPatientsByDietDate(date);
+		List<Patient> patientList;
+		if (StringUtils.isNotEmpty(dietPlanSearchDto.getSearchItemText().trim()) && CollectionUtils.isNotEmpty(dietPlanSearchDto.getServiceMasterIds())) {
+			patientList = dietPlanRepository.findAllPatientsByDietDateAndItemAndServiceMasterIds(date, "%" + dietPlanSearchDto.getSearchItemText().trim() + "%", dietPlanSearchDto.getServiceMasterIds());
+		} else if (StringUtils.isNotEmpty(dietPlanSearchDto.getSearchItemText().trim())) {
+			patientList = dietPlanRepository.findAllPatientsByDietDateAndItem(date, "%" + dietPlanSearchDto.getSearchItemText().trim() + "%");
+		} else if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getServiceMasterIds())) {
+			patientList = dietPlanRepository.findAllPatientsByDietDateAndServiceMasterIds(date, dietPlanSearchDto.getServiceMasterIds());
+		} else {
+			patientList = dietPlanRepository.findAllPatientsByDietDate(date);
+		}
+		
 		if(CollectionUtils.isNotEmpty(patientList)) {
 			Specification<Patient> additionalSpecification = (root, query, criteriaBuilder) -> {
 				List<Predicate> predicates = new ArrayList<>();
 				predicates.add(root.get("patientId").in(patientList.stream().map(p -> p.getPatientId()).toList()));
-				if (extraLiquid) {
-					predicates.add(criteriaBuilder.equal(root.get("extraLiquid"), extraLiquid));
+				if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getMedicalComorbiditiesIds())) {
+					Join<MedicalComorbidities, Patient> medicalComorbiditiesJoin = root.join("medicalComorbidities");
+					predicates.add(medicalComorbiditiesJoin.get("medicalComorbiditiesId").in(dietPlanSearchDto.getMedicalComorbiditiesIds()));
 				}
-				if (isVip) {
-					predicates.add(criteriaBuilder.equal(root.get("isVip"), isVip));
+				if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getFloorIds())) {
+					predicates.add(root.get("bed").get("floor").get("floorId").in(dietPlanSearchDto.getFloorIds()));
+				}
+				if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getBedIds())) {
+					predicates.add(root.get("bed").get("bedId").in(dietPlanSearchDto.getBedIds()));
+				}
+				if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getDietTypeOralSolidIds())) {
+					predicates.add(root.get("dietTypeOralSolid").get("dietTypeOralSolidId").in(dietPlanSearchDto.getDietTypeOralSolidIds()));
+				}
+				if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getDietTypeOralLiquidTFIds())) {
+					predicates.add(root.get("dietTypeOralLiquidTF").get("dietTypeOralLiquidTFId").in(dietPlanSearchDto.getDietTypeOralLiquidTFIds()));
+				}
+				if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getDietSubTypeIds())) {
+					predicates.add(root.get("dietSubType").get("dietSubTypeId").in(dietPlanSearchDto.getDietSubTypeIds()));
+				}				
+				if (dietPlanSearchDto.getIsVip()) {
+					predicates.add(criteriaBuilder.equal(root.get("isVip"), dietPlanSearchDto.getIsVip()));
+				}				
+				if (dietPlanSearchDto.getExtraLiquid()) {
+					predicates.add(criteriaBuilder.equal(root.get("extraLiquid"), dietPlanSearchDto.getExtraLiquid()));
 				}
 				return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
 			};

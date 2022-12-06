@@ -220,9 +220,9 @@
 									<th>Patient name</th>
 									<th>Service Type</th>
 									<th>IP Number</th>
-									<th>Diet Type Solid/Liquid orally/TF/Quantity/Frequency</th>
+									<th>Diet Type/Qty/Frequency</th>
 									<th>Ward/Floor/Bed Cd</th>
-									<th>Co-mordibities Diagnosis-Item (Quantity)</th>
+									<th>Co-morbidities-Item (Quantity)</th>
 									<th>Doctor Name</th>
 									<th>Nursing name</th>
 									<th>Order Placed on</th>

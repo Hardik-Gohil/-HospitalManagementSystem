@@ -264,7 +264,7 @@
 						<rightPen lineWidth="1.0" lineColor="#000000"/>
 					</box>
 					<textElement verticalAlignment="Middle"/>
-					<textFieldExpression><![CDATA[$F{quantityString} != null && !$F{quantityString}.equals("") ? $F{quantityString} : ""]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{dietSubTypeValue} != null && !$F{dietSubTypeValue}.equals("") && $F{quantityString} != null && !$F{quantityString}.equals("") ? $F{quantityString} : ""]]></textFieldExpression>
 				</textField>
 			</elementGroup>
 			<elementGroup>

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -15,6 +16,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.Order;
+import org.springframework.data.jpa.datatables.mapping.Search;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,12 +29,14 @@ import com.HospitalManagementSystem.dto.DiagonosisDto;
 import com.HospitalManagementSystem.dto.MedicalComorbiditiesDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
 import com.HospitalManagementSystem.dto.PatientDto;
+import com.HospitalManagementSystem.dto.PatientSearchDto;
 import com.HospitalManagementSystem.dto.SpecialNotesByNursingDto;
 import com.HospitalManagementSystem.entity.DietPlan;
 import com.HospitalManagementSystem.entity.Patient;
 import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.entity.history.PatientHistory;
 import com.HospitalManagementSystem.entity.master.Diagonosis;
+import com.HospitalManagementSystem.entity.master.MedicalComorbidities;
 import com.HospitalManagementSystem.repository.AdHocOrderRepository;
 import com.HospitalManagementSystem.repository.BedRepository;
 import com.HospitalManagementSystem.repository.DiagonosisRepository;
@@ -447,11 +451,15 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	}
 
 	@Override
-	public PatientDataTablesOutputDto getPatientData(DataTablesInput input, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
+	public PatientDataTablesOutputDto getPatientData(PatientSearchDto patientSearchDto, Integer patientStatus) {
 		User currentUser = commonUtility.getCurrentUser();
-		input.addColumn("bed.bedCode", true, true, null);
-		input.addColumn("bed.wardName", true, true, null);
-		input.addColumn("bed.floor.floorName", true, true, null);
+		DataTablesInput input = patientSearchDto;
+//		input.addColumn("bed.bedCode", true, true, null);
+//		input.addColumn("bed.wardName", true, true, null);
+//		input.addColumn("bed.floor.floorName", true, true, null);
+		if (patientStatus != 1) {
+			input.setSearch(new Search(patientSearchDto.getSearchText(), false));		
+		}
 		input.addColumn("modifiedOn", false, true, null);
 		input.addOrder("modifiedOn", false);
 		List<Order> orders = input.getOrder();
@@ -467,17 +475,33 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 		Specification<Patient> additionalSpecification = (root, query, criteriaBuilder) -> {
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(criteriaBuilder.equal(root.get("patientStatus"), patientStatus));
-			if (nbm) {
-				predicates.add(criteriaBuilder.equal(root.get("nbm"), nbm));
+			if (CollectionUtils.isNotEmpty(patientSearchDto.getMedicalComorbiditiesIds())) {
+				Join<MedicalComorbidities, Patient> medicalComorbiditiesJoin = root.join("medicalComorbidities");
+				predicates.add(medicalComorbiditiesJoin.get("medicalComorbiditiesId").in(patientSearchDto.getMedicalComorbiditiesIds()));
+			}					
+			if (!isNursing && CollectionUtils.isNotEmpty(patientSearchDto.getFloorIds())) {
+				predicates.add(root.get("bed").get("floor").get("floorId").in(patientSearchDto.getFloorIds()));
 			}
-			if (extraLiquid) {
-				predicates.add(criteriaBuilder.equal(root.get("extraLiquid"), extraLiquid));
+			if (CollectionUtils.isNotEmpty(patientSearchDto.getBedIds())) {
+				predicates.add(root.get("bed").get("bedId").in(patientSearchDto.getBedIds()));
 			}
-			if (startServiceImmediately) {
-				predicates.add(criteriaBuilder.equal(root.get("startServiceImmediately"), startServiceImmediately));
+			if (CollectionUtils.isNotEmpty(patientSearchDto.getDietTypeOralSolidIds())) {
+				predicates.add(root.get("dietTypeOralSolid").get("dietTypeOralSolidId").in(patientSearchDto.getDietTypeOralSolidIds()));
 			}
-			if (isVip) {
-				predicates.add(criteriaBuilder.equal(root.get("isVip"), isVip));
+			if (CollectionUtils.isNotEmpty(patientSearchDto.getDietTypeOralLiquidTFIds())) {
+				predicates.add(root.get("dietTypeOralLiquidTF").get("dietTypeOralLiquidTFId").in(patientSearchDto.getDietTypeOralLiquidTFIds()));
+			}
+			if (CollectionUtils.isNotEmpty(patientSearchDto.getDietSubTypeIds())) {
+				predicates.add(root.get("dietSubType").get("dietSubTypeId").in(patientSearchDto.getDietSubTypeIds()));
+			}				
+			if (patientSearchDto.getIsVip()) {
+				predicates.add(criteriaBuilder.equal(root.get("isVip"), patientSearchDto.getIsVip()));
+			}				
+			if (patientSearchDto.getExtraLiquid()) {
+				predicates.add(criteriaBuilder.equal(root.get("extraLiquid"), patientSearchDto.getExtraLiquid()));
+			}			
+			if (patientSearchDto.getNbm()) {
+				predicates.add(criteriaBuilder.equal(root.get("nbm"), patientSearchDto.getNbm()));
 			}
 			if (isNursing) {
 				predicates.add(criteriaBuilder.equal(root.get("bed").get("floor").get("floorId"), currentUser.getFloor().getFloorId()));

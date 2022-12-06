@@ -14,6 +14,7 @@ import com.HospitalManagementSystem.repository.DietTypeOralLiquidTFRepository;
 import com.HospitalManagementSystem.repository.DietTypeOralSolidRepository;
 import com.HospitalManagementSystem.repository.FloorRepository;
 import com.HospitalManagementSystem.repository.MedicalComorbiditiesRepository;
+import com.HospitalManagementSystem.repository.ServiceMasterRepository;
 import com.HospitalManagementSystem.service.SearchService;
 
 @Service
@@ -33,7 +34,10 @@ public class SearchServiceImpl implements SearchService {
 	private MedicalComorbiditiesRepository medicalComorbiditiesRepository;
 	@Autowired
 	private DiagonosisRepository diagonosisRepository;
+	@Autowired
+	private ServiceMasterRepository serviceMasterRepository;
 
+	
 	@Override
 	public void setMasterData(Model model) {
 		List<Diagonosis> diagonosisList = diagonosisRepository.findAllByIsActive(Boolean.TRUE);
@@ -46,6 +50,7 @@ public class SearchServiceImpl implements SearchService {
 		model.addAttribute("searchDietTypeOralSolidList", dietTypeOralSolidRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("searchDietTypeOralLiquidTFList", dietTypeOralLiquidTFRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("searchDietSubTypeList", dietSubTypeRepository.findAllByIsActive(Boolean.TRUE));
+		model.addAttribute("searchServiceMasterList", serviceMasterRepository.findAllByIsActive(Boolean.TRUE));
 	}
 
 }

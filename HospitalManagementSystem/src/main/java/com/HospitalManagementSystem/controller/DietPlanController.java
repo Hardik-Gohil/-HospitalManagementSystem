@@ -23,8 +23,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.HospitalManagementSystem.dto.AdHocOrderDto;
 import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.dto.DietInstructionDto;
+import com.HospitalManagementSystem.dto.DietPlanSearchDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
 import com.HospitalManagementSystem.dto.PatientDto;
+import com.HospitalManagementSystem.dto.PatientSearchDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
 import com.HospitalManagementSystem.entity.DietInstruction;
 import com.HospitalManagementSystem.service.AdHocOrderService;
@@ -62,18 +64,14 @@ public class DietPlanController {
 	
 	@GetMapping("/patients")
 	public String patientListing(Model model) {
+		searchService.setMasterData(model);
 		return "diet/PatientListing";
 	}
 	
 	@PostMapping("/patient-data")
 	@ResponseBody
-	public PatientDataTablesOutputDto getPatientData(@RequestBody DataTablesInput input,
-			@RequestParam("patientStatus") Integer patientStatus,
-			@RequestParam(name = "nbm", required = false) boolean nbm,
-			@RequestParam(name = "extraLiquid", required = false) boolean extraLiquid,
-			@RequestParam(name = "startServiceImmediately", required = false) boolean startServiceImmediately,
-			@RequestParam(name = "isVip", required = false) boolean isVip) {
-		return patientDetailsService.getPatientData(input, patientStatus, nbm, extraLiquid, startServiceImmediately, isVip);
+	public PatientDataTablesOutputDto getPatientData(@RequestBody PatientSearchDto patientSearchDto, @RequestParam("patientStatus") Integer patientStatus) {
+		return patientDetailsService.getPatientData(patientSearchDto, patientStatus);
 	}
 	
 	@GetMapping("/patient-details")
@@ -149,17 +147,15 @@ public class DietPlanController {
 
 	@GetMapping("/diet-plan")
 	public String dietPlan(Model model) {
+		searchService.setMasterData(model);
 		dietPlanService.prepareDietPlan();
 		return "diet/DietPlan";
 	}
 	
 	@PostMapping("/diet-plan-data")
 	@ResponseBody
-	public PatientDataTablesOutputDto getDietPlanData(@RequestBody DataTablesInput input,
-			@RequestParam(name = "dateSelection", required = false) String dateSelection,
-			@RequestParam(name = "extraLiquid", required = false) boolean extraLiquid,
-			@RequestParam(name = "isVip", required = false) boolean isVip) {
-		return dietPlanService.getDietPlanData(input, dateSelection, extraLiquid, isVip);
+	public PatientDataTablesOutputDto getDietPlanData(@RequestBody DietPlanSearchDto dietPlanSearchDto) {
+		return dietPlanService.getDietPlanData(dietPlanSearchDto);
 	}
 	
 	@PostMapping("/update-diet-plan-item")

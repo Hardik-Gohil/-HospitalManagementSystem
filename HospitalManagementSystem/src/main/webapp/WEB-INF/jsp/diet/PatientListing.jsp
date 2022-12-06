@@ -11,6 +11,7 @@
 		<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
 		<!-- SweetAlert2 -->
 		<link rel="stylesheet" href="${contextPath}/resources/dist/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
 		<!-- Tabs -->
 		<link href="${contextPath}/resources/dist/css/tabs.css" rel="stylesheet">
 		<style type="text/css">
@@ -98,6 +99,100 @@
 								</div>
 								<div class="tab-pane  p-20" id="Active-Patients" role="tabpanel">
 									<div class="pad-20">
+										<form action="" id="searchFormActive">
+											<div class="row">
+												<div class="col-lg-6">
+													<fieldset class="form-group">
+														<input type="text" id="searchTextActive" class="form-control" placeholder="Search Patient name,Umr No., IP Number and Doctor Name">
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="medicalComorbiditiesIdsActive" name="medicalComorbiditiesIdsActive" multiple data-live-search="true" data-size="10" title="Co-morbidities">
+															<c:forEach items="${searchMedicalComorbiditiesList}" var="medicalComorbidities">
+																<option value="${medicalComorbidities.medicalComorbiditiesId}">${medicalComorbidities.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="floorIdsActive" name="floorIdsActive" multiple data-live-search="true" data-size="10" title="Floor">
+															<c:forEach items="${searchFloorList}" var="floor">
+																<option value="${floor.floorId}">${floor.floorName}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="bedIdsActive" name="bedIdsActive" multiple data-live-search="true" data-size="10" title="Bed">
+															<c:forEach items="${searchBedList}" var="bed">
+																<option value="${bed.bedId}">${bed.bedCode}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="dietTypeOralSolidIdsActive" name="dietTypeOralSolidIdsActive" multiple data-live-search="true" data-size="10" title="Diet Type- Oral Solid">
+															<c:forEach items="${searchDietTypeOralSolidList}" var="dietTypeOralSolid">
+																<option value="${dietTypeOralSolid.dietTypeOralSolidId}">${dietTypeOralSolid.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="dietTypeOralLiquidTFIdsActive" name="dietTypeOralLiquidTFIdsActive" multiple data-live-search="true" data-size="10" title="Diet Type- Oral Liquid/TF">
+															<c:forEach items="${searchDietTypeOralLiquidTFList}" var="dietTypeOralLiquidTF">
+																<option value="${dietTypeOralLiquidTF.dietTypeOralLiquidTFId}">${dietTypeOralLiquidTF.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="dietSubTypeIdsActive" name="dietSubTypeIdsActive" multiple data-live-search="true" data-size="10" title="Diet Sub Type">
+															<c:forEach items="${searchDietSubTypeList}" var="dietSubType">
+																<option value="${dietSubType.dietSubTypeId}" class="dietSubType_options">${dietSubType.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-1">
+													<fieldset class="form-group">
+														<div class="checkbox">
+															<input id="isVipActive" type="checkbox" name="isVipActive" class="">
+															<label for="isVipActive">Is VIP</label>
+														</div>
+													</fieldset>
+												</div>
+												<div class="col-lg-1">
+													<fieldset class="form-group">
+														<div class="checkbox">
+															<input id="extraLiquidActive" type="checkbox" name="extraLiquidActive" class="">
+															<label for="extraLiquidActive">Extra Liquid</label>
+														</div>
+													</fieldset>
+												</div>
+												<div class="col-lg-1">
+													<fieldset class="form-group">
+														<div class="checkbox">
+															<input id="nbmActive" type="checkbox" name="nbmActive" class="">
+															<label for="nbmActive">NBM</label>
+														</div>
+													</fieldset>
+												</div>												
+												<div class="col-lg-1">
+												</div>							
+												<div class="col-lg-2">
+													<button type="button" class="btn btn-success waves-effect waves-light btn-block refreshTableActive">Search</button>
+												</div>							
+											</div>
+										</form>											
 										<div class="table-responsive">
 											<table id="active-patients-table" class="table table-striped">
 												<thead>
@@ -108,7 +203,7 @@
 														<th>Admission Date</th>
 														<th>Ward/Floor/Bed Cd</th>
 														<th>Doctor Name</th>
-														<th>Diet Type Solid/Liquid orally/TF/Quantity/Frequency</th>
+														<th>Diet Type/Qty/Frequency</th>
 														<th>Co-morbities</th>
 														<th class="specialNotesbyNurising">Special Notes by Nurising</th>
 														<th>Action</th>
@@ -120,6 +215,100 @@
 								</div>
 								<div class="tab-pane p-20" id="Discharged-Patients" role="tabpanel">
 									<div class="pad-20">
+										<form action="" id="searchFormDischarged">
+											<div class="row">
+												<div class="col-lg-6">
+													<fieldset class="form-group">
+														<input type="text" id="searchTextDischarged" class="form-control" placeholder="Search Patient name,Umr No., IP Number and Doctor Name">
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="medicalComorbiditiesIdsDischarged" name="medicalComorbiditiesIdsDischarged" multiple data-live-search="true" data-size="10" title="Co-morbidities">
+															<c:forEach items="${searchMedicalComorbiditiesList}" var="medicalComorbidities">
+																<option value="${medicalComorbidities.medicalComorbiditiesId}">${medicalComorbidities.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="floorIdsDischarged" name="floorIdsDischarged" multiple data-live-search="true" data-size="10" title="Floor">
+															<c:forEach items="${searchFloorList}" var="floor">
+																<option value="${floor.floorId}">${floor.floorName}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="bedIdsDischarged" name="bedIdsDischarged" multiple data-live-search="true" data-size="10" title="Bed">
+															<c:forEach items="${searchBedList}" var="bed">
+																<option value="${bed.bedId}">${bed.bedCode}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="dietTypeOralSolidIdsDischarged" name="dietTypeOralSolidIdsDischarged" multiple data-live-search="true" data-size="10" title="Diet Type- Oral Solid">
+															<c:forEach items="${searchDietTypeOralSolidList}" var="dietTypeOralSolid">
+																<option value="${dietTypeOralSolid.dietTypeOralSolidId}">${dietTypeOralSolid.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="dietTypeOralLiquidTFIdsDischarged" name="dietTypeOralLiquidTFIdsDischarged" multiple data-live-search="true" data-size="10" title="Diet Type- Oral Liquid/TF">
+															<c:forEach items="${searchDietTypeOralLiquidTFList}" var="dietTypeOralLiquidTF">
+																<option value="${dietTypeOralLiquidTF.dietTypeOralLiquidTFId}">${dietTypeOralLiquidTF.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-2">
+													<fieldset class="form-group">
+														<select class="form-control selectpicker" id="dietSubTypeIdsDischarged" name="dietSubTypeIdsDischarged" multiple data-live-search="true" data-size="10" title="Diet Sub Type">
+															<c:forEach items="${searchDietSubTypeList}" var="dietSubType">
+																<option value="${dietSubType.dietSubTypeId}" class="dietSubType_options">${dietSubType.value}</option>
+															</c:forEach>
+														</select>
+													</fieldset>
+												</div>
+												<div class="col-lg-1">
+													<fieldset class="form-group">
+														<div class="checkbox">
+															<input id="isVipDischarged" type="checkbox" name="isVipDischarged" class="">
+															<label for="isVipDischarged">Is VIP</label>
+														</div>
+													</fieldset>
+												</div>
+												<div class="col-lg-1">
+													<fieldset class="form-group">
+														<div class="checkbox">
+															<input id="extraLiquidDischarged" type="checkbox" name="extraLiquidDischarged" class="">
+															<label for="extraLiquidDischarged">Extra Liquid</label>
+														</div>
+													</fieldset>
+												</div>
+												<div class="col-lg-1">
+													<fieldset class="form-group">
+														<div class="checkbox">
+															<input id="nbmDischarged" type="checkbox" name="nbmDischarged" class="">
+															<label for="nbmDischarged">NBM</label>
+														</div>
+													</fieldset>
+												</div>												
+												<div class="col-lg-1">
+												</div>							
+												<div class="col-lg-2">
+													<button type="button" class="btn btn-success waves-effect waves-light btn-block refreshTableDischarged">Search</button>
+												</div>							
+											</div>
+										</form>									
 										<div class="table-responsive">
 											<table id="discharged-patients-table" class="table table-striped">
 												<thead>
@@ -131,7 +320,7 @@
 														<th>Discharge Date</th>
 														<th>Ward/Floor/Bed Cd</th>
 														<th>Doctor Name</th>
-														<th>Diet Type Solid/Liquid orally/TF/Quantity/Frequency</th>
+														<th>Diet Type/Qty/Frequency</th>
 														<th>Co-morbities</th>
 														<th>Special Notes by Nurising</th>
 														<th>Action</th>
@@ -164,13 +353,25 @@
 		<script src="${contextPath}/resources/dist/plugins/sweetalert2/sweetalert2.min.js"></script>	
 		<script>
 		$(document).ready(function() {
+	    	$('.selectpicker').selectpicker(); 
 		    var newPatientsTable = $('#new-patients-table').DataTable({
 		        "ajax": {
 		            'contentType': 'application/json',
 		            'url': contextPath + "/diet/patient-data?patientStatus=0",
 		            'method': "POST",
 		            'data': function(d) {
-		                return JSON.stringify(d);
+	           	         return JSON.stringify($.extend( {}, d, { 
+					          "searchText": "",
+			           	      "medicalComorbiditiesIds": [],
+		           	      	  "floorIds": [],
+		           	     	  "bedIds": [],
+		           	      	  "dietTypeOralSolidIds": [],
+		           	      	  "dietTypeOralLiquidTFIds": [],
+		           	       	  "dietSubTypeIds": [],
+		           	      	  "isVip": false,
+			           	      "extraLiquid": false,
+			           	      "nbm": false
+					         }))
 		            },
 		            'dataSrc': function(json) {
 		                $("#New-Patients-Count").text(json.count);
@@ -224,10 +425,21 @@
 		    var activePatientsTable = $('#active-patients-table').DataTable({
 		        "ajax": {
 		            'contentType': 'application/json',
-		            'url': contextPath + "/diet/patient-data?patientStatus=1&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip"),
+		            'url': contextPath + "/diet/patient-data?patientStatus=1",
 		            'method': "POST",
 		            'data': function(d) {
-		                return JSON.stringify(d);
+	           	         return JSON.stringify($.extend( {}, d, { 
+					          "searchText": getValue("searchTextActive"),
+			           	      "medicalComorbiditiesIds": getValue("medicalComorbiditiesIdsActive"),
+		           	      	  "floorIds": getValue("floorIdsActive"),
+		           	     	  "bedIds": getValue("bedIdsActive"),
+		           	      	  "dietTypeOralSolidIds": getValue("dietTypeOralSolidIdsActive"),
+		           	      	  "dietTypeOralLiquidTFIds": getValue("dietTypeOralLiquidTFIdsActive"),
+		           	       	  "dietSubTypeIds": getValue("dietSubTypeIdsActive"),
+		           	      	  "isVip": getCheckboxValue("isVipActive"),
+			           	      "extraLiquid": getCheckboxValue("extraLiquidActive"),
+			           	      "nbm": getCheckboxValue("nbmActive")
+					         }))
 		            },
 		            'dataSrc': function(json) {
 		                $("#Active-Patients-Count").text(json.count);
@@ -329,21 +541,27 @@
 		        }
 		    });
 
-		    var filters = '<div class="pull-left">';
-		    filters += '<input id="nbm" type="checkbox" class="refreshTable"><label for="nbm">&nbsp;NBM</label>';
-		    filters += '<input id="extraLiquid" type="checkbox" class="refreshTable"><label for="extraLiquid">&nbsp;Extra Liquid</label>';
-// 		    filters += '<input id="startServiceImmediately" type="checkbox" class="refreshTable"><label for="startServiceImmediately">&nbsp;Start Service Immediately</label>'
-		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
-		    filters += '</div>';
-// 		    $('#active-patients-table_filter').html(filters + $('#active-patients-table_filter').html());
-			$(filters).insertBefore($("#active-patients-table_filter").find("label"));
-		    $(".refreshTable").bind("click", function() {
-		        activePatientsTable.ajax.url(contextPath + "/diet/patient-data?patientStatus=1&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip"));
-		        activePatientsTable.ajax.reload();
-		    });
+// 		    var filters = '<div class="pull-left">';
+// 		    filters += '<input id="nbm" type="checkbox" class="refreshTable"><label for="nbm">&nbsp;NBM</label>';
+// 		    filters += '<input id="extraLiquid" type="checkbox" class="refreshTable"><label for="extraLiquid">&nbsp;Extra Liquid</label>';
+// // 		    filters += '<input id="startServiceImmediately" type="checkbox" class="refreshTable"><label for="startServiceImmediately">&nbsp;Start Service Immediately</label>'
+// 		    filters += '<input id="isVip" type="checkbox" class="refreshTable"><label for="isVip">&nbsp;Is VIP</label>';
+// 		    filters += '</div>';
+// // 		    $('#active-patients-table_filter').html(filters + $('#active-patients-table_filter').html());
+// 			$(filters).insertBefore($("#active-patients-table_filter").find("label"));
+			$('#active-patients-table_filter').html("");
+// 		    $(".refreshTable").bind("click", function() {
+// 		        activePatientsTable.ajax.url(contextPath + "/diet/patient-data?patientStatus=1&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip"));
+// 		        activePatientsTable.ajax.reload();
+// 		    });
 
 		    function getCheckboxValue(id) {
 		        return $('#' + id).is(":checked");
+		    }
+
+		    function getValue(id) {
+		    	var value = $('#' + id).val();
+		        return (value != "null" && value != "undefined"  && value != undefined) ? value : "";
 		    }
 
 		    var dischargedPatientsTable = $('#discharged-patients-table').DataTable({
@@ -352,7 +570,18 @@
 		            'url': contextPath + "/diet/patient-data?patientStatus=2",
 		            'method': "POST",
 		            'data': function(d) {
-		                return JSON.stringify(d);
+	           	         return JSON.stringify($.extend( {}, d, { 
+					          "searchText": getValue("searchTextDischarged"),
+			           	      "medicalComorbiditiesIds": getValue("medicalComorbiditiesIdsDischarged"),
+		           	      	  "floorIds": getValue("floorIdsDischarged"),
+		           	     	  "bedIds": getValue("bedIdsDischarged"),
+		           	      	  "dietTypeOralSolidIds": getValue("dietTypeOralSolidIdsDischarged"),
+		           	      	  "dietTypeOralLiquidTFIds": getValue("dietTypeOralLiquidTFIdsDischarged"),
+		           	       	  "dietSubTypeIds": getValue("dietSubTypeIdsDischarged"),
+		           	      	  "isVip": getCheckboxValue("isVipDischarged"),
+			           	      "extraLiquid": getCheckboxValue("extraLiquidDischarged"),
+			           	      "nbm": getCheckboxValue("nbmDischarged")
+					         }))
 		            },
 		            'dataSrc': function(json) {
 		                $("#Discharged-Patients-Count").text(json.count);
@@ -363,7 +592,19 @@
 		            }
 		        },
 		        "columns": [{
-		            "data": "patientName"
+		            "data": "patientName",
+		            "render": function(data, type, row) {
+		                if (type === "sort" || type === "filter" || type === 'type') {
+		                    return (data);
+		                } else {
+		                    var text = '';
+		                    if (row["isVip"]) {
+		                        text = '<img height="23px" width="23px" src="${contextPath}/resources/dist/img/icons8-star-48.png" alt="">';
+		                    }
+		                    text += data;
+		                    return text;
+		                }
+		            }		            
 		        }, {
 		            "data": "umrNumber"
 		        }, {
@@ -429,6 +670,8 @@
 		        }
 		    });
 
+			$('#discharged-patients-table_filter').html("");
+			
 		    $('#new-patients-table').on('click', 'tbody .fa-edit', function() {
 		        var data_row = newPatientsTable.row($(this).closest('tr')).data();
 		        window.location = contextPath + "/diet/patient-details?patientId=" + data_row["patientId"];
@@ -633,6 +876,14 @@
         		});
         	});
         	
+		    $(".refreshTableActive").bind("click", function() {
+		    	activePatientsTable.ajax.reload();
+		    });
+		    
+		    $(".refreshTableDischarged").bind("click", function() {
+		    	dischargedPatientsTable.ajax.reload();
+		    });
+		    
 		    function refreshPatientsTable() {
 		    	newPatientsTable.ajax.reload();
 		    	activePatientsTable.ajax.reload();
