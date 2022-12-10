@@ -7,14 +7,16 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 
+import com.HospitalManagementSystem.dto.PatientSearchDto;
+
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 
 public interface ExportService {
 
-	ResponseEntity<ByteArrayResource> getPdfPatientData(String searchText, String orderColumn, boolean direction, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip);
+	ResponseEntity<ByteArrayResource> getPdfPatientData(PatientSearchDto patientSearchDto, Integer patientStatus);
 
-	ResponseEntity<ByteArrayResource> getExcelPatientData(String searchText, String orderColumn, boolean direction, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip);
+	ResponseEntity<ByteArrayResource> getExcelPatientData(PatientSearchDto patientSearchDto, Integer patientStatus);
 
 	ResponseEntity<ByteArrayResource> getByteArrayResource(String reportName, String type, List<JasperPrint> jasperPrints, Map<String, Object> parameters) throws JRException;
 

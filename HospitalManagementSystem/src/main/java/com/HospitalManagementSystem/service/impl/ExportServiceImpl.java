@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
 import com.HospitalManagementSystem.dto.AdHocSearchDto;
+import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
+import com.HospitalManagementSystem.dto.PatientSearchDto;
 import com.HospitalManagementSystem.dto.PatientServiceReportDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
 import com.HospitalManagementSystem.entity.Patient;
@@ -31,6 +33,7 @@ import com.HospitalManagementSystem.entity.User;
 import com.HospitalManagementSystem.repository.PatientDataTablesRepository;
 import com.HospitalManagementSystem.service.AdHocOrderService;
 import com.HospitalManagementSystem.service.ExportService;
+import com.HospitalManagementSystem.service.PatientDetailsService;
 import com.HospitalManagementSystem.service.ReportService;
 import com.HospitalManagementSystem.utility.CommonUtility;
 
@@ -54,8 +57,7 @@ import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 public class ExportServiceImpl implements ExportService {
 
 	@Autowired
-	private PatientDataTablesRepository patientDataTablesRepository;
-	
+	private PatientDetailsService patientDetailsService;
 	@Autowired
 	private ReportService reportService;
 	@Autowired
@@ -94,62 +96,30 @@ public class ExportServiceImpl implements ExportService {
 	}
 
 	@Override
-	public ResponseEntity<ByteArrayResource> getPdfPatientData(String searchText, String orderColumn, boolean direction, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
-		return exportPatientData("PDF", searchText, orderColumn, direction, patientStatus, nbm, extraLiquid, startServiceImmediately, isVip);
+	public ResponseEntity<ByteArrayResource> getPdfPatientData(PatientSearchDto patientSearchDto, Integer patientStatus) {
+		return exportPatientData("PDF", patientSearchDto, patientStatus);
 	}
 
 	@Override
-	public ResponseEntity<ByteArrayResource> getExcelPatientData(String searchText, String orderColumn, boolean direction, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
-		return exportPatientData("EXCEL", searchText, orderColumn, direction, patientStatus, nbm, extraLiquid, startServiceImmediately, isVip);
+	public ResponseEntity<ByteArrayResource> getExcelPatientData(PatientSearchDto patientSearchDto, Integer patientStatus) {
+		return exportPatientData("EXCEL", patientSearchDto, patientStatus);
 	}
 	
-	private ResponseEntity<ByteArrayResource> exportPatientData(String type, String searchText, String orderColumn, boolean direction, Integer patientStatus, boolean nbm, boolean extraLiquid, boolean startServiceImmediately, boolean isVip) {
-		User currentUser = commonUtility.getCurrentUser();
-		final boolean isNursing;
-		if (currentUser.getRoles().stream().filter(role -> role.getName().equals("ROLE_NURSING")).findFirst().isPresent()) {
-			isNursing = true;
-		} else {
-			isNursing = false;
-		}		
+	private ResponseEntity<ByteArrayResource> exportPatientData(String type, PatientSearchDto patientSearchDto, Integer patientStatus) {
 		DataTablesInput input = new DataTablesInput();
 		input.addColumn("patientName", true, true, null);
 		input.addColumn("umrNumber", true, true, null);
 		input.addColumn("ipNumber", true, true, null);
-		input.addColumn("admittedDate", true, true, null);
 		input.addColumn("doctor", true, true, null);
-		input.addColumn("bed.bedCode", true, true, null);
-		input.addColumn("bed.wardName", true, true, null);
-		input.addColumn("bed.floor.floorName", true, true, null);
-		input.addColumn("modifiedOn", false, true, null);
-
-		input.addOrder("modifiedOn", false);
-		input.addOrder(orderColumn, direction);
-		input.setSearch(new Search(searchText, false));
+//		input.addColumn("bed.bedCode", true, true, null);
+//		input.addColumn("bed.wardName", true, true, null);
+//		input.addColumn("bed.floor.floorName", true, true, null);
+//		input.addColumn("modifiedOn", false, true, null);
+//		input.addOrder(orderColumn, direction);
 		input.setLength(Integer.MAX_VALUE);
 
-		Specification<Patient> additionalSpecification = (root, query, criteriaBuilder) -> {
-			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(criteriaBuilder.equal(root.get("patientStatus"), patientStatus));
-			if (nbm) {
-				predicates.add(criteriaBuilder.equal(root.get("nbm"), nbm));
-			}
-			if (extraLiquid) {
-				predicates.add(criteriaBuilder.equal(root.get("extraLiquid"), extraLiquid));
-			}
-			if (startServiceImmediately) {
-				predicates.add(criteriaBuilder.equal(root.get("startServiceImmediately"), startServiceImmediately));
-			}
-			if (isVip) {
-				predicates.add(criteriaBuilder.equal(root.get("isVip"), isVip));
-			}
-			if (isNursing) {
-				predicates.add(criteriaBuilder.equal(root.get("bed").get("floor").get("floorId"), currentUser.getFloor().getFloorId()));
-			}
-			return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
-		};
-
-		DataTablesOutput<Patient> dataTablesOutput = patientDataTablesRepository.findAll(input, additionalSpecification);
-		List<Patient> data = dataTablesOutput.getData();
+		PatientDataTablesOutputDto dataTablesOutput = patientDetailsService.getPatientData(patientSearchDto, patientStatus, Boolean.TRUE);
+		List<Patient> data = dataTablesOutput.getData().getData();
 		if (CollectionUtils.isNotEmpty(data)) {
 			try {
 				String reportName = patientStatus == 0 ? "New Patient Details" : patientStatus == 1 ? "Active Patient Details" : "Discharged Patient Details";

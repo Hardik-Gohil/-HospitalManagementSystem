@@ -13,7 +13,7 @@ public interface PatientDetailsService {
 
 	String getPatientDetails(Long patientId, Model model);
 
-	PatientDataTablesOutputDto getPatientData(PatientSearchDto patientSearchDto, Integer patientStatus);
+	PatientDataTablesOutputDto getPatientData(PatientSearchDto patientSearchDto, Integer patientStatus, boolean isExport);
 	
 	String savePatientDetails(RedirectAttributes redir, PatientDto patientDto);
 	

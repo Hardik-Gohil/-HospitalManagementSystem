@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.12.2.final using JasperReports Library version 6.12.2-75c5e90a222ab406e416cbf590a5397028a52de3  -->
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.13.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Patient Details" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="466ed59d-a48f-49cf-aedb-64ea02a7d066">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Patient Details"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.myreport" value="columnHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.report.myreport" value="*"/>	
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.report.myreport" value="*"/>
 	<style name="fs-17-ac" hTextAlign="Center" fontSize="17"/>
 	<style name="fs-10-ac" hTextAlign="Center" fontSize="10"/>
 	<style name="fs-8-ac" hTextAlign="Center" fontSize="8"/>
@@ -38,20 +38,11 @@
 		<field name="medicalComorbiditiesString" class="java.lang.String">
 			<fieldDescription><![CDATA[medicalComorbiditiesString]]></fieldDescription>
 		</field>
-		<field name="dietTypeSolidStr" class="java.lang.String">
-			<fieldDescription><![CDATA[dietTypeOralSolid.value]]></fieldDescription>
+		<field name="dietTypeSolidLiquidQuantityFrequencyString" class="java.lang.String">
+			<fieldDescription><![CDATA[dietTypeSolidLiquidQuantityFrequencyString]]></fieldDescription>
 		</field>
 		<field name="extraLiquid" class="java.lang.Boolean">
 			<fieldDescription><![CDATA[extraLiquid]]></fieldDescription>
-		</field>
-		<field name="dietTypeOralLiquidTFStr" class="java.lang.String">
-			<fieldDescription><![CDATA[dietTypeOralLiquidTF.value]]></fieldDescription>
-		</field>
-		<field name="frequencyStr" class="java.lang.String">
-			<fieldDescription><![CDATA[frequency.valueStr]]></fieldDescription>
-		</field>
-		<field name="quantityStr" class="java.lang.String">
-			<fieldDescription><![CDATA[quantity.valueStr]]></fieldDescription>
 		</field>
 		<field name="specialNotesByNursingString" class="java.lang.String">
 			<fieldDescription><![CDATA[specialNotesByNursingString]]></fieldDescription>
@@ -79,7 +70,7 @@
 				<textFieldExpression><![CDATA[$P{reportName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="25" width="278" height="20" uuid="941d5c67-e986-4d5b-ba7e-2754f065e008"/>
+				<reportElement x="0" y="25" width="267" height="20" uuid="941d5c67-e986-4d5b-ba7e-2754f065e008"/>
 				<box padding="3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="SansSerif" size="10"/>
@@ -243,15 +234,15 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{admittedDate} != null ? ($F{admittedDate}).format($P{localDateTimeFormatter}): "N/A"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{admittedDate} != null ? ($F{admittedDate}).format($P{localDateTimeFormatter}): "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
+					<jr:column width="70" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="50" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="70" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -267,7 +258,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="20">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="50" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="70" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -278,15 +269,15 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{doctor}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{doctor} != null && !$F{doctor}.equals("") ? $F{doctor} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="70" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
+					<jr:column width="90" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="70" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="90" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -302,7 +293,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="20">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="70" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="90" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -387,11 +378,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
+					<jr:column width="80" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="50" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="80" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -402,12 +393,12 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA["Diet Type Solid"]]></textFieldExpression>
+								<textFieldExpression><![CDATA["Diet Type/Qty/Frequency"]]></textFieldExpression>
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell height="20">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="50" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="80" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -418,15 +409,15 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{dietTypeSolidStr}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{dietTypeSolidLiquidQuantityFrequencyString} != null && !$F{dietTypeSolidLiquidQuantityFrequencyString}.equals("") ? $F{dietTypeSolidLiquidQuantityFrequencyString} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="30" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
+					<jr:column width="40" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column9"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="30" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="40" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -442,7 +433,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="20">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="30" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="40" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -457,116 +448,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="50" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
+					<jr:column width="105" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column10"/>
 						<jr:columnHeader height="20" rowSpan="1">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="50" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
-								<box leftPadding="5">
-									<pen lineWidth="1.0" lineColor="#000000"/>
-									<topPen lineWidth="1.0" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineColor="#000000"/>
-									<bottomPen lineWidth="1.0" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineColor="#000000"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="styled">
-									<font size="10"/>
-								</textElement>
-								<textFieldExpression><![CDATA["Diet Type and Sub Type Oral Liquid/TF"]]></textFieldExpression>
-							</textField>
-						</jr:columnHeader>
-						<jr:detailCell height="20">
-							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="50" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
-								<box leftPadding="5">
-									<pen lineWidth="1.0" lineColor="#000000"/>
-									<topPen lineWidth="1.0" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineColor="#000000"/>
-									<bottomPen lineWidth="1.0" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineColor="#000000"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="styled">
-									<font size="10"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{dietTypeOralLiquidTFStr}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="30" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column11"/>
-						<jr:columnHeader height="20" rowSpan="1">
-							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="30" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
-								<box leftPadding="5">
-									<pen lineWidth="1.0" lineColor="#000000"/>
-									<topPen lineWidth="1.0" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineColor="#000000"/>
-									<bottomPen lineWidth="1.0" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineColor="#000000"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="styled">
-									<font size="10"/>
-								</textElement>
-								<textFieldExpression><![CDATA["Frequency"]]></textFieldExpression>
-							</textField>
-						</jr:columnHeader>
-						<jr:detailCell height="20">
-							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="30" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
-								<box leftPadding="5">
-									<pen lineWidth="1.0" lineColor="#000000"/>
-									<topPen lineWidth="1.0" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineColor="#000000"/>
-									<bottomPen lineWidth="1.0" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineColor="#000000"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="styled">
-									<font size="10"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{frequencyStr}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="30" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
-						<jr:columnHeader height="20" rowSpan="1">
-							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="30" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
-								<box leftPadding="5">
-									<pen lineWidth="1.0" lineColor="#000000"/>
-									<topPen lineWidth="1.0" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineColor="#000000"/>
-									<bottomPen lineWidth="1.0" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineColor="#000000"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="styled">
-									<font size="10"/>
-								</textElement>
-								<textFieldExpression><![CDATA["Quantity"]]></textFieldExpression>
-							</textField>
-						</jr:columnHeader>
-						<jr:detailCell height="20">
-							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="30" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
-								<box leftPadding="5">
-									<pen lineWidth="1.0" lineColor="#000000"/>
-									<topPen lineWidth="1.0" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineColor="#000000"/>
-									<bottomPen lineWidth="1.0" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineColor="#000000"/>
-								</box>
-								<textElement verticalAlignment="Middle" markup="styled">
-									<font size="10"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{quantityStr}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="75" uuid="6813a4de-093c-412e-acb0-fd4d559043a5">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column12"/>
-						<jr:columnHeader height="20" rowSpan="1">
-							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="75" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="105" height="20" backcolor="#CCEFFF" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -582,7 +468,7 @@
 						</jr:columnHeader>
 						<jr:detailCell height="20">
 							<textField textAdjust="StretchHeight">
-								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="75" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
+								<reportElement style="fs-10-ac" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="105" height="20" uuid="6b44a6d1-3378-4a39-8195-7f1adba6018e"/>
 								<box leftPadding="5">
 									<pen lineWidth="1.0" lineColor="#000000"/>
 									<topPen lineWidth="1.0" lineColor="#000000"/>
@@ -593,7 +479,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{specialNotesByNursingString}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{specialNotesByNursingString} != null && !$F{specialNotesByNursingString}.equals("") ? $F{specialNotesByNursingString} : "-"]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

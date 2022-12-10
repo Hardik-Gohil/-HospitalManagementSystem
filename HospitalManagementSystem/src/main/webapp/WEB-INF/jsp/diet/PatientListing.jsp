@@ -361,7 +361,7 @@
 		            'method': "POST",
 		            'data': function(d) {
 	           	         return JSON.stringify($.extend( {}, d, { 
-					          "searchText": "",
+					          "searchText": $("#new-patients-table_filter").find("input[type=search]").val(),
 			           	      "medicalComorbiditiesIds": [],
 		           	      	  "floorIds": [],
 		           	     	  "bedIds": [],
@@ -382,15 +382,19 @@
 		            }
 		        },
 		        "columns": [{
-		            "data": "patientName"
+		            "data": "patientName",
+		            "orderable": false
+		            
 		        }, {
-		            "data": "umrNumber"
+		            "data": "umrNumber",
+		            "orderable": false
 		        }, {
-		            "data": "ipNumber"
+		            "data": "ipNumber",
+		            "orderable": false
 		        }, {
 		            "data": "admittedDate",
-		            "defaultContent": "-"
-
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "data": "bedString",
 		            "defaultContent": "-",
@@ -398,7 +402,8 @@
 		            "searchable": false
 		        }, {
 		            "data": "doctor",
-		            "defaultContent": "-"
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "orderable": false,
 		            "searchable": false,
@@ -451,6 +456,7 @@
 		        },
 		        "columns": [{
 		            "data": "patientName",
+		            "orderable": false,
 		            "render": function(data, type, row) {
 		                if (type === "sort" || type === "filter" || type === 'type') {
 		                    return (data);
@@ -464,12 +470,15 @@
 		                }
 		            }
 		        }, {
-		            "data": "umrNumber"
+		            "data": "umrNumber",
+		            "orderable": false
 		        }, {
-		            "data": "ipNumber"
+		            "data": "ipNumber",
+		            "orderable": false
 		        }, {
 		            "data": "admittedDate",
-		            "defaultContent": "-"
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "data": "bedString",
 		            "defaultContent": "-",
@@ -477,7 +486,8 @@
 		            "searchable": false
 		        }, {
 		            "data": "doctor",
-		            "defaultContent": "-"
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "data": "dietTypeSolidLiquidQuantityFrequencyString",
 		            "defaultContent": "-",
@@ -593,6 +603,7 @@
 		        },
 		        "columns": [{
 		            "data": "patientName",
+		            "orderable": false,
 		            "render": function(data, type, row) {
 		                if (type === "sort" || type === "filter" || type === 'type') {
 		                    return (data);
@@ -606,15 +617,19 @@
 		                }
 		            }		            
 		        }, {
-		            "data": "umrNumber"
+		            "data": "umrNumber",
+		            "orderable": false
 		        }, {
-		            "data": "ipNumber"
+		            "data": "ipNumber",
+		            "orderable": false
 		        }, {
 		            "data": "admittedDate",
-		            "defaultContent": "-"
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "data": "dischargedTime",
-		            "defaultContent": "-"
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "data": "bedString",
 		            "defaultContent": "-",
@@ -622,7 +637,8 @@
 		            "searchable": false
 		        }, {
 		            "data": "doctor",
-		            "defaultContent": "-"
+		            "defaultContent": "-",
+		            "orderable": false
 		        }, {
 		            "data": "dietTypeSolidLiquidQuantityFrequencyString",
 		            "defaultContent": "-",
@@ -713,64 +729,150 @@
 		    })		    
 		    
 		    $("#Export-PDF").bind("click", function() {
-		        var activeTab = $(".customtab").find(".active").attr("href");
-		        var patientStatus = 0;
-		        var searchText = "";
-		        var checkboxSearch = "&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip");
-		        var orderColumn = "";
-		        var direction = "";
-		        if (activeTab == "#New-Patients") {
-		            patientStatus = 0;
-		            searchText = $("#new-patients-table_filter").find("input[type=search]").val();
-		            var order = newPatientsTable.order();
-		            orderColumn = newPatientsTable.settings().init().columns[order[0][0]]['data'];
-		            direction = order[0][1] == "asc" ? true : false;
-		        } else if (activeTab == "#Active-Patients") {
-		            patientStatus = 1;
-		            searchText = $("#active-patients-table_filter").find("input[type=search]").val();
-		            searchText += checkboxSearch;
-		            var order = activePatientsTable.order();
-		            orderColumn = activePatientsTable.settings().init().columns[order[0][0]]['data'];
-		            direction = order[0][1] == "asc" ? true : false;
-		        } else if (activeTab == "#Discharged-Patients") {
-		            patientStatus = 2;
-		            searchText = $("#discharged-patients-table_filter").find("input[type=search]").val();
-		            var order = dischargedPatientsTable.order();
-		            orderColumn = dischargedPatientsTable.settings().init().columns[order[0][0]]['data'];
-		            direction = order[0][1] == "asc" ? true : false;
-		        }
-		        window.location = contextPath + "/diet/export/pdf/patient-details?patientStatus=" + patientStatus + "&searchText=" + searchText + "&orderColumn=" + orderColumn + "&direction=" + direction;
+		    	exportFile("PDF");
+// 		        var activeTab = $(".customtab").find(".active").attr("href");
+// 		        var patientStatus = 0;
+// 		        var searchText = "";
+// 		        var checkboxSearch = "&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip");
+// 		        var orderColumn = "";
+// 		        var direction = "";
+// 		        if (activeTab == "#New-Patients") {
+// 		            patientStatus = 0;
+// 		            searchText = $("#new-patients-table_filter").find("input[type=search]").val();
+// 		            var order = newPatientsTable.order();
+// 		            orderColumn = newPatientsTable.settings().init().columns[order[0][0]]['data'];
+// 		            direction = order[0][1] == "asc" ? true : false;
+// 		        } else if (activeTab == "#Active-Patients") {
+// 		            patientStatus = 1;
+// 		            searchText = $("#active-patients-table_filter").find("input[type=search]").val();
+// 		            searchText += checkboxSearch;
+// 		            var order = activePatientsTable.order();
+// 		            orderColumn = activePatientsTable.settings().init().columns[order[0][0]]['data'];
+// 		            direction = order[0][1] == "asc" ? true : false;
+// 		        } else if (activeTab == "#Discharged-Patients") {
+// 		            patientStatus = 2;
+// 		            searchText = $("#discharged-patients-table_filter").find("input[type=search]").val();
+// 		            var order = dischargedPatientsTable.order();
+// 		            orderColumn = dischargedPatientsTable.settings().init().columns[order[0][0]]['data'];
+// 		            direction = order[0][1] == "asc" ? true : false;
+// 		        }
+// 		        window.location = contextPath + "/diet/export/pdf/patient-details?patientStatus=" + patientStatus + "&searchText=" + searchText + "&orderColumn=" + orderColumn + "&direction=" + direction;
 		    });
 
 		    $("#Export-Excel").bind("click", function() {
-		        var activeTab = $(".customtab").find(".active").attr("href");
+		    	exportFile("Excel");
+// 		        var activeTab = $(".customtab").find(".active").attr("href");
+// 		        var patientStatus = 0;
+// 		        var searchText = "";
+// 		        var checkboxSearch = "&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip");
+// 		        var orderColumn = "";
+// 		        var direction = "";
+// 		        if (activeTab == "#New-Patients") {
+// 		            patientStatus = 0;
+// 		            searchText = $("#new-patients-table_filter").find("input[type=search]").val();
+// 		            var order = newPatientsTable.order();
+// 		            orderColumn = newPatientsTable.settings().init().columns[order[0][0]]['data'];
+// 		            direction = order[0][1] == "asc" ? true : false;
+// 		        } else if (activeTab == "#Active-Patients") {
+// 		            patientStatus = 1;
+// 		            searchText = $("#active-patients-table_filter").find("input[type=search]").val();
+// 		            searchText += checkboxSearch;
+// 		            var order = activePatientsTable.order();
+// 		            orderColumn = activePatientsTable.settings().init().columns[order[0][0]]['data'];
+// 		            direction = order[0][1] == "asc" ? true : false;
+// 		        } else if (activeTab == "#Discharged-Patients") {
+// 		            patientStatus = 2;
+// 		            searchText = $("#discharged-patients-table_filter").find("input[type=search]").val();
+// 		            var order = dischargedPatientsTable.order();
+// 		            orderColumn = dischargedPatientsTable.settings().init().columns[order[0][0]]['data'];
+// 		            direction = order[0][1] == "asc" ? true : false;
+// 		        }
+// 		        window.location = contextPath + "/diet/export/excel/patient-details?patientStatus=" + patientStatus + "&searchText=" + searchText + "&orderColumn=" + orderColumn + "&direction=" + direction;
+		    });
+		    
+		    
+		    function exportFile(type) {
 		        var patientStatus = 0;
-		        var searchText = "";
-		        var checkboxSearch = "&nbm=" + getCheckboxValue("nbm") + "&extraLiquid=" + getCheckboxValue("extraLiquid") + "&startServiceImmediately=" + getCheckboxValue("startServiceImmediately") + "&isVip=" + getCheckboxValue("isVip");
-		        var orderColumn = "";
-		        var direction = "";
+		        var activeTab = $(".customtab").find(".active").attr("href");
+		        var form = document.createElement("form");
+		        
+		        var searchTextElement = document.createElement("input"); 
+		        var medicalComorbiditiesIdsElement = document.createElement("input"); 
+		        var floorIdsElement = document.createElement("input"); 
+		        var bedIdsElement = document.createElement("input"); 
+		        var dietTypeOralSolidIdsElement = document.createElement("input"); 
+		        var dietTypeOralLiquidTFIdsElement = document.createElement("input"); 
+		        var dietSubTypeIdsElement = document.createElement("input"); 
+		        var isVipElement = document.createElement("input"); 
+		        var extraLiquidElement = document.createElement("input"); 
+		        var nbmElement = document.createElement("input"); 
+		        
+		        searchTextElement.name = "searchText";
+		        medicalComorbiditiesIdsElement.name = "medicalComorbiditiesIds";
+		        floorIdsElement.name = "floorIds";
+		        bedIdsElement.name = "bedIds";
+		        dietTypeOralSolidIdsElement.name = "dietTypeOralSolidIds";
+		        dietTypeOralLiquidTFIdsElement.name = "dietTypeOralLiquidTFIds";
+		        dietSubTypeIdsElement.name = "dietSubTypeIds";
+		        isVipElement.name = "isVip";
+		        extraLiquidElement.name = "extraLiquid";
+		        nbmElement.name = "nbm";
+           	      
 		        if (activeTab == "#New-Patients") {
-		            patientStatus = 0;
-		            searchText = $("#new-patients-table_filter").find("input[type=search]").val();
-		            var order = newPatientsTable.order();
-		            orderColumn = newPatientsTable.settings().init().columns[order[0][0]]['data'];
-		            direction = order[0][1] == "asc" ? true : false;
+		            patientStatus = 0;		            
+			        searchTextElement.value = $("#new-patients-table_filter").find("input[type=search]").val();
+			        medicalComorbiditiesIdsElement.value = [];
+			        floorIdsElement.value = [];
+			        bedIdsElement.value = [];
+			        dietTypeOralSolidIdsElement.value = [];
+			        dietTypeOralLiquidTFIdsElement.value = [];
+			        dietSubTypeIdsElement.value =  [];
+			        isVipElement.value = false;
+			        extraLiquidElement.value = false;
+			        nbmElement.value = false;
 		        } else if (activeTab == "#Active-Patients") {
 		            patientStatus = 1;
-		            searchText = $("#active-patients-table_filter").find("input[type=search]").val();
-		            searchText += checkboxSearch;
-		            var order = activePatientsTable.order();
-		            orderColumn = activePatientsTable.settings().init().columns[order[0][0]]['data'];
-		            direction = order[0][1] == "asc" ? true : false;
+			        searchTextElement.value = getValue("searchTextActive");
+			        medicalComorbiditiesIdsElement.value = getValue("medicalComorbiditiesIdsActive");
+			        floorIdsElement.value = getValue("floorIdsActive");
+			        bedIdsElement.value = getValue("bedIdsActive");
+			        dietTypeOralSolidIdsElement.value = getValue("dietTypeOralSolidIdsActive");
+			        dietTypeOralLiquidTFIdsElement.value = getValue("dietTypeOralLiquidTFIdsActive");
+			        dietSubTypeIdsElement.value =  getValue("dietSubTypeIdsActive");
+			        isVipElement.value = getCheckboxValue("isVipActive");
+			        extraLiquidElement.value = getCheckboxValue("extraLiquidActive");
+			        nbmElement.value = getCheckboxValue("nbmActive");
 		        } else if (activeTab == "#Discharged-Patients") {
 		            patientStatus = 2;
-		            searchText = $("#discharged-patients-table_filter").find("input[type=search]").val();
-		            var order = dischargedPatientsTable.order();
-		            orderColumn = dischargedPatientsTable.settings().init().columns[order[0][0]]['data'];
-		            direction = order[0][1] == "asc" ? true : false;
+			        searchTextElement.value = getValue("searchTextDischarged");
+			        medicalComorbiditiesIdsElement.value = getValue("medicalComorbiditiesIdsDischarged");
+			        floorIdsElement.value = getValue("floorIdsDischarged");
+			        bedIdsElement.value = getValue("bedIdsDischarged");
+			        dietTypeOralSolidIdsElement.value = getValue("dietTypeOralSolidIdsDischarged");
+			        dietTypeOralLiquidTFIdsElement.value = getValue("dietTypeOralLiquidTFIdsDischarged");
+			        dietSubTypeIdsElement.value =  getValue("dietSubTypeIdsDischarged");
+			        isVipElement.value = getCheckboxValue("isVipDischarged");
+			        extraLiquidElement.value = getCheckboxValue("extraLiquidDischarged");
+			        nbmElement.value = getCheckboxValue("nbmDischarged");
 		        }
-		        window.location = contextPath + "/diet/export/excel/patient-details?patientStatus=" + patientStatus + "&searchText=" + searchText + "&orderColumn=" + orderColumn + "&direction=" + direction;
-		    });
+
+		        form.appendChild(searchTextElement);  
+		        form.appendChild(medicalComorbiditiesIdsElement);
+		        form.appendChild(floorIdsElement);
+		        form.appendChild(bedIdsElement);
+		        form.appendChild(dietTypeOralSolidIdsElement);
+		        form.appendChild(dietTypeOralLiquidTFIdsElement);
+		        form.appendChild(dietSubTypeIdsElement);
+		        form.appendChild(isVipElement);
+		        form.appendChild(isVipElement);
+		        form.appendChild(nbmElement);
+		        document.body.appendChild(form);
+		        
+		        form.method = "POST";
+		        form.action = (type == "PDF") ? (contextPath + "/diet/export/pdf/patient-details?patientStatus=" + patientStatus) : (contextPath + "/diet/export/excel/patient-details?patientStatus=" + patientStatus); 
+		        form.submit();
+		    }
+		    
 		    
         	$('#new-patients-table').on('click', 'tbody .fa-trash-o', function(e) {
 		        var data_row = newPatientsTable.row($(this).closest('tr')).data();

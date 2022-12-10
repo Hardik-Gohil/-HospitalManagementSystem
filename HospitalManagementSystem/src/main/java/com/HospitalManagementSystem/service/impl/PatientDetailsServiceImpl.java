@@ -451,20 +451,24 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 	}
 
 	@Override
-	public PatientDataTablesOutputDto getPatientData(PatientSearchDto patientSearchDto, Integer patientStatus) {
+	public PatientDataTablesOutputDto getPatientData(PatientSearchDto patientSearchDto, Integer patientStatus, boolean isExport) {
 		User currentUser = commonUtility.getCurrentUser();
 		DataTablesInput input = patientSearchDto;
 //		input.addColumn("bed.bedCode", true, true, null);
 //		input.addColumn("bed.wardName", true, true, null);
 //		input.addColumn("bed.floor.floorName", true, true, null);
-		if (patientStatus != 1) {
-			input.setSearch(new Search(patientSearchDto.getSearchText(), false));		
+		input.setSearch(new Search(patientSearchDto.getSearchText(), false));		
+		List<Order> orders = input.getOrder();
+		if (CollectionUtils.isNotEmpty(orders)) {
+			orders.clear();
+		}
+		if (isExport) {
+			input.addColumn("bed.floor.floorName", true, true, null);
+			input.addOrder("bed.floor.floorName", true);
 		}
 		input.addColumn("modifiedOn", false, true, null);
 		input.addOrder("modifiedOn", false);
-		List<Order> orders = input.getOrder();
-		orders.add(0, orders.get(orders.size()-1));
-		orders.remove(orders.size()-1);
+		
 		final boolean isNursing;
 		if (currentUser.getRoles().stream().filter(role -> role.getName().equals("ROLE_NURSING")).findFirst().isPresent()) {
 			isNursing = true;

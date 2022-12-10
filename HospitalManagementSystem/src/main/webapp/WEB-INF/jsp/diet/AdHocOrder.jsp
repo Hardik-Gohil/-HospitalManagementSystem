@@ -47,7 +47,7 @@
 						<div class="card-body">
 							<%@include file="IncludePatientDetails.jsp"%>
 							<Br>
-							<form:form method="POST" action="${contextPath}/diet/adhoc-order" modelAttribute="adHocOrderDto" onsubmit="return Validation();" id="adHocOrderForm">
+							<form:form method="POST" action="${contextPath}/diet/adhoc-order" modelAttribute="adHocOrderDto" id="adHocOrderForm">
 								<form:hidden path="patient.patientId" id="patientId"/>
 								<div class="row">
 									<div class="col-lg-12">
@@ -122,7 +122,7 @@
 								</div>
 								<c:if test="${patient.patientStatus ne 2}">
 									<c:if test="${isNursing || isDietitian || isAdmin}">
-										<button type="submit" class="btn btn-success waves-effect waves-light">Submit</button>
+										<button type="submit" class="submitBtn btn btn-success waves-effect waves-light">Submit</button>
 									</c:if>
 									<a href="${contextPath}/diet/adhoc-order?patientId=${adHocOrderDto.patient.patientId}">
 										<button type="button" class="btn btn-inverse waves-effect waves-light">Clear</button>
@@ -209,6 +209,7 @@
 		    	Swal.fire('Pleae add Items');
 		    	return false;
 		    }
+		    return true;
 		}
 		
 		function addItem() {
@@ -302,6 +303,12 @@
 			            maxlength: "Max 150 characters allowed",
 			            alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"		                
 		            }
+		        },
+		        submitHandler: function(form) { // <- pass 'form' argument in
+		        	if (Validation()) {
+			            $(".submitBtn").attr("disabled", "disabled");
+			            form.submit(); // <- use 'form' argument here.
+		        	}
 		        }
 		    });
 		    

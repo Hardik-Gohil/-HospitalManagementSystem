@@ -95,7 +95,7 @@ public class DietPlanServiceImpl implements DietPlanService {
 			}
 			for (Patient patient : patientList) {
 				if (!prepareAll) {
-					List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndServiceMasterFromTimeGreaterThan(patient.getPatientId(), now.toLocalTime());
+					List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndDietDateAndServiceMasterFromTimeGreaterThan(patient.getPatientId(), now.toLocalDate(), now.toLocalTime());
 					if (CollectionUtils.isNotEmpty(upcommingDietPlans)) {
 						dietPlanRepository.deleteAll(upcommingDietPlans);
 					}
@@ -164,9 +164,9 @@ public class DietPlanServiceImpl implements DietPlanService {
 		PatientDataTablesOutputDto patientDataTablesOutputDto = new PatientDataTablesOutputDto();
 		List<Patient> patientList;
 		if (StringUtils.isNotEmpty(dietPlanSearchDto.getSearchItemText().trim()) && CollectionUtils.isNotEmpty(dietPlanSearchDto.getServiceMasterIds())) {
-			patientList = dietPlanRepository.findAllPatientsByDietDateAndItemAndServiceMasterIds(date, "%" + dietPlanSearchDto.getSearchItemText().trim() + "%", dietPlanSearchDto.getServiceMasterIds());
+			patientList = dietPlanRepository.findAllPatientsByDietDateAndItemAndServiceMasterIds(date, "%" + dietPlanSearchDto.getSearchItemText().trim().toLowerCase() + "%", dietPlanSearchDto.getServiceMasterIds());
 		} else if (StringUtils.isNotEmpty(dietPlanSearchDto.getSearchItemText().trim())) {
-			patientList = dietPlanRepository.findAllPatientsByDietDateAndItem(date, "%" + dietPlanSearchDto.getSearchItemText().trim() + "%");
+			patientList = dietPlanRepository.findAllPatientsByDietDateAndItem(date, "%" + dietPlanSearchDto.getSearchItemText().trim().toLowerCase() + "%");
 		} else if (CollectionUtils.isNotEmpty(dietPlanSearchDto.getServiceMasterIds())) {
 			patientList = dietPlanRepository.findAllPatientsByDietDateAndServiceMasterIds(date, dietPlanSearchDto.getServiceMasterIds());
 		} else {
@@ -293,7 +293,7 @@ public class DietPlanServiceImpl implements DietPlanService {
 	public void updateDietInstruction(Patient patient) {
 		LocalDateTime now = LocalDateTime.now();
 		List<DietPlan> dietPlanList = new ArrayList<DietPlan>();
-		List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndServiceMasterFromTimeGreaterThan(patient.getPatientId(), now.toLocalTime());
+		List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndDietDateAndServiceMasterFromTimeGreaterThan(patient.getPatientId(), now.toLocalDate(), now.toLocalTime());
 		if (CollectionUtils.isNotEmpty(upcommingDietPlans)) {
 			dietPlanList.addAll(upcommingDietPlans);
 		}

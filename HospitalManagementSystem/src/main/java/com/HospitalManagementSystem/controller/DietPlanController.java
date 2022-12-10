@@ -71,7 +71,7 @@ public class DietPlanController {
 	@PostMapping("/patient-data")
 	@ResponseBody
 	public PatientDataTablesOutputDto getPatientData(@RequestBody PatientSearchDto patientSearchDto, @RequestParam("patientStatus") Integer patientStatus) {
-		return patientDetailsService.getPatientData(patientSearchDto, patientStatus);
+		return patientDetailsService.getPatientData(patientSearchDto, patientStatus, Boolean.FALSE);
 	}
 	
 	@GetMapping("/patient-details")
@@ -96,32 +96,16 @@ public class DietPlanController {
 		return patientDetailsService.savePatientDetails(redir, patientDto);
 	}
 	
-	@GetMapping("/export/pdf/patient-details")
+	@PostMapping("/export/pdf/patient-details")
 	@ResponseBody
-	public ResponseEntity<ByteArrayResource> getPdfPatientData(
-			@RequestParam("searchText") String searchText,
-			@RequestParam("orderColumn") String orderColumn,
-			@RequestParam("direction") boolean direction,
-			@RequestParam("patientStatus") Integer patientStatus,
-			@RequestParam(name = "nbm", required = false) boolean nbm,
-			@RequestParam(name = "extraLiquid", required = false) boolean extraLiquid,
-			@RequestParam(name = "startServiceImmediately", required = false) boolean startServiceImmediately,
-			@RequestParam(name = "isVip", required = false) boolean isVip) {
-		return exportService.getPdfPatientData(searchText, orderColumn, direction, patientStatus, nbm, extraLiquid, startServiceImmediately, isVip);
+	public ResponseEntity<ByteArrayResource> getPdfPatientData(PatientSearchDto patientSearchDto, @RequestParam("patientStatus") Integer patientStatus) {
+		return exportService.getPdfPatientData(patientSearchDto, patientStatus);
 	}
 	
-	@GetMapping("/export/excel/patient-details")
+	@PostMapping("/export/excel/patient-details")
 	@ResponseBody
-	public ResponseEntity<ByteArrayResource> getExcelPatientData(
-			@RequestParam("searchText") String searchText,
-			@RequestParam("orderColumn") String orderColumn,
-			@RequestParam("direction") boolean direction,
-			@RequestParam("patientStatus") Integer patientStatus,
-			@RequestParam(name = "nbm", required = false) boolean nbm,
-			@RequestParam(name = "extraLiquid", required = false) boolean extraLiquid,
-			@RequestParam(name = "startServiceImmediately", required = false) boolean startServiceImmediately,
-			@RequestParam(name = "isVip", required = false) boolean isVip) {
-		return exportService.getExcelPatientData(searchText, orderColumn, direction, patientStatus, nbm, extraLiquid, startServiceImmediately, isVip);
+	public ResponseEntity<ByteArrayResource> getExcelPatientData(PatientSearchDto patientSearchDto, @RequestParam("patientStatus") Integer patientStatus) {
+		return exportService.getExcelPatientData(patientSearchDto, patientStatus);
 	}
 	
 	@GetMapping("/diet-instruction")

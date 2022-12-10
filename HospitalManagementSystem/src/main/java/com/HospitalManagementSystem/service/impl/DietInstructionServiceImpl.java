@@ -204,7 +204,7 @@ public class DietInstructionServiceImpl implements DietInstructionService {
 		LocalDateTime now = LocalDateTime.now();
 		Optional<DietInstruction> dietInstruction = dietInstructionRepository.findById(dietInstructionId);
 		Long patientId = dietInstruction.get().getPatient().getPatientId();
-		List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndServiceMasterFromTimeGreaterThan(patientId, now.toLocalTime());
+		List<DietPlan> upcommingDietPlans = dietPlanRepository.findAllByPatientPatientIdAndDietDateAndServiceMasterFromTimeGreaterThan(patientId, now.toLocalDate(), now.toLocalTime());
 		List<DietPlan> upcommingDietPlansForTomorrow = dietPlanRepository.findAllByPatientPatientIdAndDietDate(patientId, now.toLocalDate().plusDays(1));
 		if (CollectionUtils.isNotEmpty(upcommingDietPlans)) {
 			for (DietPlan dietPlan : upcommingDietPlans) {
