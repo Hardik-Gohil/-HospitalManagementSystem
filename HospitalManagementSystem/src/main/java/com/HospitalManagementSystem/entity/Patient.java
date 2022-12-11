@@ -222,7 +222,9 @@ public class Patient {
 		str.append(ObjectUtils.isNotEmpty(dietTypeOralSolid)
 				? dietTypeOralSolid.getValue() + (ObjectUtils.isNotEmpty(dietTypeOralLiquidTF) ? "/" : "")
 				: "");
-		str.append(ObjectUtils.isNotEmpty(dietTypeOralLiquidTF) ? dietTypeOralLiquidTF.getValue() + "/" + quantity.getValueStr() + "/" + frequency.getValueStr() : "");
+		str.append(ObjectUtils.isNotEmpty(dietTypeOralLiquidTF)
+				? dietTypeOralLiquidTF.getValue() + "(" + dietSubType.getValue() + ")" + "/" + quantity.getValueStr() + "/" + frequency.getValueStr()
+				: "");
 		this.setDietTypeSolidLiquidQuantityFrequencyString(str.toString());
 		return dietTypeSolidLiquidQuantityFrequencyString;
 	}
