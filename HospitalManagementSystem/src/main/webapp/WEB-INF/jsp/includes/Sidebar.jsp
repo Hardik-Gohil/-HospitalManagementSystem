@@ -31,7 +31,7 @@
 				</li>
 			</c:if>
 			<c:if test="${isDietitian || isAdmin}">
-				<li class="treeview menu-open"> <a href="#"> <i class="fa fa-file"></i> <span>Reports</span> <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span> </a>
+				<li class="treeview menu-open" id="Reports"> <a href="#"> <i class="fa fa-file"></i> <span>Reports</span> <span class="pull-right-container"> <i class="fa fa-angle-left pull-right"></i> </span> </a>
 		          <ul class="treeview-menu" style="display: block;">
 		            <li><a href="${contextPath}/reports/patient-service-report"><i class="fa fa-angle-right"></i> Diet MIS report</a></li>
 		          </ul>

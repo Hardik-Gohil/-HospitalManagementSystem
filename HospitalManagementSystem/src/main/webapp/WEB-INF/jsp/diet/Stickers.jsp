@@ -106,7 +106,7 @@
 		function Validation() {}
 
 		$(document).ready(function() {
-		    $("#Patients").addClass("active");
+		    $("#Stickers").addClass("active");
 		    $('.selectpicker').selectpicker(); 
 		    dietTypeChange();
 

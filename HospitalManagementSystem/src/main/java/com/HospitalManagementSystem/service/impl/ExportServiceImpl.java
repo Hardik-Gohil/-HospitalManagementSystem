@@ -75,7 +75,7 @@ public class ExportServiceImpl implements ExportService {
 			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(out));
 			exporter.exportReport();
 			ByteArrayResource resource = new ByteArrayResource(out.toByteArray());
-			return ResponseEntity.ok().contentType(MediaType.APPLICATION_PDF).body(resource);
+			return ResponseEntity.ok().header("Content-Disposition", "attachment; filename=" + reportName + ".pdf").contentType(MediaType.APPLICATION_PDF).body(resource);
 		}
 
 		if (type.equals("EXCEL")) {

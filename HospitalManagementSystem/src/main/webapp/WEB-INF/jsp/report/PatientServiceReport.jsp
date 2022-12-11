@@ -196,7 +196,7 @@
 		}
 		
 		$(document).ready(function() {
-		    $("#Patients").addClass("active");
+		    $("#Reports").addClass("active");
 		    $('.selectpicker').selectpicker(); 
 		    
 		    $('#dateSelection').daterangepicker({

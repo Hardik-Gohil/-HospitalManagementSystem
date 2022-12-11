@@ -539,7 +539,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA["Chargable?"]]></textFieldExpression>
+								<textFieldExpression><![CDATA["Delivered?"]]></textFieldExpression>
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell height="20">
