@@ -870,7 +870,9 @@
 		        
 		        form.method = "POST";
 		        form.action = (type == "PDF") ? (contextPath + "/diet/export/pdf/patient-details?patientStatus=" + patientStatus) : (contextPath + "/diet/export/excel/patient-details?patientStatus=" + patientStatus); 
+		        form.style.visibility = 'hidden';
 		        form.submit();
+		        document.body.removeChild(form);
 		    }
 		    
 		    

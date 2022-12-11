@@ -106,7 +106,7 @@ public class ExportServiceImpl implements ExportService {
 	}
 	
 	private ResponseEntity<ByteArrayResource> exportPatientData(String type, PatientSearchDto patientSearchDto, Integer patientStatus) {
-		DataTablesInput input = new DataTablesInput();
+		DataTablesInput input = patientSearchDto;
 		input.addColumn("patientName", true, true, null);
 		input.addColumn("umrNumber", true, true, null);
 		input.addColumn("ipNumber", true, true, null);
