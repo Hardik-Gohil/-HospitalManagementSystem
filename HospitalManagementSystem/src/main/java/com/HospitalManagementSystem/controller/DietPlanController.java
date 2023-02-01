@@ -132,8 +132,15 @@ public class DietPlanController {
 	@GetMapping("/diet-plan")
 	public String dietPlan(Model model) {
 		searchService.setMasterData(model);
-		dietPlanService.prepareDietPlan();
+//		dietPlanService.prepareDietPlan();
 		return "diet/DietPlan";
+	}
+	
+	@GetMapping("/prepareDietPlan")
+	@ResponseBody
+	public String prepareDietPlan(Model model) {
+		dietPlanService.prepareDietPlan();
+		return "Success";
 	}
 	
 	@PostMapping("/diet-plan-data")
