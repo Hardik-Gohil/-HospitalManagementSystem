@@ -1,8 +1,11 @@
 package com.HospitalManagementSystem.entity;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +20,7 @@ import javax.persistence.Transient;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
+import com.HospitalManagementSystem.entity.master.ServiceSubType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
@@ -25,7 +29,7 @@ import lombok.Getter;
 @Entity
 @Table(name = "adhoc_order")
 @Data
-public class AdHocOrder {
+public class AdHocOrder implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,6 +47,11 @@ public class AdHocOrder {
 	 */
 	private Integer serviceType;
 	
+	
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "service_sub_type_id")
+	private ServiceSubType serviceSubType;
+	
 	/**
 	 * 1 Active
 	 * 2 Cancel
@@ -55,6 +64,12 @@ public class AdHocOrder {
 	
 	@ManyToMany(fetch = FetchType.LAZY)
 	private List<AdHocOrderItems> adHocOrderItems;
+	
+	@Transient
+	private AdHocOrderItems adHocOrderItem;
+	
+	@Column(precision = 13, scale = 2)
+	private BigDecimal totalRate;
 
 	private String remarks;
 	private String nursingName;

@@ -1,5 +1,6 @@
 package com.HospitalManagementSystem.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ import lombok.Getter;
 @Entity
 @Table(name = "patient")
 @Data
-public class Patient {
+public class Patient implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

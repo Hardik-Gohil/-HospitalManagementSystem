@@ -7,6 +7,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 
+import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.dto.PatientSearchDto;
 
 import net.sf.jasperreports.engine.JRException;
@@ -22,9 +23,11 @@ public interface ExportService {
 
 	ResponseEntity<ByteArrayResource> patientServiceReportExport(Model model, String type, Integer patientServiceReport, String dateSelection, String diagonosisIds, String dietTypeOralSolidIds, String dietSubTypeIds);
 
-	ResponseEntity<ByteArrayResource> getPdfAdhocOrderData();
+	ResponseEntity<ByteArrayResource> getPdfAdhocOrderData(AdHocSearchDto adHocSearchDto);
 
-	ResponseEntity<ByteArrayResource> getExcelAdhocOrderData();
+	ResponseEntity<ByteArrayResource> getExcelAdhocOrderData(AdHocSearchDto adHocSearchDto);
+
+	ResponseEntity<ByteArrayResource> getExcelMISAdhocOrderData(AdHocSearchDto adHocSearchDto);
 
 }
 	

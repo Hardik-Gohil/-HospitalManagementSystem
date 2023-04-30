@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -162,15 +161,18 @@ public class DietPlanController {
 	}
 	
 	@GetMapping("/adhoc-order")
-	public String adHocOrder(@RequestParam("patientId") Long patientId, @RequestParam(name = "immediateService", required = false) Boolean immediateService, Model model) {
-		return adHocOrderService.getAdHocOrder(patientId, immediateService, model);
+	public String adHocOrder(@RequestParam("patientId") Long patientId, @RequestParam(name = "immediateService", required = false) Boolean immediateService,
+			 @RequestParam(name = "oldPatientStatus", required = false) Integer oldPatientStatus, Model model) {
+		return adHocOrderService.getAdHocOrder(patientId, immediateService, oldPatientStatus, model);
 	}
 	
 	@PostMapping("/adhoc-order")
 	public String saveAdHocOrder(RedirectAttributes redir, @ModelAttribute("adHocOrderDto") AdHocOrderDto adHocOrderDto,
 			@RequestParam(name = "adHocItemsIds", required = false) String adHocItemsIds,
-			@RequestParam(name = "quantities", required = false) String quantities) {
-		return adHocOrderService.saveAdHocOrder(redir, adHocOrderDto, adHocItemsIds, quantities);
+			@RequestParam(name = "quantities", required = false) String quantities,
+			@RequestParam(name = "itemRates", required = false) String itemRates,
+			@RequestParam(name = "totalRates", required = false) String totalRates) {
+		return adHocOrderService.saveAdHocOrder(redir, adHocOrderDto, adHocItemsIds, quantities, itemRates, totalRates);
 	}
 	
 	@PostMapping("/adhoc-order-data")
@@ -211,16 +213,22 @@ public class DietPlanController {
 		return adHocOrderService.getAdhocOrderListing(adHocSearchDto);
 	}
 	
-	@GetMapping("/export/pdf/adhoc-order")
+	@PostMapping("/export/pdf/adhoc-order")
 	@ResponseBody
-	public ResponseEntity<ByteArrayResource> getPdfAdhocOrderData() {
-		return exportService.getPdfAdhocOrderData();
+	public ResponseEntity<ByteArrayResource> getPdfAdhocOrderData(AdHocSearchDto adHocSearchDto) {
+		return exportService.getPdfAdhocOrderData(adHocSearchDto);
 	}
 
-	@GetMapping("/export/excel/adhoc-order")
+	@PostMapping("/export/excel/adhoc-order")
 	@ResponseBody
-	public ResponseEntity<ByteArrayResource> getExcelAdhocOrderData() {
-		return exportService.getExcelAdhocOrderData();
+	public ResponseEntity<ByteArrayResource> getExcelAdhocOrderData(AdHocSearchDto adHocSearchDto) {
+		return exportService.getExcelAdhocOrderData(adHocSearchDto);
+	}
+	
+	@PostMapping("/export/excel-mis/adhoc-order")
+	@ResponseBody
+	public ResponseEntity<ByteArrayResource> getExcelMISAdhocOrderData(AdHocSearchDto adHocSearchDto) {
+		return exportService.getExcelMISAdhocOrderData(adHocSearchDto);
 	}
 	
 	@GetMapping("/stickers")

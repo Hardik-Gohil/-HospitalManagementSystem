@@ -16,9 +16,9 @@ public interface AdHocOrderService {
 
 	AdHocOrder save(AdHocOrder adHocOrder);
 
-	String getAdHocOrder(Long patientId, Boolean immediateService, Model model);
+	String getAdHocOrder(Long patientId, Boolean immediateService, Integer oldPatientStatus, Model model);
 
-	String saveAdHocOrder(RedirectAttributes redir, AdHocOrderDto adHocOrderDto, String adHocItemsIds, String quantities);
+	String saveAdHocOrder(RedirectAttributes redir, AdHocOrderDto adHocOrderDto, String adHocItemsIds, String quantities, String itemRates, String totalRates);
 
 	List<AdHocOrder> getAdHocOrderData(Long patientId);
 

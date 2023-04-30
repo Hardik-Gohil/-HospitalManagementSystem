@@ -15,6 +15,7 @@ import com.HospitalManagementSystem.repository.DietTypeOralSolidRepository;
 import com.HospitalManagementSystem.repository.FloorRepository;
 import com.HospitalManagementSystem.repository.MedicalComorbiditiesRepository;
 import com.HospitalManagementSystem.repository.ServiceMasterRepository;
+import com.HospitalManagementSystem.repository.ServiceSubTypeRepository;
 import com.HospitalManagementSystem.service.SearchService;
 
 @Service
@@ -36,6 +37,8 @@ public class SearchServiceImpl implements SearchService {
 	private DiagonosisRepository diagonosisRepository;
 	@Autowired
 	private ServiceMasterRepository serviceMasterRepository;
+	@Autowired
+	private ServiceSubTypeRepository serviceSubTypeRepository;
 
 	
 	@Override
@@ -51,6 +54,7 @@ public class SearchServiceImpl implements SearchService {
 		model.addAttribute("searchDietTypeOralLiquidTFList", dietTypeOralLiquidTFRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("searchDietSubTypeList", dietSubTypeRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("searchServiceMasterList", serviceMasterRepository.findAllByIsActive(Boolean.TRUE));
+		model.addAttribute("serviceSubTypeList", serviceSubTypeRepository.findAllByIsActive(Boolean.TRUE));
 	}
 
 }

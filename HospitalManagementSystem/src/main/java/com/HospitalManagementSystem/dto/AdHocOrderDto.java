@@ -1,5 +1,6 @@
 package com.HospitalManagementSystem.dto;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +22,8 @@ public class AdHocOrderDto {
 	 * 2 AdHoc Service
 	 */
 	private Integer serviceType;
+	
+	private ServiceSubTypeDto serviceSubType;
 
 	/**
 	 * 1 Active 2 Cancel 3 Deleted
@@ -31,6 +34,8 @@ public class AdHocOrderDto {
 	private LocalDateTime serviceDeliveryDateTime;
 
 	private List<AdHocOrderItemsDto> adHocOrderItems;
+	
+	private BigDecimal totalRate;
 
 	private String remarks;
 	

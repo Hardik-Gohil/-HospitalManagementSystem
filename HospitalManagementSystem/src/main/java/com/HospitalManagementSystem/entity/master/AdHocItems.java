@@ -1,5 +1,8 @@
 package com.HospitalManagementSystem.entity.master;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,13 +19,16 @@ import lombok.Data;
 @Entity
 @Table(name = "adhoc_items")
 @Data
-public class AdHocItems {
+public class AdHocItems implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long adHocItemsId;
 
 	private String itemName;
+	
+	@Column(precision = 13, scale = 2)
+	private BigDecimal rate;
 
 	@Column(columnDefinition = "ENUM('YES', 'NO')")
 	@Enumerated(EnumType.STRING)

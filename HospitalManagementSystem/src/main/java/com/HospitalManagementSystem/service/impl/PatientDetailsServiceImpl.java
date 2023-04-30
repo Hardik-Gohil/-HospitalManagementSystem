@@ -214,6 +214,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 		if (!isValid) {
 			return "redirect:/diet/patients";
 		}
+		Integer oldPatientStatus = patient.isPresent() ? patient.get().getPatientStatus() : 0;
 		boolean sendAddPatient = false;
 		String updatedFields = "";
 		boolean extraLiquidChange = false;
@@ -333,7 +334,7 @@ public class PatientDetailsServiceImpl implements PatientDetailsService {
 			notificationsService.sendUpdatePatient(savePatient.getPatientId(), updatedFields);
 		}
 		String redirectUrl = patientDto.getImmediateService()
-				? "adhoc-order?immediateService=TRUE&patientId=" + savePatient.getPatientId()
+				? "adhoc-order?immediateService=TRUE&patientId=" + savePatient.getPatientId() + "&oldPatientStatus=" + oldPatientStatus
 				: "patients";
 		return "redirect:/diet/" + redirectUrl;
 	}

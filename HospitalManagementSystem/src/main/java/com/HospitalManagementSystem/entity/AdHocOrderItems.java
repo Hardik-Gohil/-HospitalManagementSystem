@@ -1,5 +1,9 @@
 package com.HospitalManagementSystem.entity;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,7 +20,7 @@ import lombok.Data;
 @Entity
 @Table(name = "adhoc_order_items")
 @Data
-public class AdHocOrderItems {
+public class AdHocOrderItems implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +31,11 @@ public class AdHocOrderItems {
 	private AdHocItems adHocItems;
 
 	private Integer quantity;
+	
+	@Column(precision = 13, scale = 2)
+	private BigDecimal itemRate;
+	
+	@Column(precision = 13, scale = 2)
+	private BigDecimal totalRate;
+
 }

@@ -63,6 +63,7 @@
 					<div style="padding: 7px 5px;position: absolute;top: 11px;right: 10px;">
 						<button id="Export-PDF" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-pdf-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;PDF</button>
 						<button id="Export-Excel" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;Excel</button>
+						<button id="Export-Excel-MIS" class="btn btn-outline-primary btn-sm" type="button"><i class="fa fa-file-excel-o"></i>&nbsp;&nbsp;&nbsp;&nbsp;MIS</button>
 					</div>      
 			   </c:if>         
             </div>
@@ -72,7 +73,7 @@
                   <div class="card-body">
 					<form action="" id="searchForm">
 						<div class="row">
-							<div class="col-lg-4">
+							<div class="col-lg-2">
 								<fieldset class="form-group">
 									<input type="text" id="searchText" class="form-control" placeholder="Search Order ID, Patient name, IP Number, Doctor Name and Nursing name">
 								</fieldset>
@@ -85,6 +86,15 @@
 									</select>
 								</fieldset>
 							</div>
+							<div class="col-lg-2">
+								<fieldset class="form-group">
+									<select class="form-control selectpicker" id="serviceSubType" name="serviceSubType" multiple data-live-search="true" data-size="10" title="Service Sub Type">
+										<c:forEach items="${serviceSubTypeList}" var="serviceSubType">
+											<option value="${serviceSubType.serviceSubTypeId}">${serviceSubType.serviceSubTypeName}</option>
+										</c:forEach>
+									</select>
+								</fieldset>
+							</div>							
 							<div class="col-lg-2">
 								<fieldset class="form-group">
 									<select class="form-control selectpicker" id="medicalComorbiditiesIds" name="medicalComorbiditiesIds" multiple data-live-search="true" data-size="10" title="Co-morbidities">
@@ -216,20 +226,23 @@
                         <table id="adhoc-oder-table" class="table table-bordered table-striped">
                            <thead>
 								<tr>
+									<th>Action</th>
 									<th>Order ID</th>
 									<th>Patient name</th>
 									<th>Service Type</th>
+									<th>Service Sub Type</th>
 									<th>IP Number</th>
 									<th>Diet Type/Qty/Frequency</th>
 									<th>Ward/Floor/Bed Cd</th>
 									<th>Co-morbidities-Item (Quantity)</th>
+									<th>Total Rate</th>
+									<th>Remarks</th>
+									<th>Delivered?</th>
 									<th>Doctor Name</th>
 									<th>Nursing name</th>
 									<th>Order Placed on</th>
 									<th>Delivery Time</th>
-									<th>Delivered?</th>
 									<th>Status</th>
-									<th>Action</th>
 								</tr>
                            </thead>
                         </table>
@@ -279,6 +292,7 @@
 	           	         return JSON.stringify($.extend( {}, d, { 
 				          "searchText": getValue("searchText"),
 	           	     	  "serviceType": getValue("serviceType"),
+	           	     	  "serviceSubType": getValue("serviceSubType"),
 		           	      "medicalComorbiditiesIds": getValue("medicalComorbiditiesIds"),
 	           	      	  "floorIds": getValue("floorIds"),
 	           	     	  "bedIds": getValue("bedIds"),
@@ -301,6 +315,20 @@
 // 		            }
 		        },
 		        "columns": [{
+        			"orderable": false,
+        			"searchable": false,
+        			"data": "",
+        			"render": function(data, type, row) {
+        				var action = '';
+        				if (isDietitian || isKitchen || isAdmin) {
+            				action = '<i class="fa fa-file-invoice fa-lg" title="KOT"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
+            				if (row['orderStatus'] == 1 && row['serviceDeliveryDateTime'] > moment().format(dateFormat)) {
+            					action += '&nbsp;&nbsp;<i class="fa fa-times fa-lg" title="Cancel"></i>';
+            				}
+        				}
+        				return action;
+        			}
+        		},{
 		            "data": "orderId"
 	            }, {
 		            "data": "patient.patientName",
@@ -323,6 +351,9 @@
         				return (data == "1" ? 'Immediate Service' : 'AdHoc Service');
         			}
         		}, {
+		            "data": "serviceSubType.serviceSubTypeName",
+		            "defaultContent": "-",
+		        }, {
 		            "data": "patient.ipNumber"
 		        }, {
 		            "data": "patient.dietTypeSolidLiquidQuantityFrequencyString",
@@ -351,16 +382,27 @@
         				return returnStr;
         			}
 		        }, {
-		            "data": "patient.doctor"
+		            "data": "totalRate",
+		            "defaultContent": "-",
         		}, {
-		            "data": "patient.nursingName"
-		        }, {
-        			"data": "createdOn",
-        			"defaultContent": "-"
+		            "data": "remarks",
+		            "defaultContent": "-",
+		            "render": function(data, type, row) {
+		                if (type === "sort" || type === "filter" || type === 'type') {
+		                    return (data);
+		                } else {
+		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data + '</a>';
+		                    if (data) {
+		                    	if (data.length > 50) {
+		                    		aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    	}
+		                    } else {
+		                    	aTag = "-";
+		                    }
+		                    return aTag;
+		                }
+		            }
         		}, {
-        			"data": "serviceDeliveryDateTime",
-        			"defaultContent": "-"
-		        }, {
         			"data": "chargable",
         			"render": function(data, type, row) {
         				if (type === "sort" || type === "filter" || type === 'type') {
@@ -371,23 +413,19 @@
         				}
         			}
 		        }, {
+		            "data": "patient.doctor"
+        		}, {
+		            "data": "patient.nursingName"
+		        }, {
+        			"data": "createdOn",
+        			"defaultContent": "-"
+        		}, {
+        			"data": "serviceDeliveryDateTime",
+        			"defaultContent": "-"
+		        }, {
         			"data": "orderStatus",
         			"render": function(data, type, row) {
         				return (data == "1" ? 'Active' : data == "2" ? 'Cancel' : 'Deleted');
-        			}
-        		}, {
-        			"orderable": false,
-        			"searchable": false,
-        			"data": "",
-        			"render": function(data, type, row) {
-        				var action = '';
-        				if (isDietitian || isKitchen || isAdmin) {
-            				action = '<i class="fa fa-file-invoice fa-lg" title="KOT"></i>&nbsp;&nbsp;<i class="fa fa-tags fa-lg" title="Sticker"></i>';
-            				if (row['orderStatus'] == 1 && row['serviceDeliveryDateTime'] > moment().format(dateFormat)) {
-            					action += '&nbsp;&nbsp;<i class="fa fa-times fa-lg" title="Cancel"></i>';
-            				}
-        				}
-        				return action;
         			}
         		}],
 		        "createdRow": function(row, data, dataIndex) {
@@ -398,7 +436,7 @@
 		        'paging': true,
 		        'ordering': true,
 		        "order": [
-		            [0, 'desc']
+		            [1, 'desc']
 		        ],		        
 		        'info': true,
 		        'autoWidth': false,
@@ -562,12 +600,96 @@
             
             
 		    $("#Export-PDF").bind("click", function() {
-		        window.location = contextPath + "/diet/export/pdf/adhoc-order";
+		    	exportFile("PDF");
+// 		        window.location = contextPath + "/diet/export/pdf/adhoc-order";
 		    });
 
 		    $("#Export-Excel").bind("click", function() {
-		    	 window.location = contextPath + "/diet/export/excel/adhoc-order";
+		    	exportFile("Excel");
+// 		    	window.location = contextPath + "/diet/export/excel/adhoc-order";
 		    });
+		    
+		    $("#Export-Excel-MIS").bind("click", function() {
+		    	exportFile("Excel-MIS");
+// 		    	window.location = contextPath + "/diet/export/excel/adhoc-order";
+		    });		    
+		    
+		    function exportFile(type) {
+		    	var form = document.createElement("form");
+
+		    	var searchTextElement = document.createElement("input");
+		    	var serviceTypeElement = document.createElement("input");
+		    	var serviceSubTypeElement = document.createElement("input");
+		    	var medicalComorbiditiesIdsElement = document.createElement("input");
+		    	var floorIdsElement = document.createElement("input");
+		    	var bedIdsElement = document.createElement("input");
+		    	var dietTypeOralSolidIdsElement = document.createElement("input");
+		    	var dietTypeOralLiquidTFIdsElement = document.createElement("input");
+		    	var dietSubTypeIdsElement = document.createElement("input");
+		    	var isVipElement = document.createElement("input");
+		    	var orderPlacedStartDateAndTimeElement = document.createElement("input");
+		    	var orderPlacedEndDateAndTimeElement = document.createElement("input");
+		    	var deliveredElement = document.createElement("input");
+		    	var statusListElement = document.createElement("input");
+
+		    	searchTextElement.name = "searchText";
+		    	serviceTypeElement.name = "serviceType";
+		    	serviceSubTypeElement.name = "serviceSubType";
+		    	medicalComorbiditiesIdsElement.name = "medicalComorbiditiesIds";
+		    	floorIdsElement.name = "floorIds";
+		    	bedIdsElement.name = "bedIds";
+		    	dietTypeOralSolidIdsElement.name = "dietTypeOralSolidIds";
+		    	dietTypeOralLiquidTFIdsElement.name = "dietTypeOralLiquidTFIds";
+		    	dietSubTypeIdsElement.name = "dietSubTypeIds";
+		    	isVipElement.name = "isVip";
+		    	orderPlacedStartDateAndTimeElement.name = "orderPlacedStartDateAndTime";
+		    	orderPlacedEndDateAndTimeElement.name = "orderPlacedEndDateAndTime";
+		    	deliveredElement.name = "delivered";
+		    	statusListElement.name = "statusList";
+
+		    	searchTextElement.value = getValue("searchText");
+		    	serviceTypeElement.value = getValue("serviceType");
+		    	serviceSubTypeElement.value = getValue("serviceSubType");
+		    	medicalComorbiditiesIdsElement.value = getValue("medicalComorbiditiesIds");
+		    	floorIdsElement.value = getValue("floorIds");
+		    	bedIdsElement.value = getValue("bedIds");
+		    	dietTypeOralSolidIdsElement.value = getValue("dietTypeOralSolidIds");
+		    	dietTypeOralLiquidTFIdsElement.value = getValue("dietTypeOralLiquidTFIds");
+		    	dietSubTypeIdsElement.value = getValue("dietSubTypeIds");
+		    	isVipElement.value = getCheckboxValue("isVip");
+		    	orderPlacedStartDateAndTimeElement.value = getValue("orderPlacedDateAndTime").split(" - ")[0];
+		    	orderPlacedEndDateAndTimeElement.value = getValue("orderPlacedDateAndTime").split(" - ")[1];
+		    	deliveredElement.value = getValue("delivered");
+		    	statusListElement.value = getValue("statusList");
+
+		    	form.appendChild(searchTextElement);
+		    	form.appendChild(serviceTypeElement);
+		    	form.appendChild(serviceSubTypeElement);
+		    	form.appendChild(medicalComorbiditiesIdsElement);
+		    	form.appendChild(floorIdsElement);
+		    	form.appendChild(bedIdsElement);
+		    	form.appendChild(dietTypeOralSolidIdsElement);
+		    	form.appendChild(dietTypeOralLiquidTFIdsElement);
+		    	form.appendChild(dietSubTypeIdsElement);
+		    	form.appendChild(isVipElement);
+		    	form.appendChild(orderPlacedStartDateAndTimeElement);
+		    	form.appendChild(orderPlacedEndDateAndTimeElement);
+		    	form.appendChild(deliveredElement);
+		    	form.appendChild(statusListElement);
+		    	document.body.appendChild(form);
+
+		    	form.method = "POST";
+		    	if (type == "PDF") {
+		    		form.action = contextPath + "/diet/export/pdf/adhoc-order";	
+		    	} else if (type == "Excel") {
+		    		form.action = contextPath + "/diet/export/excel/adhoc-order"
+		    	} else if (type == "Excel-MIS") {
+		    		form.action = contextPath + "/diet/export/excel-mis/adhoc-order"
+		    	}
+		    	form.style.visibility = 'hidden';
+		    	form.submit();
+		    	document.body.removeChild(form);
+		    }
 		    
 		    $(".refreshTable").bind("click", function() {
 		    	adHocOderTable.ajax.reload();

@@ -1,5 +1,7 @@
 package com.HospitalManagementSystem.entity.master;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +13,7 @@ import lombok.Data;
 @Entity
 @Table(name = "quantity")
 @Data
-public class Quantity {
+public class Quantity implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

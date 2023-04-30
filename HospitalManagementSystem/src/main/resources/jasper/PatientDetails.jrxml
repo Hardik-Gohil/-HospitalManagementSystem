@@ -14,6 +14,9 @@
 		<parameter name="localDateTimeFormatter" class="java.time.format.DateTimeFormatter">
 			<defaultValueExpression><![CDATA[$P{localDateTimeFormatter}]]></defaultValueExpression>
 		</parameter>
+		<parameter name="patientStatus" class="java.lang.Integer">
+			<defaultValueExpression><![CDATA[$P{patientStatus}]]></defaultValueExpression>
+		</parameter>
 		<field name="patientName" class="java.lang.String">
 			<fieldDescription><![CDATA[patientName]]></fieldDescription>
 		</field>
@@ -50,6 +53,7 @@
 	</subDataset>
 	<parameter name="reportName" class="java.lang.String"/>
 	<parameter name="printedOn" class="java.lang.String"/>
+	<parameter name="patientStatus" class="java.lang.Integer"/>
 	<parameter name="tableData" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource">
 		<defaultValueExpression><![CDATA[$P{tableData}]]></defaultValueExpression>
 	</parameter>
@@ -86,15 +90,18 @@
 		<band splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="75" splitType="Stretch">
+		<band height="85" splitType="Stretch">
 			<componentElement>
-				<reportElement x="0" y="0" width="802" height="70" uuid="b4660773-0fbf-4130-81d6-69471ea2e58d">
+				<reportElement x="0" y="0" width="802" height="80" uuid="b4660773-0fbf-4130-81d6-69471ea2e58d">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
 					<datasetRun subDataset="Dataset1" uuid="bbd3fd3f-9848-4745-81ff-b44a5f6f23c7">
 						<datasetParameter name="localDateTimeFormatter">
 							<datasetParameterExpression><![CDATA[$P{localDateTimeFormatter}]]></datasetParameterExpression>
+						</datasetParameter>
+						<datasetParameter name="patientStatus">
+							<datasetParameterExpression><![CDATA[$P{patientStatus}]]></datasetParameterExpression>
 						</datasetParameter>
 						<dataSourceExpression><![CDATA[$P{tableData}]]></dataSourceExpression>
 					</datasetRun>
@@ -218,7 +225,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA["Admission Date"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$P{patientStatus} == 2 ? "Admission Date And Discharged Date" : "Admission Date"]]></textFieldExpression>
 							</textField>
 						</jr:columnHeader>
 						<jr:detailCell height="20">
@@ -234,7 +241,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{admittedDate} != null ? ($F{admittedDate}).format($P{localDateTimeFormatter}): "-"]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$P{patientStatus} == 2 ? (($F{admittedDate} != null ? ($F{admittedDate}).format($P{localDateTimeFormatter}): "-") + " - " + ($F{dischargedTime} != null ? ($F{dischargedTime}).format($P{localDateTimeFormatter}): "-")) : ($F{admittedDate} != null ? ($F{admittedDate}).format($P{localDateTimeFormatter}): "-")]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -339,7 +346,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{diagonosisString}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{diagonosisString} != null && !$F{diagonosisString}.equals("") ? $F{diagonosisString} : ""]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
@@ -374,7 +381,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{medicalComorbiditiesString}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{medicalComorbiditiesString} != null && $F{medicalComorbiditiesString}.equals("") ? $F{medicalComorbiditiesString} : ""]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

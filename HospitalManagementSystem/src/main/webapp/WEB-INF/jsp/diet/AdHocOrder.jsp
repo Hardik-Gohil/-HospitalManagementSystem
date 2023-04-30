@@ -49,8 +49,9 @@
 							<Br>
 							<form:form method="POST" action="${contextPath}/diet/adhoc-order" modelAttribute="adHocOrderDto" id="adHocOrderForm">
 								<form:hidden path="patient.patientId" id="patientId"/>
+								<form:hidden path="totalRate" id="totalRate"/>
 								<div class="row">
-									<div class="col-lg-12">
+									<div class="col-lg-4">
 										<fieldset class="form-group">
 											<label for="serviceType">Service Type:</label><span class="text-danger">*</span>
 											<div class="radio">
@@ -59,6 +60,19 @@
 											</div>
 										</fieldset>	
 									</div>
+									<div class="col-lg-4">
+										<fieldset class="form-group">
+											<label for="dietSubType">Service Sub Type</label><span class="text-danger">*</span>
+											<form:select cssClass="form-control selectpicker" id="serviceSubType" path="serviceSubType.serviceSubTypeId" data-size="10" onchange="serviceSubTypeChange();">
+												<form:option value="" disabled="disabled" selected="selected">Please select</form:option>
+												<c:forEach items="${serviceSubTypeList}" var="serviceSubType">
+													<form:option value="${serviceSubType.serviceSubTypeId}" class="serviceSubType_options" data-serviceSubType="${serviceSubType.serviceType}">${serviceSubType.serviceSubTypeName}</form:option>
+												</c:forEach>
+											</form:select>
+										</fieldset>
+									</div>		
+									<div class="col-lg-4">
+									</div>							
 								</div>
 								<div class="row" id="Items_row">
 									<div class="col-lg-4">
@@ -66,7 +80,7 @@
 											<label for="itemsSelection">Items:</label><span class="text-danger">*</span>
 											<select class="form-control selectpicker" id="itemsSelection" name="itemsSelection" data-live-search="true" data-size="10">
 												<c:forEach items="${adHocItemsList}" var="adHocItems">
-													<option value="${adHocItems.adHocItemsId}">${adHocItems.itemName}</option>
+													<option value="${adHocItems.adHocItemsId}" data-rate="${adHocItems.rate}">${adHocItems.itemName}</option>
 												</c:forEach>
 											</select>
 										</fieldset>	
@@ -90,13 +104,24 @@
 				                        <table class="table table-bordered table-striped table-sm">
 				                           <thead>
 				                              <tr>
-				                                 <th width="50%" class="text-center">Items</th>
-				                                 <th width="40%" class="text-center">Quantity</th>
+				                                 <th width="40%" class="text-center">Items</th>
+				                                 <th width="10%" class="text-center">Quantity</th>
+				                                 <th width="20%" class="text-center rateDetails">Rate</th>
+				                                 <th width="20%" class="text-center rateDetails">Total Rate</th>
 				                                 <th width="10%" class="text-center">Action</th>
 				                              </tr>
 				                           </thead>
 				                           <tbody id="itemTable">
 				                           </tbody>
+				                           <tfoot class="rateDetails">
+												<tr>
+													<th width="40%" class="text-center"></th>
+													<th width="10%" class="text-center"></th>
+													<th width="20%" class="text-center"></th>
+													<th width="20%" class="text-right" id="totalRate-th"></th>
+													<th width="10%" class="text-center"></th>
+												</tr>
+											</tfoot>
 				                        </table>									
 									</div>																							
 								</div>								
@@ -109,7 +134,7 @@
 									</div>
 									<div class="col-lg-4">
 										<fieldset class="form-group">
-											<label for="remarks">Remarks</label>
+											<label for="remarks">Remarks</label><span class="text-danger" id="remarks-asterisk">*</span>
 											<input class="form-control daterange-single" id="remarks" name="remarks"></input>
 										</fieldset>
 									</div>
@@ -142,7 +167,10 @@
 		                              <tr>
 		                                 <th>Order ID</th>
 		                                 <th>Service Type</th>
+		                                 <th>Service Sub Type</th>
 		                                 <th>Item (Quantity)</th>
+		                                 <th>Total Rate</th>
+										 <th>Remarks</th>
 		                                 <th>Order Placed on</th>
 		                                 <th>Delivery Time</th>
 		                                 <th>Status</th>
@@ -202,27 +230,73 @@
 		    } else {
 		        $("#Items_row").hide();
 		    }
+		    if (!$('#serviceSubType').is(':disabled')) {
+			    $("#serviceSubType").val("");
+			    serviceSubTypeChange();
+		        $(".serviceSubType_options").each(function() {
+		            if ($(this).attr("data-serviceSubType") == $('input[name="serviceType"]:checked').val()) {
+		                $(this).show();
+		            } else {
+		                $(this).hide();
+		            }
+		        });
+		    } else {
+		    	 serviceSubTypeChange();
+		    }
+	        $('.selectpicker').selectpicker('refresh');
 		}
+	    
+	    function serviceSubTypeChange() {
+	    	if ($("#serviceSubType").val() == '5') {
+	    		 $("#remarks-asterisk").show();
+	    	} else {
+	    		$("#remarks-asterisk").hide();
+	    	}
+	    	
+	    	if ($("#serviceSubType").val() == '4') {
+	    		 $(".rateDetails").show();
+	    	} else {
+	    		$(".rateDetails").hide();
+	    	}
+	    }
 
 		function Validation() {
 		    if ($('input[name="serviceType"]:checked').val() == 2  && $('#itemTable tr').length == 0) {
 		    	Swal.fire('Pleae add Items');
 		    	return false;
 		    }
+		    $("#serviceSubType").attr("disabled", false);
 		    return true;
 		}
 		
 		function addItem() {
 			var itemTr = '<tr>';
 				itemTr += '<td class="">{adHocItems}<input type="hidden" name="adHocItemsIds" value="{adHocItemsId}"></input></td>';
-				itemTr += '<td class="">{quantity}<input type="hidden" name="quantities" value="{quantity}"></input></td>';
+				itemTr += '<td class="text-right">{quantity}<input type="hidden" name="quantities" value="{quantity}"></input></td>';
+				itemTr += '<td class="text-right rateDetails">{itemRate}<input type="hidden" name="itemRates" value="{itemRate}"></input></td>';
+				itemTr += '<td class="text-right rateDetails">{totalRate}<input type="hidden" name="totalRates" value="{totalRate}"></input></td>';
 				itemTr += '<td class="text-center"><i class="fa fa-trash-o fa-lg" title="Delete"></i></td>';
 				itemTr += '</tr>'
 			var adHocItems = $("#itemsSelection option:selected").text();
 			var adHocItemsId = $("#itemsSelection").val();
 			var quantity = $("#quantitySelection").val();
-			var appendHtml = itemTr.replace("{adHocItems}", adHocItems).replace("{adHocItemsId}", adHocItemsId).replace("{quantity}", quantity).replace("{quantity}", quantity);
-			$("#itemTable").append(appendHtml);			
+			var itemRate = $("#itemsSelection option:selected").attr("data-rate");
+			var totalRate = parseFloat(quantity * itemRate).toFixed(2);
+			var appendHtml = itemTr.replace("{adHocItems}", adHocItems).replace("{adHocItemsId}", adHocItemsId).replace("{quantity}", quantity).replace("{quantity}", quantity).replace("{itemRate}", itemRate).replace("{itemRate}", itemRate).replace("{totalRate}", totalRate).replace("{totalRate}", totalRate);
+			$("#itemTable").append(appendHtml);
+			setTotalRate();
+			serviceSubTypeChange();
+		}
+		
+		function setTotalRate() {
+			var totalRate = 0.00;
+			$('input[name="totalRates"]').each(function(){
+				totalRate += parseFloat($(this).val());
+				console.log($(this).val());
+			});
+			totalRate = parseFloat(totalRate).toFixed(2);
+			$("#totalRate").val(totalRate);
+			$("#totalRate-th").text(totalRate);
 		}
 		
 		$(document).ready(function() {
@@ -231,6 +305,7 @@
 		    
 		    $("#itemTable").on('click','.fa-trash-o', function() {
 		        $(this).parent().parent().remove();
+		        setTotalRate();
 		    });
 		    
 		    $('#serviceDeliveryDateTime').daterangepicker({
@@ -251,6 +326,13 @@
 		    <c:if test="${immediateService eq true}">
 		  		$("input[name=serviceType][value='1']").prop('checked', true);
 		  		$("#serviceType2").attr("disabled", true);
+		  		<c:if test="${oldPatientStatus eq 0}">
+		  			$("#serviceSubType").val("1");
+		  		</c:if> 
+		  		<c:if test="${oldPatientStatus ne 0}">
+	  				$("#serviceSubType").val("2");
+	  			</c:if> 	
+	  			$("#serviceSubType").attr("disabled", true);
    			</c:if> 		    
 	    	<c:if test="${immediateService eq false}">
 	    		$("input[name=serviceType][value='2']").prop('checked', true);
@@ -263,11 +345,19 @@
 		    $("#adHocOrderForm").validate({
 		        // in 'rules' user have to specify all the constraints for respective fields
 		        rules: {
+		        	"serviceSubType.serviceSubTypeId": {
+			        	required: true
+			        },
 		        	serviceDeliveryDateTime: {
 		                required: true,
 		                validateDate: true
 		            },
 		            remarks: {
+		                required: {
+		                    depends: function(element) {
+		                        return ($("#serviceSubType").val() == '5');
+		                    }
+		                },
 		                minlength: 2,
 		                maxlength: 150,
 		                alphanumericWithSpeCharValidator: true
@@ -288,11 +378,15 @@
 		        },
 		        // in 'messages' user have to specify message as per rules
 		        messages: {
+		            "serviceSubType.serviceSubTypeId": {
+		                required: "Please Select Service Sub Type"
+		            },		        	
 		        	serviceDeliveryDateTime: {
 		                required: "Please enter Service Delivery Date Time",
 		                validateDate: "Must be 30 or minutes more than the current Date Time"
 		            },
 		            remarks: {
+		            	required: "Please enter Remarks",
 		                minlength: "At least 2 characters required",
 		                maxlength: "Max 150 characters allowed",
 		                alphanumericWithSpeCharValidator: "Only Alphanumeric characters and " + allowsChars + " are allowed"
@@ -326,6 +420,9 @@
         				return (data == "1" ? 'Immediate Service' : 'AdHoc Service');
         			}
         		}, {
+		            "data": "serviceSubType.serviceSubTypeName",
+		            "defaultContent": "-",
+		        }, {
         			"data": "adHocOrderItems",
         			"defaultContent": "-",
         			"render": function(data, type, row) {
@@ -341,6 +438,27 @@
         				}
         				return returnStr;
         			}
+        		}, {
+		            "data": "totalRate",
+		            "defaultContent": "-",
+        		}, {
+		            "data": "remarks",
+		            "defaultContent": "-",
+		            "render": function(data, type, row) {
+		                if (type === "sort" || type === "filter" || type === 'type') {
+		                    return (data);
+		                } else {
+		                    var aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data + '</a>';
+		                    if (data) {
+		                    	if (data.length > 50) {
+		                    		aTag = '<a href="#" style="color: #666f73;" title = "' + data + '">' + data.substring(0, 50) + '...</a>';
+		                    	}
+		                    } else {
+		                    	aTag = "-";
+		                    }
+		                    return aTag;
+		                }
+		            }
         		}, {
         			"data": "createdOn",
         			"defaultContent": "-"

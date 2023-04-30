@@ -51,6 +51,7 @@ public class CommonUtility {
 	
 	public static String localDateTimeFormat= "MM/dd/yyyy hh:mm:ss a";
 	public static DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	public static DateTimeFormatter localTime24hFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 	public static DateTimeFormatter localDateFormatterSticker = DateTimeFormatter.ofPattern("dd-MM-yy");
 	public static DateTimeFormatter localDateFormatterSQL = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	public static DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormat);

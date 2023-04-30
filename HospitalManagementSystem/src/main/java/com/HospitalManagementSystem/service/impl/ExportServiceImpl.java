@@ -8,29 +8,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.criteria.Predicate;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.SerializationUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.jpa.datatables.mapping.DataTablesInput;
 import org.springframework.data.jpa.datatables.mapping.DataTablesOutput;
-import org.springframework.data.jpa.datatables.mapping.Search;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 
+import com.HospitalManagementSystem.dto.AdHocOrderDto;
 import com.HospitalManagementSystem.dto.AdHocSearchDto;
 import com.HospitalManagementSystem.dto.PatientDataTablesOutputDto;
 import com.HospitalManagementSystem.dto.PatientSearchDto;
 import com.HospitalManagementSystem.dto.PatientServiceReportDto;
 import com.HospitalManagementSystem.entity.AdHocOrder;
+import com.HospitalManagementSystem.entity.AdHocOrderItems;
 import com.HospitalManagementSystem.entity.Patient;
-import com.HospitalManagementSystem.entity.User;
-import com.HospitalManagementSystem.repository.PatientDataTablesRepository;
+import com.HospitalManagementSystem.repository.AdHocOrderRepository;
 import com.HospitalManagementSystem.service.AdHocOrderService;
 import com.HospitalManagementSystem.service.ExportService;
 import com.HospitalManagementSystem.service.PatientDetailsService;
@@ -57,12 +57,17 @@ import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
 public class ExportServiceImpl implements ExportService {
 
 	@Autowired
+	private AdHocOrderRepository adHocOrderRepository;
+	
+	@Autowired
 	private PatientDetailsService patientDetailsService;
 	@Autowired
 	private ReportService reportService;
 	@Autowired
 	private AdHocOrderService adHocOrderService;
 
+	@Autowired
+	private ModelMapper modelMapper;
 	@Autowired
 	private CommonUtility commonUtility;
 	
@@ -125,6 +130,7 @@ public class ExportServiceImpl implements ExportService {
 				String reportName = patientStatus == 0 ? "New Patient Details" : patientStatus == 1 ? "Active Patient Details" : "Discharged Patient Details";
 				Map<String, Object> parameters = new HashMap<String, Object>();
 				parameters.put("reportName", reportName);
+				parameters.put("patientStatus", patientStatus);
 				parameters.put("localDateTimeFormatter", CommonUtility.localDateTimeFormatter);
 				parameters.put("printedOn", LocalDateTime.now().format(CommonUtility.localDateTimeFormatter));
 				parameters.put("tableData", new JRBeanCollectionDataSource(data));
@@ -145,20 +151,65 @@ public class ExportServiceImpl implements ExportService {
 	}
 	
 	@Override
-	public ResponseEntity<ByteArrayResource> getPdfAdhocOrderData() {
-		return exportAdhocOrderData("PDF");
+	public ResponseEntity<ByteArrayResource> getPdfAdhocOrderData(AdHocSearchDto adHocSearchDto) {
+		return exportAdhocOrderData("PDF", adHocSearchDto);
 	}
 
 	@Override
-	public ResponseEntity<ByteArrayResource> getExcelAdhocOrderData() {
-		return exportAdhocOrderData("EXCEL");
+	public ResponseEntity<ByteArrayResource> getExcelAdhocOrderData(AdHocSearchDto adHocSearchDto) {
+		return exportAdhocOrderData("EXCEL", adHocSearchDto);
 	}
 	
-	private ResponseEntity<ByteArrayResource> exportAdhocOrderData(String type) {
-		AdHocSearchDto input = new AdHocSearchDto();
-		input.setLength(Integer.MAX_VALUE);
+	@Override
+	public ResponseEntity<ByteArrayResource> getExcelMISAdhocOrderData(AdHocSearchDto adHocSearchDto) {
+		adHocSearchDto.setLength(Integer.MAX_VALUE);
 
-		DataTablesOutput<AdHocOrder> dataTablesOutput = adHocOrderService.getAdhocOrderListing(input);
+		DataTablesOutput<AdHocOrder> dataTablesOutput = adHocOrderService.getAdhocOrderListing(adHocSearchDto);
+		List<AdHocOrder> data = dataTablesOutput.getData();
+		if (CollectionUtils.isNotEmpty(data)) {
+			try {
+				List<AdHocOrder> misData = new ArrayList<AdHocOrder>();
+				
+				for (AdHocOrder adHocOrder : data) {
+					if (CollectionUtils.isNotEmpty(adHocOrder.getAdHocOrderItems())) {
+						for (AdHocOrderItems adHocOrderItems : adHocOrder.getAdHocOrderItems()) {
+							AdHocOrder adHocOrderCopy = modelMapper.map(adHocOrder, AdHocOrder.class);
+							adHocOrderCopy.setAdHocOrderItem(adHocOrderItems);
+							misData.add(adHocOrderCopy);
+						}
+					} else {
+						misData.add(adHocOrder);
+					}
+				}
+				
+				String reportName = "AdHoc Oders";
+				Map<String, Object> parameters = new HashMap<String, Object>();
+				parameters.put("reportName", reportName);
+				parameters.put("localDateTimeFormatter", CommonUtility.localDateTimeFormatter);
+				parameters.put("localDateFormatter", CommonUtility.localDateFormatter);
+				parameters.put("localTime24hFormatter", CommonUtility.localTime24hFormatter);
+				parameters.put("printedOn", LocalDateTime.now().format(CommonUtility.localDateTimeFormatter));
+				parameters.put("tableData", new JRBeanCollectionDataSource(misData));
+				
+				InputStream jasperInput = ExportServiceImpl.class.getResourceAsStream("/" + "jasper/MISAdHocOders.jrxml");
+				JasperDesign jasperDesign = JRXmlLoader.load(jasperInput);
+				JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+				List<JasperPrint> jasperPrints = new ArrayList<JasperPrint>();
+				JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
+				jasperPrints.add(jasperPrint);
+				
+				return getByteArrayResource(reportName, "EXCEL", jasperPrints, parameters);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	private ResponseEntity<ByteArrayResource> exportAdhocOrderData(String type, AdHocSearchDto adHocSearchDto) {
+		adHocSearchDto.setLength(Integer.MAX_VALUE);
+
+		DataTablesOutput<AdHocOrder> dataTablesOutput = adHocOrderService.getAdhocOrderListing(adHocSearchDto);
 		List<AdHocOrder> data = dataTablesOutput.getData();
 		if (CollectionUtils.isNotEmpty(data)) {
 			try {

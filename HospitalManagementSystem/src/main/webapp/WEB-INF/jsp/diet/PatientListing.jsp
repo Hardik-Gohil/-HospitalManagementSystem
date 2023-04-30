@@ -864,7 +864,7 @@
 		        form.appendChild(dietTypeOralLiquidTFIdsElement);
 		        form.appendChild(dietSubTypeIdsElement);
 		        form.appendChild(isVipElement);
-		        form.appendChild(isVipElement);
+		        form.appendChild(extraLiquidElement);
 		        form.appendChild(nbmElement);
 		        document.body.appendChild(form);
 		        

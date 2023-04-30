@@ -148,6 +148,7 @@
 										<fieldset class="form-group">
 											<label for="quantity">Quantity</label><span class="text-danger">*</span>
 											<form:select cssClass="form-control selectpicker" id="quantity" path="quantity.quantityId" data-live-search="true" data-size="10">
+												<form:option value="" disabled="disabled" selected="selected">Please select</form:option>
 												<c:forEach items="${quantityList}" var="quantity">
 													<form:option value="${quantity.quantityId}">${quantity.valueStr}</form:option>
 												</c:forEach>
@@ -158,6 +159,7 @@
 										<fieldset class="form-group">
 											<label for="frequency">Frequency</label><span class="text-danger">*</span>
 											<form:select cssClass="form-control selectpicker" id="frequency" path="frequency.frequencyId" data-size="10">
+												<form:option value="" disabled="disabled" selected="selected">Please select</form:option>
 												<c:forEach items="${frequencyList}" var="frequency">
 													<form:option value="${frequency.frequencyId}">${frequency.valueStr}</form:option>
 												</c:forEach>

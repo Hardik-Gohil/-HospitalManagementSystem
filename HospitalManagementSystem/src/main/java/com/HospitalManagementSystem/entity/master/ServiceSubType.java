@@ -7,21 +7,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Data;
 
 @Entity
-@Table(name = "frequency")
+@Table(name = "service_sub_type")
 @Data
-public class Frequency implements Serializable {
+public class ServiceSubType implements Serializable {
+	
+	/**
+	 * 
+	 */
+	@Transient
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long frequencyId;
+	private Long serviceSubTypeId;
 
-	private String valueStr;
-	
-	private Integer value;
+	private String serviceSubTypeName;
+
+	private Integer serviceType;
 
 	private Boolean isActive = Boolean.FALSE;
 }

@@ -1,5 +1,6 @@
 package com.HospitalManagementSystem.entity.master;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.Data;
 @Entity
 @Table(name = "diet_sub_type")
 @Data
-public class DietSubType {
+public class DietSubType implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

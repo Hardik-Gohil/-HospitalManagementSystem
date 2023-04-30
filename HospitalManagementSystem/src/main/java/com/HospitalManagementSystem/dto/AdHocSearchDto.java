@@ -12,6 +12,8 @@ public class AdHocSearchDto extends DataTablesInput {
 	private String searchText;
 
 	private List<Integer> serviceType;
+	
+	private List<Long> serviceSubType;
 
 	private List<Long> medicalComorbiditiesIds;
 

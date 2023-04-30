@@ -2,6 +2,7 @@ package com.HospitalManagementSystem.service.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ import com.HospitalManagementSystem.repository.AdHocOrderDataTablesRepository;
 import com.HospitalManagementSystem.repository.AdHocOrderItemsRepository;
 import com.HospitalManagementSystem.repository.AdHocOrderRepository;
 import com.HospitalManagementSystem.repository.PatientRepository;
+import com.HospitalManagementSystem.repository.ServiceSubTypeRepository;
 import com.HospitalManagementSystem.service.AdHocOrderService;
 import com.HospitalManagementSystem.service.NotificationsService;
 import com.HospitalManagementSystem.utility.CommonUtility;
@@ -75,6 +77,8 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 	private AdHocOrderItemsRepository adHocOrderItemsRepository;
 	@Autowired
 	private AdHocOrderDataTablesRepository adHocOrderDataTablesRepository;
+	@Autowired
+	private ServiceSubTypeRepository serviceSubTypeRepository;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -104,7 +108,7 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 	}
 
 	@Override
-	public String getAdHocOrder(Long patientId, Boolean immediateService, Model model) {
+	public String getAdHocOrder(Long patientId, Boolean immediateService, Integer oldPatientStatus, Model model) {
 		Patient patient = patientRepository.findById(patientId).get();
 		PatientDto patientDto = new PatientDto();
 		AdHocOrderDto adHocOrderDto = new AdHocOrderDto();
@@ -113,14 +117,16 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 		model.addAttribute("adHocOrderDto", adHocOrderDto);
 		model.addAttribute("patient", patient);
 		model.addAttribute("immediateService", ObjectUtils.isNotEmpty(immediateService) ? immediateService : Boolean.FALSE);
+		model.addAttribute("oldPatientStatus", oldPatientStatus);
 		model.addAttribute("adHocItemsList", adHocItemsRepository.findAll(dietUtility.getAdHocItemsSpecification(patient)));
+		model.addAttribute("serviceSubTypeList", serviceSubTypeRepository.findAllByIsActive(Boolean.TRUE));
 		model.addAttribute("localDateFormatter", CommonUtility.localDateFormatter);
 		model.addAttribute("localDateTimeFormatter", CommonUtility.localDateTimeFormatter);
 		return "diet/AdHocOrder";
 	}
 
 	@Override
-	public String saveAdHocOrder(RedirectAttributes redir, AdHocOrderDto adHocOrderDto, String adHocItemsIds, String quantities) {
+	public String saveAdHocOrder(RedirectAttributes redir, AdHocOrderDto adHocOrderDto, String adHocItemsIds, String quantities, String itemRates, String totalRates) {
 		boolean isValid = true;
 		Patient patient = patientRepository.findById(adHocOrderDto.getPatient().getPatientId()).get();
 		if (patient.getPatientStatus() == 2) {
@@ -132,11 +138,18 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 		}	
 		LocalDateTime now = LocalDateTime.now();
 		User currentUser = commonUtility.getCurrentUser();
+		Long serviceSubTypeId = !ObjectUtils.isEmpty(adHocOrderDto.getServiceSubType()) ? adHocOrderDto.getServiceSubType().getServiceSubTypeId() : 0l;
+		
+		if (serviceSubTypeId != 4) {
+			adHocOrderDto.setTotalRate(null);
+		}
 		
 		if(adHocOrderDto.getServiceType() == 2 && StringUtils.isNotEmpty(adHocItemsIds)) {
 			List<AdHocOrderItemsDto> adHocOrderItems = new ArrayList<>();
 			String[] ids = adHocItemsIds.split(",");
 			String[] qtys = quantities.split(",");
+			String[] iRates = itemRates.split(",");
+			String[] tRates = totalRates.split(",");
 			
 			for (int i = 0; i < ids.length; i++) {
 				AdHocOrderItemsDto adHocOrderItemsDto = new AdHocOrderItemsDto();
@@ -144,6 +157,8 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 				adHocItems.setAdHocItemsId(Long.valueOf(ids[i]));
 				adHocOrderItemsDto.setAdHocItems(adHocItems);
 				adHocOrderItemsDto.setQuantity(Integer.parseInt(qtys[i]));
+				adHocOrderItemsDto.setItemRate(serviceSubTypeId == 4 ? new BigDecimal(iRates[i]) : null);
+				adHocOrderItemsDto.setTotalRate(serviceSubTypeId == 4 ? new BigDecimal(tRates[i]) : null);
 				adHocOrderItems.add(adHocOrderItemsDto);
 			}
 			adHocOrderDto.setAdHocOrderItems(adHocOrderItems);
@@ -264,6 +279,9 @@ public class AdHocOrderServiceImpl implements AdHocOrderService {
 			List<Predicate> predicates = new ArrayList<>();
 			if (CollectionUtils.isNotEmpty(adHocSearchDto.getServiceType())) {
 				predicates.add(root.get("serviceType").in(adHocSearchDto.getServiceType()));
+			}
+			if (CollectionUtils.isNotEmpty(adHocSearchDto.getServiceSubType())) {
+				predicates.add(root.get("serviceSubType").get("serviceSubTypeId").in(adHocSearchDto.getServiceSubType()));
 			}
 			if (CollectionUtils.isNotEmpty(adHocSearchDto.getMedicalComorbiditiesIds())) {
 				Join<Patient, AdHocOrder> patientJoin = root.join("patient");
