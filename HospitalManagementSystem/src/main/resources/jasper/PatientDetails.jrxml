@@ -381,7 +381,7 @@
 								<textElement verticalAlignment="Middle" markup="styled">
 									<font size="10"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{medicalComorbiditiesString} != null && $F{medicalComorbiditiesString}.equals("") ? $F{medicalComorbiditiesString} : ""]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{medicalComorbiditiesString} != null && !$F{medicalComorbiditiesString}.equals("") ? $F{medicalComorbiditiesString} : ""]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
